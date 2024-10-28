@@ -1,0 +1,14 @@
+# Ignore Firebase configuration
+frontend/src/firebase.js
+# Ignore backend service account key
+backend/firebase-admin.json
+
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Environment variables
+.env

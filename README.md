@@ -14,7 +14,17 @@ Please feel free to read more about the design of this application, [here](https
 - **`git add .` / `git add <file name>`**: Use `git add .` to stage all files or `git add <file name>` to stage a specific file.  
 - **`git commit -m "Describe what was changed"`**: Commit your changes with a detailed message that describes what was changed.  
 - **`git push origin <branch name>`**: Push your changes to the branch on GitHub. You must specify the branch name because GitHub won’t know which branch you’re referring to.  
-- **Create a Pull Request**: Go to the repo page and click "New Pull Request". You will need at least one review to merge into the main branch.  
+- **Create a Pull Request**: Go to the repo page and click "New Pull Request". You will need **at least one review** to merge into the main branch.  
+
+# Getting Setup
+- After cloning the repo to your local files, do the following:  
+1. `cd brampton-tennis-queue`  
+4. `cd backend`  
+5. `npm install`  
+6. `cd ../frontend`  
+7. `npm install`  
+8. Insert the `firebase-admin.json` file into the `backend` directory  
+9. Insert the `firebase.js` file into the `frontend/src` directory  
 
 # Contributors (2024-25)
 - [Raunak Madan](https://www.linkedin.com/in/raunak-madan) - Project Lead

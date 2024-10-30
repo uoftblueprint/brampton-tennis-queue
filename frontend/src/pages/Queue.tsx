@@ -1,5 +1,7 @@
+import LocationSelection from "./LocationSelection/LocationSelection";
+
 const Queue = () => {
-  return <h2>Join the Queue</h2>;
+  return <LocationSelection></LocationSelection>
 };
 
 export default Queue;

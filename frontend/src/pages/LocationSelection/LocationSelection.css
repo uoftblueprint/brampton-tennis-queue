@@ -1,0 +1,73 @@
+.location-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px; /* Increased margin for better spacing */
+    padding: 20px; /* Add padding for inner spacing */
+    border-radius: 10px; /* Rounded corners for the container */
+  }
+  
+  .title {
+    font-size: 28px; /* Larger title for emphasis */
+    font-weight: bold;
+    color: #333; /* Dark text for good readability */
+    margin-bottom: 15px; /* More space below the title */
+  }
+  
+  .label {
+    font-size: 18px; /* Slightly larger label text */
+    color: #555; /* Softer dark color */
+    margin-bottom: 10px; /* Increased margin for separation */
+  }
+  
+  .dropdown {
+    width: 250px; /* Wider dropdown for better usability */
+    padding: 12px; /* More padding for comfort */
+    font-size: 16px; /* Font size remains the same */
+    color: #333; /* Dark text for readability */
+    border: 1px solid #ccc; /* Border remains */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #fff; /* White background for dropdown */
+    cursor: pointer;
+    transition: border 0.3s ease; /* Smooth border transition */
+  }
+  
+  /* Dropdown focus effect */
+  .dropdown:focus {
+    border: 1px solid #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+  }
+  
+  /* Styling for dropdown options */
+  .dropdown option {
+    padding: 10px;
+  }
+  
+  .next-button {
+    padding: 12px 24px;
+    background-color: #007bff; /* Primary blue color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Make text bold */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for background and scale */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    margin-top: 30px; /* Increased space above the button */
+    display: inline-block; /* Ensure proper button display */
+  }
+  
+  /* Hover effect */
+  .next-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect on hover */
+  }
+  
+  /* Active effect */
+  .next-button:active {
+    background-color: #004494; /* Even darker blue when active */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Change shadow on click */
+    transform: translateY(1px); /* Slight depression effect on click */
+  }
+  

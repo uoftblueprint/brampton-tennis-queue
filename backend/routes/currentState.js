@@ -7,6 +7,9 @@ router.post('/currentState', async (req, res) => {
   try {
     // Extract location from the request body
     const location = req.body.location;
+    if (!location) {
+      return res.status(400).json({ message: 'Location is required.' });
+    }
 
     // Retrieve active player information for given location
     const activePlayersSnapshot = await admin.firestore()
@@ -25,6 +28,11 @@ router.post('/currentState', async (req, res) => {
       .orderBy('timeJoinedQueue')
       .select('nickname')
       .get();
+
+    // Check for empty active player snapshot (as always filled with Empty/Unknown/Player objects)
+    if (activePlayersSnapshot.empty) {
+      return res.status(404).json({ message: 'Invalid location.' });
+    }
 
     // Convert snapshots to arrays
     activePlayers = activePlayersSnapshot.docs.map(doc => doc.data().nickname);

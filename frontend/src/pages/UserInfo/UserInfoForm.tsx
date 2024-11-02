@@ -15,20 +15,21 @@ const UserInfo: React.FC = () => {
   // Navigation hook for redirecting to the next page
   const navigate = useNavigate();
 
-  // Handler for changes in the nickname input field
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value); // Update nickname state
-    validateNickname(e.target.value); // Validate nickname on change
+// Handler for changes in the nickname input field
+const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+    validateNickname(e.target.value); // Revalidate nickname on change
   };
-
+  
   // Handler for changes in the phone input field
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value); // Update phone state
-    validatePhone(e.target.value); // Validate phone number on change
+const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(e.target.value);
+    validatePhone(e.target.value); // Revalidate phone on change
   };
+  
 
   // Validation function for nickname input
-  const validateNickname = (value: string) => {
+const validateNickname = (value: string) => {
     if (!value) {
       // Error if nickname is empty
       setErrors((prev) => ({ ...prev, nickname: 'Nickname is required' }));
@@ -45,7 +46,7 @@ const UserInfo: React.FC = () => {
   };
 
   // Validation function for phone number input
-  const validatePhone = (value: string) => {
+const validatePhone = (value: string) => {
     const phoneRegex = /^\d{3}-\d{3}-\d{4}$/; // Pattern for 000-000-0000 format
     if (!phoneRegex.test(value)) {
       // Error if phone number does not match format
@@ -56,16 +57,32 @@ const UserInfo: React.FC = () => {
     }
   };
 
-  // Form submission handler
-  const handleSubmit = (e: React.FormEvent) => {
+// Form submission handler
+const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent page reload on form submit
-    if (!errors.nickname && !errors.phone) {
-      // If no validation errors, log the submitted data (or handle it as needed)
-      console.log("Form submitted:", { nickname, phone });
-
-      // Navigate to the next page, e.g., /confirmation
-      navigate('/next-page');
+    
+    // Inline validation to ensure fields are not empty or invalid
+    const nicknameIsValid = nickname && nickname.split(' ').length === 1 && nickname.length <= 20;
+    const phoneIsValid = /^\d{3}-\d{3}-\d{4}$/.test(phone);
+    
+    // Update errors if validation fails
+    if (!nicknameIsValid) {
+      setErrors((prev) => ({ ...prev, nickname: 'Nickname is required and should be a single word with up to 20 characters' }));
     }
+    if (!phoneIsValid) {
+      setErrors((prev) => ({ ...prev, phone: 'Phone must be in the format 000-000-0000' }));
+    }
+    
+    // Prevent submission if either field is invalid
+    if (!nicknameIsValid || !phoneIsValid) {
+      return;
+    }
+  
+    // If no validation errors, log the submitted data (or handle it as needed)
+    console.log("Form submitted:", { nickname, phone });
+  
+    // Navigate to the next page, e.g., /confirmation
+    navigate('/next-page');
   };
 
   return (

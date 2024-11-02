@@ -1,64 +1,137 @@
-/* Centering and layout */
+/* PhoneSignIn.css */
+body {
+  background-color: #f4f7fa; /* Light background color */
+  font-family: 'Arial', sans-serif; /* Clean font */
+  margin: 0;
+  padding: 0;
+}
+
 .sign-in-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    max-width: 400px;
-    margin: auto;
-    padding: 2rem;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  max-width: 400px; /* Max width of the sign-in container */
+  margin: 5rem auto; /* Center the container vertically and horizontally */
+  padding: 2rem; /* Inner spacing */
+  background-color: #ffffff; /* White background for the sign-in box */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  text-align: center; /* Center align text */
+  display: flex; /* Flexbox for layout */
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center align items */
+}
+
+h2 {
+  color: #333; /* Darker color for the heading */
+  margin-bottom: 1.5rem; /* Space below the heading */
+}
+
+.phone-input {
+  width: 100%; /* Full width */
+  margin-bottom: 1rem; /* Space below input */
+  border: 2px solid #4CAF50; /* Green border for the input */
+  border-radius: 8px; /* Rounded corners */
   
-  .sign-in-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: #333;
+}
+
+button {
+  background-color: #4CAF50; /* Green button color */
+  color: white; /* White text on buttons */
+  padding: 12px; /* Padding for buttons */
+  border: none; /* Remove border */
+  border-radius: 8px; /* Rounded corners for buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover */
+  margin-bottom: 1rem; /* Space below buttons */
+  max-width: fit-content;
+}
+
+button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.otp-input {
+  width: 100%; /* Full width for OTP input */
+  margin-bottom: 1rem; /* Space below OTP input */
+  border: 2px solid #4CAF50; /* Green border for the OTP input */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Inner spacing */
+}
+
+.otp-input:focus {
+  border-color: #4CAF50; /* Highlight border color on focus */
+  outline: none; /* Remove default outline */
+}
+
+.recaptcha-container {
+  margin-top: 1rem; /* Space above the reCAPTCHA container */
+}
+
+/* Container for the OTP input */
+.otp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px; /* Space above the container */
+}
+
+/* Style for the OTP input field */
+.otp-input {
+  border: 2px solid #3f51b5; /* Border color */
+  border-radius: 12px; /* Rounded corners */
+  padding: 14px 20px; /* Space inside the input */
+  font-size: 18px; /* Font size */
+  width: 100%; /* Full width */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+/* Change border color and shadow on focus */
+.otp-input:focus {
+  border-color: #ff5722; /* Highlight color on focus */
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 15px rgba(255, 87, 34, 0.5); /* Focus shadow effect */
+}
+
+/* Placeholder styling */
+.otp-input::placeholder {
+  color: #aaa; /* Placeholder color */
+  font-style: italic; /* Italicize placeholder */
+}
+
+/* Style for the Verify OTP button */
+.verify-otp-button {
+  background-color: #3f51b5; /* Primary color */
+  color: white; /* Text color */
+  border-radius: 12px; /* Rounded corners */
+  padding: 14px; /* Space inside the button */
+  font-size: 18px; /* Font size */
+  margin-top: 15px; /* Space above the button */
+  width: 100%; /* Full width */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+/* Change background color on hover */
+.verify-otp-button:hover {
+  background-color: #ff5722; /* Highlight color on hover */
+  transform: translateY(-2px); /* Slight upward movement on hover */
+}
+
+/* Change background color when button is disabled */
+.verify-otp-button:disabled {
+  background-color: #a5c5ff; /* Lightened primary color */
+  color: #7a9ec2; /* Grey text for disabled state */
+  cursor: not-allowed; /* Indicate that the button is disabled */
+}
+
+
+/* Media queries for responsiveness */
+@media (max-width: 480px) {
+  .sign-in-container {
+      padding: 1rem; /* Less padding on small screens */
   }
-  
-  /* Form styling */
-  .sign-in-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+
+  button {
+      padding: 10px; /* Smaller button padding */
   }
-  
-  .phone-label {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 0.5rem;
-  }
-  
-  .phone-input {
-    padding: 0.75rem;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  
-  .phone-input:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .submit-button {
-    padding: 0.75rem;
-    font-size: 16px;
-    font-weight: 600;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .submit-button:hover {
-    background-color: #0056b3;
-  }
-  
+}

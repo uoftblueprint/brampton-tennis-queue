@@ -17,9 +17,11 @@ app.use(express.json());
 
 // Import routes
 const currentStateRoute = require('./routes/currentState');
+const resetCourtsRoute = require('./routes/resetCourts');
 
 // Use imported routes
 app.use('/api', currentStateRoute);  // currentState endpoint
+app.use('/api', resetCourtsRoute);  // resetCourts endpoint
 
 // Default route
 app.get('/', (req, res) => {

@@ -3,6 +3,7 @@ import './App.css';
 import Home from './pages/Home';
 import Queue from './pages/Queue';
 import NotFound from './pages/NotFound';
+import UserInfo from './pages/UserInfo/UserInfoForm';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/queue" element={<Queue />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/selected-location" element={<UserInfo />} />
       </Routes>
     </>
   );

@@ -1,0 +1,86 @@
+.user-info-form, .user-info-form * {
+  box-sizing: border-box; /* Ensures padding and border are included in width */
+}
+
+/* Container styling for the form */
+.user-info-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 320px; /* Smaller max width for compact layout */
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling for the form */
+.user-info-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Label styling for form inputs */
+.user-info-label {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 5px;
+  text-align: left;
+  width: 100%; /* Full width for alignment */
+}
+
+/* Input field styling */
+.user-info-input {
+  width: 100%; /* Full width for alignment */
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  transition: border 0.3s ease;
+}
+
+/* Focus effect for input fields */
+.user-info-input:focus {
+  border: 1px solid #007bff;
+  outline: none;
+}
+
+/* Error message styling */
+.user-info-error {
+  color: #d9534f;
+  font-size: 12px;
+  margin-top: -8px; /* Align error message closer to input */
+  margin-bottom: 8px;
+}
+
+/* Submit button styling */
+.user-info-button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%; /* Full width button */
+  margin-top: 10px;
+}
+
+/* Hover effect */
+.user-info-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Active effect */
+.user-info-button:active {
+  background-color: #004494;
+  transform: translateY(1px);
+}

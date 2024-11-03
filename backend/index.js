@@ -17,9 +17,11 @@ app.use(express.json());
 
 // Import routes
 const currentStateRoute = require('./routes/currentState');
+const endSessionRoute = require('./routes/endSession');
 
 // Use imported routes
 app.use('/api', currentStateRoute);  // currentState endpoint
+app.use('/api', endSessionRoute);  // endSession endpoint
 
 // Default route
 app.get('/', (req, res) => {

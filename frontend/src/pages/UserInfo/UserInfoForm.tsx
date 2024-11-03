@@ -1,93 +1,74 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 import './UserInfoForm.css';
+import ConfirmationModal from './ConfirmationModal';
 
 const UserInfo: React.FC = () => {
   // State for nickname input field
   const [nickname, setNickname] = useState<string>('');
-  
-  // State for phone number input field
-  const [phone, setPhone] = useState<string>('');
-  
-  // State for error messages for validation (one for each field)
-  const [errors, setErrors] = useState<{ nickname: string; phone: string }>({ nickname: '', phone: '' });
 
-  // Navigation hook for redirecting to the next page
+  // State for validation error messages
+  const [errors, setErrors] = useState<{ nickname: string }>({ nickname: '' });
+
+  // State to control visibility of the confirmation modal
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  // Hook for navigating to the next page
   const navigate = useNavigate();
 
-// Handler for changes in the nickname input field
-const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Updates the nickname state and validates it on each change
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    validateNickname(e.target.value); // Revalidate nickname on change
+    validateNickname(e.target.value); // Validate nickname as user types
   };
-  
-  // Handler for changes in the phone input field
-const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value);
-    validatePhone(e.target.value); // Revalidate phone on change
-  };
-  
 
-  // Validation function for nickname input
-const validateNickname = (value: string) => {
+  // Validation function to check nickname requirements
+  const validateNickname = (value: string) => {
     if (!value) {
-      // Error if nickname is empty
+      // Set error if nickname is empty
       setErrors((prev) => ({ ...prev, nickname: 'Nickname is required' }));
     } else if (value.split(' ').length > 1) {
-      // Error if nickname is more than one word
+      // Set error if nickname contains spaces
       setErrors((prev) => ({ ...prev, nickname: 'Nickname should be one word' }));
     } else if (value.length > 20) {
-      // Error if nickname exceeds 20 characters
+      // Set error if nickname exceeds 20 characters
       setErrors((prev) => ({ ...prev, nickname: 'Nickname must be 20 characters or less' }));
     } else {
-      // Clear error if all conditions are met
+      // Clear error if nickname is valid
       setErrors((prev) => ({ ...prev, nickname: '' }));
     }
   };
 
-  // Validation function for phone number input
-const validatePhone = (value: string) => {
-    const phoneRegex = /^\d{3}-\d{3}-\d{4}$/; // Pattern for 000-000-0000 format
-    if (!phoneRegex.test(value)) {
-      // Error if phone number does not match format
-      setErrors((prev) => ({ ...prev, phone: 'Phone must be in the format 000-000-0000' }));
-    } else {
-      // Clear error if format is correct
-      setErrors((prev) => ({ ...prev, phone: '' }));
-    }
-  };
+  // Form submission handler; validates nickname and shows confirmation modal
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevents page reload on form submission
 
-// Form submission handler
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent page reload on form submit
-    
-    // Inline validation to ensure fields are not empty or invalid
-    const nicknameIsValid = nickname && nickname.split(' ').length === 1 && nickname.length <= 20;
-    const phoneIsValid = /^\d{3}-\d{3}-\d{4}$/.test(phone);
-    
-    // Update errors if validation fails
-    if (!nicknameIsValid) {
-      setErrors((prev) => ({ ...prev, nickname: 'Nickname is required and should be a single word with up to 20 characters' }));
-    }
-    if (!phoneIsValid) {
-      setErrors((prev) => ({ ...prev, phone: 'Phone must be in the format 000-000-0000' }));
-    }
-    
-    // Prevent submission if either field is invalid
-    if (!nicknameIsValid || !phoneIsValid) {
+    // Validate nickname before showing confirmation modal
+    validateNickname(nickname);
+
+    // Stop submission if there are validation errors
+    if (errors.nickname) {
       return;
     }
-  
-    // If no validation errors, log the submitted data (or handle it as needed)
-    console.log("Form submitted:", { nickname, phone });
-  
-    // Navigate to the next page, e.g., /confirmation
-    navigate('/next-page');
+
+    // Show confirmation modal if nickname is valid
+    setShowModal(true);
+  };
+
+  // Handles user confirmation in the modal and navigates to the next page
+  const handleConfirm = () => {
+    setShowModal(false); // Close the modal
+    navigate('/authentication'); // Navigate to the next page
+  };
+
+  // Handles cancellation in the modal, keeping the user on the same page
+  const handleCancel = () => {
+    setShowModal(false); // Just close the modal without navigating
   };
 
   return (
     <div className="user-info-form">
-      <h1 className="user-info-title">Enter Your Details</h1>
+      <h1 className="user-info-title">Choose Your Nickname</h1>
       <form onSubmit={handleSubmit}>
         
         {/* Nickname input field */}
@@ -98,23 +79,23 @@ const handleSubmit = (e: React.FormEvent) => {
           onChange={handleNicknameChange}
           className="user-info-input"
         />
+        {/* Display error message for nickname if validation fails */}
         {errors.nickname && <p className="user-info-error">{errors.nickname}</p>}
 
-        {/* Phone number input field */}
-        <label className="user-info-label">Phone Number:</label>
-        <input
-          type="text"
-          value={phone}
-          onChange={handlePhoneChange}
-          className="user-info-input"
-        />
-        {errors.phone && <p className="user-info-error">{errors.phone}</p>}
-
-        {/* Submit button */}
-        <button type="submit" className="user-info-button" disabled={!!errors.nickname || !!errors.phone}>
-          Submit
+        {/* Submit button triggers validation and opens the confirmation modal */}
+        <button type="submit" className="user-info-button" disabled={!!errors.nickname}>
+          Next
         </button>
       </form>
+
+      {/* Confirmation modal for nickname approval */}
+      {showModal && (
+        <ConfirmationModal
+          message={`Are you sure you want to use the nickname "${nickname}"?`}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
 };

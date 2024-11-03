@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Queue from './pages/Queue';
 import NotFound from './pages/NotFound';
 import UserInfo from './pages/UserInfo/UserInfoForm';
+import SignIn from './pages/SignIn/SignIn';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/queue" element={<Queue />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/selected-location" element={<UserInfo />} />
+        <Route path="/sign-in" element={<SignIn />} />
       </Routes>
     </>
   );

@@ -4,7 +4,7 @@ import PlayerList from './PlayerList';
 
 const CurrentState: React.FC = () => {
   // Defining constants for data threshold and polling time
-  const DATA_THRESHOLD_TIME = 5 * 60 * 1000;  // 5 minutes
+  const DATA_THRESHOLD_TIME = 3 * 60 * 1000;  // 3 minutes
   const POLLING_TIME = 20 * 1000;  // 20 seconds
 
   // Accessing location/nickname information through local storage

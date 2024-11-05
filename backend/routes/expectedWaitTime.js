@@ -21,7 +21,7 @@ router.post('/expectedWaitTime', async (req, res) => {
         const expectedWaitTime = queuePlayersCount * 30;
 
         // Send response back with the expected wait time.
-        res.status(200).send({ expectedWaitTime: expectedWaitTime });
+        res.status(200).json({ expectedWaitTime: expectedWaitTime });
 
     } catch (error) {
         // If an error occurs, send an error message.

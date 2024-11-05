@@ -63,8 +63,8 @@ router.post('/currentState', async (req, res) => {
     // Send response back to client with updated player arrays
     res.status(200).json({
       updateRequired: true,
-      activePlayers,
-      queuePlayers
+      activePlayers: activePlayers,
+      queuePlayers: queuePlayers
     });
 
   } catch (error) {

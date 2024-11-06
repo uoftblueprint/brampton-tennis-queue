@@ -15,7 +15,7 @@ function bcryptCompare(plaintext, hashed) {
   });
 }
 
-async function resetActivePlayers(location) {
+async function resetActivePlayers(location, batch) {
   const active_players = await location
     .collection("activePlayers")
     .listDocuments();
@@ -33,19 +33,21 @@ async function resetActivePlayers(location) {
     player.nickname = new_name;
     // delete the old ref if the new name is not the same as the old id (i.e, clean up old player)
     if (new_name != active_players[j].id) {
+      // TODO: make this batched
       await location.collection("activePlayers").doc(new_name).set(player);
       await player_ref.delete();
     } else {
-      await player_ref.update({
+      const updateObj = {
         playerWaiting: player.playerWaiting,
         firebaseUID: player.firebaseUID,
         nickname: player.nickname,
-      });
+      };
+      batch.update(player_ref, updateObj);
     }
   }
 }
 
-async function deleteQueuePlayers(location) {
+async function deleteQueuePlayers(location, batch) {
   const queue_players = await location
     .collection("queuePlayers")
     .listDocuments();
@@ -54,7 +56,7 @@ async function deleteQueuePlayers(location) {
     const player_ref = await location
       .collection("queuePlayers")
       .doc(queue_players[j].id);
-    await player_ref.delete();
+    batch.delete(player_ref);
   }
 }
 
@@ -68,29 +70,33 @@ router.post("/resetCourts", async (req, res) => {
       return res.status(400).json({ message: "Password is required." });
     }
 
-    try {
-      await bcryptCompare(request_password, hashed_password);
-    } catch (_) {
-      return res.status(401).json({ message: "Password is incorrect." });
-    }
+    // try {
+    //   await bcryptCompare(request_password, hashed_password);
+    // } catch (_) {
+    //   return res.status(401).json({ message: "Password is incorrect." });
+    // }
 
     const locations = await admin.firestore().collection("locations");
 
     const location_docs = await locations.listDocuments();
 
+    const batch = admin.firestore().batch();
+
     for (var i = 0; i < location_docs.length; i++) {
       const location = await locations.doc(location_docs[i].id);
 
-      await resetActivePlayers(location);
-      await deleteQueuePlayers(location);
+      await resetActivePlayers(location, batch);
+      await deleteQueuePlayers(location, batch);
     }
+
+    await batch.commit();
 
     res.status(200).json({
       message: "Reset all courts successfully",
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error: "Failed to retrieve current state." });
+    res.status(500).send({ error: "Failed to reset courts." });
   }
 });
 

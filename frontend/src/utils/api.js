@@ -38,33 +38,36 @@ export const subscribeToCurrentState = (location, onUpdate) => {
   const activeQuery = query(activePlayersRef, orderBy('courtNumber'));
   const queueQuery = query(queuePlayersRef, orderBy('timeJoinedQueue'));
 
+  let activePlayers = [];
+  let queuePlayers = [];
+
   // Listener for active players
   const activeListener = onSnapshot(
     activeQuery,
     (snapshot) => {
-      const activePlayersList = snapshot.docs.map((doc) => doc.data().nickname);
-
-      // Nested listener for queue players
-      const queueListener = onSnapshot(
-        queueQuery,
-        (snapshot) => {
-          const queuePlayersList = snapshot.docs.map((doc) => doc.data().nickname);
-          
-          // Call onUpdate with both lists together
-          onUpdate({ activePlayersList, queuePlayersList });
-        },
-        (error) => {
-          console.error("Error in queue players listener:", error);
-        }
-      );
+      activePlayers = snapshot.docs.map((doc) => doc.data().nickname);
+      onUpdate({ activePlayersList: activePlayers,  queuePlayersList: queuePlayers});
     },
     (error) => {
       console.error("Error in active players listener:", error);
     }
   );
 
+  // Listener for queue players
+  const queueListener = onSnapshot(
+    queueQuery,
+    (snapshot) => {
+      queuePlayers = snapshot.docs.map((doc) => doc.data().nickname);
+      onUpdate({ activePlayersList: activePlayers,  queuePlayersList: queuePlayers});
+    },
+    (error) => {
+      console.error("Error in queue players listener:", error);
+    }
+  );
+
   // Return combined unsubscribe function for both listeners
   return () => {
     activeListener();
+    queueListener();
   };
 };

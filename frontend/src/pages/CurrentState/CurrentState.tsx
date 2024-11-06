@@ -56,7 +56,10 @@ const CurrentState: React.FC = () => {
       setActivePlayers(activePlayersList);
       setQueuePlayers(queuePlayersList);
 
-      localStorage.setItem('playerData', JSON.stringify({ activePlayersList, queuePlayersList }));
+      localStorage.setItem('playerData', JSON.stringify({
+        activePlayersList: activePlayersList,
+        queuePlayersList: queuePlayersList
+      }));
       localStorage.setItem('lastCheckTime', new Date().toISOString());
     };
 
@@ -88,7 +91,7 @@ const CurrentState: React.FC = () => {
       }
     };
 
-    // On page render: load cached data, and call update method if cache beyond expiry threshold
+    // On page render: load cached data, and handle update/cache expiry timer
     checkAndLoadCachedData();
 
     // Handle page activity status change and update listening process

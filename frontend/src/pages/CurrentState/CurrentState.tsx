@@ -1,90 +1,112 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { fetchCurrentState } from '../../utils/api';
+import { fetchCurrentState, subscribeToCurrentState } from '../../utils/api';
 import PlayerList from './PlayerList';
 
 const CurrentState: React.FC = () => {
-  // Defining constants for data threshold and polling time
-  const DATA_THRESHOLD_TIME = 3 * 60 * 1000;  // 3 minutes
-  const POLLING_TIME = 20 * 1000;  // 20 seconds
+  // Defining constant for cache expiry threshold and update method
+  const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
+  const POLLING_INTERVAL = 20 * 1000;  			 // 20 seconds
+  const UPDATE_METHOD = 'LISTENER';  				 // Update method: POLLING or LISTENER
 
   // Accessing location/nickname information through local storage
   const location = localStorage.getItem('selectedLocation') || 'Cassie Campbell';
   const nickname = localStorage.getItem('nickname') || 'User';
 
-  // Defining variables for active and queue players
-  const [activePlayers, setActivePlayers] = useState([]);
-  const [queuePlayers, setQueuePlayers] = useState([]);
-  const intervalId = useRef(null);  // Use ref for polling interval ID
+  // Defining variables for active and queue players, and update unsubscribe function
+  const [activePlayers, setActivePlayers] = useState<string[]>([]);
+  const [queuePlayers, setQueuePlayers] = useState<string[]>([]);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const scheduledUpdateRef = useRef<(() => void) | null>(null);  // Cache expiry timer
 
   // Defining use effect to sync data
   useEffect(() => {
-    // Define async function to check for new data
-    const checkAndFetchData = async () => {
-      // Check for cached data
-      const cachedPlayers = JSON.parse(localStorage.getItem('tennisQueue-playerData'));
-      const cachedTimestamp = localStorage.getItem('tennisQueue-lastCheckTime');
-
-      // Determine cache age
+  	// Function to check and load data from cache
+    const checkAndLoadCachedData = () => {
+    	// Getting cached data
+      const cachedPlayers = JSON.parse(localStorage.getItem('playerData'));
+      const cachedTimestamp = localStorage.getItem('lastCheckTime');
       const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
-      let updateRequired = true;  // Default to true to initiate fetch
 
-      // Use cached data if it's within threshold
-      if (cachedPlayers && cacheAge && cacheAge < DATA_THRESHOLD_TIME) {
+      // Use cached data by default
+      if (cachedPlayers) {
         setActivePlayers(cachedPlayers.activePlayersList);
         setQueuePlayers(cachedPlayers.queuePlayersList);
-        updateRequired = false;
       }
 
-      // If the data is not fresh or if there's no cached data, fetch the current state
-      if (updateRequired) {
-        // Fetch current state from backend
-        const fetchedData = await fetchCurrentState(location, cachedTimestamp);
-        if (fetchedData && fetchedData.updateRequired) {
-          // Update state with fetched data
-          setActivePlayers(fetchedData.activePlayers);
-          setQueuePlayers(fetchedData.queuePlayers);
-
-          // Update local storage with new data and check timestamp
-          localStorage.setItem('tennisQueue-playerData', JSON.stringify(
-            { activePlayersList: fetchedData.activePlayers, queuePlayersList: fetchedData.queuePlayers }
-          ));
-        }
-        localStorage.setItem('tennisQueue-lastCheckTime', new Date().toISOString());
-      }
-    };
-
-    // Start polling when page active
-    const startPolling = () => {
-      intervalId.current = setInterval(checkAndFetchData, POLLING_TIME);
-    };
-
-    // Shut down polling when page inactive
-    const stopPolling = () => {
-      if (intervalId.current) {
-        clearInterval(intervalId.current);
-        intervalId.current = null;
+      // If data outdated, call update function
+      if (!cacheAge || cacheAge >= CACHE_EXPIRY_THRESHOLD) {
+      	if (UPDATE_METHOD === 'LISTENER') {
+      		// Start Firestore listener
+      		unsubscribeRef.current = subscribeToCurrentState(location, handleUpdate);
+      	} else {
+      		// Call current state for initial data
+      		callCurrentState();
+      		// Start polling interval
+      		unsubscribeRef.current = setInterval(callCurrentState, POLLING_INTERVAL);
+      	}
+      } else {
+      	// Start timer to check cache expiry if user stays on page
+      	const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
+      	scheduledUpdateRef.current = setTimeout(checkAndLoadCachedData, timeTillCacheExpiry);
       }
     };
 
-    // Handle page activity status change and update polling process
+    // Define the update handler for data changes
+    const handleUpdate = ({ activePlayersList, queuePlayersList }) => {
+      setActivePlayers(activePlayersList);
+      setQueuePlayers(queuePlayersList);
+
+      localStorage.setItem('playerData', JSON.stringify({ activePlayersList, queuePlayersList }));
+      localStorage.setItem('lastCheckTime', new Date().toISOString());
+    };
+
+    // Define the function to call the current state endpoint
+    const callCurrentState = async () => {
+    	const cachedTimestamp = localStorage.getItem('lastCheckTime');
+    	const fetchedData = await fetchCurrentState(location, cachedTimestamp);
+      if (fetchedData && fetchedData.updateRequired) {
+      	handleUpdate({ activePlayersList: fetchedData.activePlayers, queuePlayersList: fetchedData.queuePlayers });
+      }
+      localStorage.setItem('lastCheckTime', new Date().toISOString());
+    }
+
+    const stopUpdating = () => {
+		  // Stop active data updates (listener or polling)
+		  if (unsubscribeRef.current) {
+		    if (UPDATE_METHOD === 'LISTENER') {
+		      unsubscribeRef.current();  // unsubscribe listener
+		    } else {
+		      clearInterval(unsubscribeRef.current);  // clear polling interval
+		    }
+		    unsubscribeRef.current = null;
+		  }
+
+		  // Stop cache expiry timer
+		  if (scheduledUpdateRef.current) {
+		    clearTimeout(scheduledUpdateRef.current);  // clear scheduled refresh timeout
+		    scheduledUpdateRef.current = null;
+		  }
+		};
+
+    // On page render: load cached data, and call update method if cache beyond expiry threshold
+    checkAndLoadCachedData();
+
+    // Handle page activity status change and update listening process
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        startPolling();
+        checkAndLoadCachedData();
       } else {
-        stopPolling();
+        stopUpdating();
       }
     };
 
-    // Initial check and set up visibility listener
-    checkAndFetchData(); // Initial data fetch
+    // Setup visibility listener and cleanup on unmount
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Cleanup on unmount
     return () => {
-      stopPolling();
+      stopUpdating();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
+  }, [location]);
 
   return (
     <div className="current-state">

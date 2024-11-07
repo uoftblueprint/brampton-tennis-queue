@@ -31,19 +31,12 @@ async function resetActivePlayers(location, batch) {
     player.playerWaiting = false;
     player.firebaseUID = new_name;
     player.nickname = new_name;
-    // delete the old ref if the new name is not the same as the old id (i.e, clean up old player)
-    if (new_name != active_players[j].id) {
-      // TODO: make this batched
-      await location.collection("activePlayers").doc(new_name).set(player);
-      await player_ref.delete();
-    } else {
-      const updateObj = {
-        playerWaiting: player.playerWaiting,
-        firebaseUID: player.firebaseUID,
-        nickname: player.nickname,
-      };
-      batch.update(player_ref, updateObj);
-    }
+    const updateObj = {
+      playerWaiting: player.playerWaiting,
+      firebaseUID: player.firebaseUID,
+      nickname: player.nickname,
+    };
+    batch.update(player_ref, updateObj);
   }
 }
 

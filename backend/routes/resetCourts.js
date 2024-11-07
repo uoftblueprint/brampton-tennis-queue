@@ -20,24 +20,16 @@ async function resetActivePlayers(location, batch) {
     .collection("activePlayers")
     .listDocuments();
 
-  for (var j = 0; j < active_players.length; j++) {
-    const player_ref = await location
-      .collection("activePlayers")
-      .doc(active_players[j].id);
-    const player = await (await player_ref.get()).data();
-
-    const court_number = player.courtNumber;
+  active_players.forEach((playerRef) => {
+    const court_number = parseInt(playerRef.id.replace("Court", ""));
     const new_name = "Empty" + court_number.toString();
-    player.playerWaiting = false;
-    player.firebaseUID = new_name;
-    player.nickname = new_name;
     const updateObj = {
-      playerWaiting: player.playerWaiting,
-      firebaseUID: player.firebaseUID,
-      nickname: player.nickname,
+      playerWaiting: false,
+      firebaseUID: new_name,
+      nickname: new_name,
     };
-    batch.update(player_ref, updateObj);
-  }
+    batch.set(playerRef, updateObj, { merge: true });
+  });
 }
 
 async function deleteQueuePlayers(location, batch) {
@@ -45,12 +37,9 @@ async function deleteQueuePlayers(location, batch) {
     .collection("queuePlayers")
     .listDocuments();
 
-  for (var j = 0; j < queue_players.length; j++) {
-    const player_ref = await location
-      .collection("queuePlayers")
-      .doc(queue_players[j].id);
-    batch.delete(player_ref);
-  }
+  queue_players.forEach((playerRef) => {
+    batch.delete(playerRef);
+  });
 }
 
 // Reset Courts Endpoint
@@ -76,10 +65,8 @@ router.post("/resetCourts", async (req, res) => {
     const batch = admin.firestore().batch();
 
     for (var i = 0; i < location_docs.length; i++) {
-      const location = await locations.doc(location_docs[i].id);
-
-      await resetActivePlayers(location, batch);
-      await deleteQueuePlayers(location, batch);
+      await resetActivePlayers(location_docs[i], batch);
+      await deleteQueuePlayers(location_docs[i], batch);
     }
 
     await batch.commit();

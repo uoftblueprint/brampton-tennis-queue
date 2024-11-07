@@ -1,18 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { fetchCurrentState, subscribeToCurrentState } from '../../utils/api';
+import debounce from 'lodash.debounce';  // Debounce method
+import { fetchCurrentState, subscribeToLocation } from '../../utils/api';
 import PlayerList from './PlayerList';
 
 const CurrentState: React.FC = () => {
-  // Defining constant for cache expiry threshold and update method
+  // Defining constant for cache expiry threshold
   const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
-  const POLLING_INTERVAL = 20 * 1000;        // 20 seconds
-  const UPDATE_METHOD = 'LISTENER';          // Update method: POLLING or LISTENER
 
   // Accessing location/nickname information through local storage
   const location = localStorage.getItem('selectedLocation') || 'Cassie Campbell';
   const nickname = localStorage.getItem('nickname') || 'User';
 
-  // Defining variables for active and queue players, and update unsubscribe function
+  // Defining variables for active and queue players, and unsubscribe functions
   const [activePlayers, setActivePlayers] = useState<string[]>([]);
   const [queuePlayers, setQueuePlayers] = useState<string[]>([]);
   const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -35,15 +34,8 @@ const CurrentState: React.FC = () => {
 
       // If data outdated, call update function
       if (!cacheAge || cacheAge >= CACHE_EXPIRY_THRESHOLD) {
-        if (UPDATE_METHOD === 'LISTENER') {
           // Start Firestore listener
-          unsubscribeRef.current = subscribeToCurrentState(location, handleUpdate);
-        } else {
-          // Call current state for initial data
-          callCurrentState();
-          // Start polling interval
-          unsubscribeRef.current = setInterval(callCurrentState, POLLING_INTERVAL);
-        }
+          unsubscribeRef.current = subscribeToLocation(location, callCurrentState);
       } else {
         // Start timer to check cache expiry if user stays on page
         const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
@@ -60,33 +52,29 @@ const CurrentState: React.FC = () => {
         activePlayersList: activePlayersList,
         queuePlayersList: queuePlayersList
       }));
-      localStorage.setItem('lastCheckTime', new Date().toISOString());
     };
 
     // Define the function to call the current state endpoint
     const callCurrentState = async () => {
       const cachedTimestamp = localStorage.getItem('lastCheckTime');
       const fetchedData = await fetchCurrentState(location, cachedTimestamp);
+      localStorage.setItem('lastCheckTime', new Date().toISOString());
       if (fetchedData && fetchedData.updateRequired) {
         handleUpdate({ activePlayersList: fetchedData.activePlayers, queuePlayersList: fetchedData.queuePlayers });
       }
-      localStorage.setItem('lastCheckTime', new Date().toISOString());
-    }
+    };
 
+    // Define the function to stop all update processes
     const stopUpdating = () => {
-      // Stop active data updates (listener or polling)
+      // Stop Firestore listener
       if (unsubscribeRef.current) {
-        if (UPDATE_METHOD === 'LISTENER') {
-          unsubscribeRef.current();  // unsubscribe listener
-        } else {
-          clearInterval(unsubscribeRef.current);  // clear polling interval
-        }
+        unsubscribeRef.current();
         unsubscribeRef.current = null;
       }
 
       // Stop cache expiry timer
       if (scheduledUpdateRef.current) {
-        clearTimeout(scheduledUpdateRef.current);  // clear scheduled refresh timeout
+        clearTimeout(scheduledUpdateRef.current);
         scheduledUpdateRef.current = null;
       }
     };
@@ -95,13 +83,9 @@ const CurrentState: React.FC = () => {
     checkAndLoadCachedData();
 
     // Handle page activity status change and update listening process
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        checkAndLoadCachedData();
-      } else {
-        stopUpdating();
-      }
-    };
+    const handleVisibilityChange = debounce(() => {
+      document.visibilityState === 'visible' ? checkAndLoadCachedData() : stopUpdating();
+    }, 300);  // Debounce timer: 300ms
 
     // Setup visibility listener and cleanup on unmount
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -109,7 +93,7 @@ const CurrentState: React.FC = () => {
       stopUpdating();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [location]);
+  }, []);
 
   return (
     <div className="current-state">

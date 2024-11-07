@@ -6,27 +6,28 @@ const admin = require('firebase-admin');
 router.post('/currentState', async (req, res) => {
   try {
     // Extract location and last check time from the request body
-    const { location, lastCheckTime } = req.body;
+    const { location, userLastCheckTime } = req.body;
     if (!location) {
       return res.status(400).json({ message: 'Location is required.' });
     }
 
     // Check whether the user provided a last check timestamp
-    if (lastCheckTime) {
+    if (userLastCheckTime) {
       // Retrieve the last update time for the given location
       const locationSnapshot = await admin.firestore()
         .collection('locations')
         .doc(location)
         .get();
 
-      // Check if location data exists
+      // Check if location data exists and extract location update time
       if (!locationSnapshot.exists) {
         return res.status(404).json({ message: 'Invalid location.' });
       }
       const lastUpdateTime = locationSnapshot.data().lastUpdateTime.toMillis();
 
       // Compare user's last check time against the location's last update time
-      if (lastUpdateTime && lastUpdateTime <= lastCheckTime) {
+      userLastCheckTimeMillis = new Date(userLastCheckTime).getTime();
+      if (lastUpdateTime && lastUpdateTime <= userLastCheckTimeMillis) {
         return res.status(200).json({
           updateRequired: false
         });

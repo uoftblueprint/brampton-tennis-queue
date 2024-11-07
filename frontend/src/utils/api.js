@@ -1,7 +1,10 @@
 import { db } from '../firebase';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 const BACKEND_API = 'http://localhost:5001';
+
+
+// ** UTILITY FUNCTIONS TO CALL BACKEND ENDPOINTS **
 
 // Fetch data from /currentState endpoint
 export const fetchCurrentState = async (locationName, timestamp = null, retries = 3, delay = 500) => {
@@ -13,7 +16,7 @@ export const fetchCurrentState = async (locationName, timestamp = null, retries 
       },
       body: JSON.stringify({
         location: locationName,
-        lastCheckTime: timestamp,
+        userLastCheckTime: timestamp,
       }),
     });
     if (!response.ok) throw new Error('Failed to retrieve current state.');
@@ -21,7 +24,7 @@ export const fetchCurrentState = async (locationName, timestamp = null, retries 
     return data;
   } catch (error) {
     if (retries > 0) {
-      console.warn(`Retrying fetchCurrentState (${retries} retries left)...`);
+      console.log(`Retrying fetchCurrentState (${retries} retries left)...`);
       await new Promise(res => setTimeout(res, delay));  // Exponential backoff
       return await fetchCurrentState(locationName, timestamp, retries - 1, delay * 2);  // Up to 3 retries
     }
@@ -30,44 +33,41 @@ export const fetchCurrentState = async (locationName, timestamp = null, retries 
   }
 };
 
-// Subscribe to Firestore snapshots for active and queue players
-export const subscribeToCurrentState = (location, onUpdate) => {
-  const activePlayersRef = collection(db, 'locations', location, 'activePlayers');
-  const queuePlayersRef = collection(db, 'locations', location, 'queuePlayers');
 
-  const activeQuery = query(activePlayersRef, orderBy('courtNumber'));
-  const queueQuery = query(queuePlayersRef, orderBy('timeJoinedQueue'));
+// ** UTILITY FUNCTIONS TO CREATE FIRESTORE LISTENER **
 
-  let activePlayers = [];
-  let queuePlayers = [];
+// Subscribe to Firestore snapshot for given location document
+export const subscribeToLocation = (location, callCurrentState) => {
+  // Create reference to location document and store last update timestamp
+  const locationRef = doc(db, 'locations', location);
+  let lastProcessedUpdateTime = null;
 
-  // Listener for active players
-  const activeListener = onSnapshot(
-    activeQuery,
-    (snapshot) => {
-      activePlayers = snapshot.docs.map((doc) => doc.data().nickname);
-      onUpdate({ activePlayersList: activePlayers,  queuePlayersList: queuePlayers});
+  // Listener function
+  const locationListener = onSnapshot(
+    locationRef,
+    (docSnapshot) => {
+      if (!docSnapshot.exists()) {
+        console.error("Location document does not exist");
+        return;
+      }
+
+      // Get new update time and return if snapshot update time hasn't changed
+      const newUpdateTime = docSnapshot.data().lastUpdateTime.toMillis();
+      if (lastProcessedUpdateTime && newUpdateTime <= lastProcessedUpdateTime) {
+        return;
+      }
+
+      // Update last processed update time and call endpoint
+      lastProcessedUpdateTime = newUpdateTime;
+      callCurrentState();
     },
     (error) => {
-      console.error("Error in active players listener:", error);
+      console.error("Error in location listener: ", error);
     }
   );
 
-  // Listener for queue players
-  const queueListener = onSnapshot(
-    queueQuery,
-    (snapshot) => {
-      queuePlayers = snapshot.docs.map((doc) => doc.data().nickname);
-      onUpdate({ activePlayersList: activePlayers,  queuePlayersList: queuePlayers});
-    },
-    (error) => {
-      console.error("Error in queue players listener:", error);
-    }
-  );
-
-  // Return combined unsubscribe function for both listeners
+  // Return unsubscribe function for listener
   return () => {
-    activeListener();
-    queueListener();
+    locationListener();
   };
 };

@@ -58,7 +58,8 @@ const UserInfo: React.FC = () => {
   // Handles user confirmation in the modal and navigates to the next page
   const handleConfirm = () => {
     setShowModal(false); // Close the modal
-    navigate('/sign-in', { state: { nickname } }); // Navigate to the next page
+    localStorage.setItem('nickname', nickname)
+    navigate('/sign-in'); // Navigate to the next page
   };
 
   // Handles cancellation in the modal, keeping the user on the same page

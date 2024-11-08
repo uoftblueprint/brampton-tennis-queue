@@ -25,7 +25,6 @@ app.use('/api', currentStateRoute);  // currentState endpoint
 app.use('/api', resetCourtsRoute);  // resetCourts endpoint
 app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
 
-
 // Default route
 app.get('/', (req, res) => {
   res.send('Brampton Tennis Queue API');

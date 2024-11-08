@@ -5,6 +5,7 @@ import Queue from './pages/Queue';
 import NotFound from './pages/NotFound';
 import UserInfo from './pages/UserInfo/UserInfoForm';
 import SignIn from './pages/SignIn/SignIn';
+import CurrentState from './pages/CurrentState/CurrentState';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/selected-location" element={<UserInfo />} />
         <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/current-state" element={<CurrentState />} />
       </Routes>
     </>
   );

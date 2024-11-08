@@ -19,6 +19,7 @@ const Login: React.FC = () => {
             console.log("User: ", user);
             // Set authenticated state to true
             setIsAuthenticated(true);
+            localStorage.setItem("userID", user.uid);
         }).catch((error) => {
             console.log("Error: ", error);
         });

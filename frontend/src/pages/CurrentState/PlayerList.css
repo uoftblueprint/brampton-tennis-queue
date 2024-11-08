@@ -1,0 +1,46 @@
+.player-list {
+  padding: 16px;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.courts {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.court {
+  background-color: #007bff;
+  color: white;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1;
+  margin: 0 5px; /* Space between courts */
+  text-align: center;
+  min-width: 60px; /* Ensures minimum size */
+}
+
+.queue-players {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.queue-players ul {
+  list-style: none;
+  padding: 0;
+}
+
+.queue-players li {
+  padding: 5px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.queue-players li:last-child {
+  border-bottom: none;
+}

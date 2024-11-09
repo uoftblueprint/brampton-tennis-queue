@@ -21,7 +21,7 @@ const leaveQueue = require('./routes/leaveQueue');
 
 // Use imported routes
 app.use('/api', currentStateRoute);  // currentState endpoint
-app.use('/leaveQueue', leaveQueue);  // leaveQueue endpoint
+app.use('/api', leaveQueue);  // leaveQueue endpoint
 
 // Default route
 app.get('/', (req, res) => {

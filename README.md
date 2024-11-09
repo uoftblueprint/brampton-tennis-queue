@@ -24,7 +24,7 @@ Please feel free to read more about the design of this application, [here](https
 6. `cd ../frontend`  
 7. `npm install`  
 8. Insert the `firebase-admin.json` file into the `backend` directory  
-9. Insert the `firebase.js` file into the `frontend/src` directory
+9. Insert the `firebase.ts` file into the `frontend/src` directory
 10. Ensure you can run the shell apps:
 11. `cd backend`
 12. `node index.js`

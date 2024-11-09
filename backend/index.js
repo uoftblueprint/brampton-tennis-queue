@@ -17,10 +17,14 @@ app.use(express.json());
 
 // Import routes
 const currentStateRoute = require('./routes/currentState');
+const resetCourtsRoute = require('./routes/resetCourts');
+const expectedWaitTimeRoute = require('./routes/expectedWaitTime');
 const leaveQueue = require('./routes/leaveQueue');
 
 // Use imported routes
 app.use('/api', currentStateRoute);  // currentState endpoint
+app.use('/api', resetCourtsRoute);  // resetCourts endpoint
+app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
 app.use('/api', leaveQueue);  // leaveQueue endpoint
 
 // Default route

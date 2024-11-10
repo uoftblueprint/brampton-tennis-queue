@@ -35,6 +35,30 @@ router.post('/currentState', async (req, res) => {
     }
 
     // Retrieve active player information for the given location
+    // Check whether the user provided a last check timestamp
+    if (userLastCheckTime) {
+      // Retrieve the last update time for the given location
+      const locationSnapshot = await admin.firestore()
+        .collection('locations')
+        .doc(location)
+        .get();
+
+      // Check if location data exists and extract location update time
+      if (!locationSnapshot.exists) {
+        return res.status(404).json({ message: 'Invalid location.' });
+      }
+      const lastUpdateTime = locationSnapshot.data().lastUpdateTime.toMillis();
+
+      // Compare user's last check time against the location's last update time
+      userLastCheckTimeMillis = new Date(userLastCheckTime).getTime();
+      if (lastUpdateTime && lastUpdateTime <= userLastCheckTimeMillis) {
+        return res.status(200).json({
+          updateRequired: false
+        });
+      }
+    }
+
+    // Retrieve active player information for the given location
     const activePlayersSnapshot = await admin.firestore()
       .collection('locations')
       .doc(location)
@@ -43,6 +67,7 @@ router.post('/currentState', async (req, res) => {
       .select('nickname', 'firebaseUID')
       .get();
 
+    // Retrieve queue player information for the given location
     // Retrieve queue player information for the given location
     const queuePlayersSnapshot = await admin.firestore()
       .collection('locations')

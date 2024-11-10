@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LocationSelection.css';
 
 const LocationSelection: React.FC = () => {
@@ -9,6 +10,9 @@ const LocationSelection: React.FC = () => {
   // Sample locations list
   const locations = ["Cassie Campbell", "Option 1", "Option 2"];
 
+  // Hook for navigating to the next page
+  const navigate = useNavigate();
+
   // Handle location change
   const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLocation(event.target.value);
@@ -18,8 +22,7 @@ const LocationSelection: React.FC = () => {
   // Handle the navigation button click
   const handleNextPage = () => {
     if (selectedLocation) {
-      //TODO: add navigation to next page
-      window.location.href = '/selected-location'; // Navigate to the selected location page
+      navigate('/user-info'); // Navigate to the next page
     } else {
       alert('Please select a location before proceeding.');
     }

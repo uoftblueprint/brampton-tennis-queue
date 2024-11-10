@@ -24,7 +24,7 @@ const CurrentState: React.FC = () => {
     const checkAndLoadCachedData = () => {
       // Getting cached data
       const cachedPlayers = JSON.parse(localStorage.getItem('playerData'));
-      const cachedTimestamp = localStorage.getItem('lastCheckTime');
+      const cachedTimestamp = localStorage.getItem('playerDataLastCheckTime');
       const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
 
       // Use cached data by default
@@ -42,6 +42,12 @@ const CurrentState: React.FC = () => {
         const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
         scheduledUpdateRef.current = setTimeout(checkAndLoadCachedData, timeTillCacheExpiry);
       }
+    };
+
+    // Define the function to update the in-queue status
+    const updateInQueueStatus = (fetchedData) => {
+      const isInQueue = fetchedData.queuePlayers.some(player => player.firebaseUID === firebaseUID);
+      localStorage.setItem("inQueue", isInQueue);
     };
 
     // Define the function to modify player name with ' (you)'
@@ -68,11 +74,12 @@ const CurrentState: React.FC = () => {
 
     // Define the function to call the current state endpoint
     const callCurrentState = async () => {
-      const cachedTimestamp = localStorage.getItem('lastCheckTime');
+      const cachedTimestamp = localStorage.getItem('playerDataLastCheckTime');
       const fetchedData = await fetchCurrentState(location, cachedTimestamp);
-      localStorage.setItem('lastCheckTime', new Date().toISOString());
+      localStorage.setItem('playerDataLastCheckTime', new Date().toISOString());
       if (fetchedData && fetchedData.updateRequired) {
         const updatedNames = extractPlayerNames(fetchedData);
+        updateInQueueStatus(fetchedData);
         handleUpdate({ activePlayersList: updatedNames.active, queuePlayersList: updatedNames.queue });
       }
     };

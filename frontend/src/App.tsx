@@ -4,7 +4,7 @@ import NotFound from './pages/NotFound';
 import LocationSelection from './pages/LocationSelection/LocationSelection'
 import UserInfo from './pages/UserInfo/UserInfoForm';
 import SignIn from './pages/SignIn/SignIn';
-import CurrentState from './pages/CurrentState/CurrentState';
+import ActiveView from './pages/ActiveView/ActiveView';
 
 function App() {
 
@@ -21,7 +21,7 @@ function App() {
         <Route path="/" element={<LocationSelection />} />
         <Route path="/user-info" element={<UserInfo />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/current-state" element={<CurrentState />} />
+        <Route path="/active-view" element={<ActiveView />} />
       </Routes>
     </>
   );

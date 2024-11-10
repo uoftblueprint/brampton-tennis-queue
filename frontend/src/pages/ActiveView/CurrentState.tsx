@@ -35,8 +35,8 @@ const CurrentState: React.FC = () => {
 
       // If data outdated, call update function
       if (!cacheAge || cacheAge >= CACHE_EXPIRY_THRESHOLD) {
-          // Start Firestore listener
-          unsubscribeRef.current = subscribeToLocation(location, callCurrentState);
+        // Start Firestore listener
+        unsubscribeRef.current = subscribeToLocation(location, callCurrentState);
       } else {
         // Start timer to check cache expiry if user stays on page
         const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
@@ -78,8 +78,10 @@ const CurrentState: React.FC = () => {
       const fetchedData = await fetchCurrentState(location, cachedTimestamp);
       localStorage.setItem('playerDataLastCheckTime', new Date().toISOString());
       if (fetchedData && fetchedData.updateRequired) {
-        const updatedNames = extractPlayerNames(fetchedData);
+        const updatedNames = updatePlayerNames(fetchedData);
         updateInQueueStatus(fetchedData);
+        // Dispatch event for queue change
+        window.dispatchEvent(new Event("inQueueStatus"));
         handleUpdate({ activePlayersList: updatedNames.active, queuePlayersList: updatedNames.queue });
       }
     };

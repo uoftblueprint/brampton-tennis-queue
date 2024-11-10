@@ -81,7 +81,7 @@ const CurrentState: React.FC = () => {
         const updatedNames = updatePlayerNames(fetchedData);
         updateInQueueStatus(fetchedData);
         // Dispatch event for queue change
-        window.dispatchEvent(new Event("storage"));
+        window.dispatchEvent(new Event("inQueueStatus"));
         handleUpdate({ activePlayersList: updatedNames.active, queuePlayersList: updatedNames.queue });
       }
     };

@@ -31,10 +31,10 @@ const ActiveView: React.FC = () => {
     handleQueueUpdate();
 
     // Event listener for changes in queue
-    window.addEventListener('storage', handleQueueUpdate);
+    window.addEventListener('inQueueStatus', handleQueueUpdate);
 
     return () => {
-      window.removeEventListener('storage', handleQueueUpdate);
+      window.removeEventListener('inQueueStatus', handleQueueUpdate);
     };
   }, []);
 

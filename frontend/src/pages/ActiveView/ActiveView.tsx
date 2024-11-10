@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import './ActiveView.css';
 import { leaveQueue } from '../../utils/api';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import CurrentState from './CurrentState';
 
 const ActiveView: React.FC = () => {
   // Accessing user information through local storage
   const location = localStorage.getItem('selectedLocation') || 'Cassie Campbell';
   const nickname = localStorage.getItem('nickname') || 'User';
-  const firebaseUID = localStorage.getItem('firebaseUID') || '123';
+  const firebaseUID = localStorage.getItem('firebaseUID');
 
-  // Hook for navigating to the next page
-  const navigate = useNavigate();
-
-  // If the user is not logged in, redirect them back to the home page
-  useEffect(() => {
-    const firebaseUID = localStorage.getItem('firebaseUID');
-    if (!firebaseUID) {
-      navigate('/');
-    }
-  }, [navigate]); 
+  // If the user is not logged in, redirect them back to the home page without loading CurrentState
+  if (!firebaseUID) {
+    return <Navigate to='/' />;
+  }
 
   // Set the button to visible if the user is logged in and in the queue
   const [leaveButtonVisible, setLeaveButtonVisible] = useState<boolean>(false);

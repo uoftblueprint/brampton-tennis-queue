@@ -25,8 +25,8 @@ const Login: React.FC = () => {
             console.log("User: ", user);
             // Set authenticated state to true
             setIsAuthenticated(true);
-            localStorage.setItem("userID", user.uid);
-            navigate('/current-state'); // Navigate to the next page
+            localStorage.setItem("firebaseUID", user.uid);
+            navigate('/active-view'); // Navigate to the next page
         }).catch((error) => {
             console.log("Error: ", error);
         });

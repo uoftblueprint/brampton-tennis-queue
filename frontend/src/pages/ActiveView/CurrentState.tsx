@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './CurrentState.css';
 import debounce from 'lodash.debounce';  // Debounce method
-import { fetchCurrentState, subscribeToLocation, leaveQueue } from '../../utils/api';
+import { fetchCurrentState, subscribeToLocation } from '../../utils/api';
 import PlayerList from './PlayerList';
 
 const CurrentState: React.FC = () => {
   // Defining constant for cache expiry threshold
   const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
 
-  // Accessing location/nickname information through local storage
+  // Accessing user information through local storage
   const location = localStorage.getItem('selectedLocation') || 'Cassie Campbell';
   const nickname = localStorage.getItem('nickname') || 'User';
-  const userID = localStorage.getItem('userID');
+  const firebaseUID = localStorage.getItem('firebaseUID') || '123';
 
   // Defining variables for active and queue players, and unsubscribe functions
   const [activePlayers, setActivePlayers] = useState<string[]>([]);
@@ -19,37 +18,13 @@ const CurrentState: React.FC = () => {
   const unsubscribeRef = useRef<(() => void) | null>(null);
   const scheduledUpdateRef = useRef<(() => void) | null>(null);  // Cache expiry timer
 
-  // Check if the user is in the queue (what if two users have the same nickname?)
-  // const joined = activePlayers.concat(queuePlayers).includes(nickname);
-
-  // Set the button to visible if the user is logged in and in the queue
-  // const [leaveButtonVisible, setLeaveButtonVisible] = useState<boolean>(!!userID && joined);
-  const [leaveButtonVisible, setLeaveButtonVisible] = useState<boolean>(!!userID);
-
-  const handleLeaveQueue = async () => {
-    try {
-      const data = await leaveQueue(location, userID);
-
-      if (data) {
-        setLeaveButtonVisible(false);
-        alert('You have successfully left the queue.');
-      } else {
-        alert('Failed to leave the queue. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error leaving queue:', error);
-      alert('An error occurred. Please try again later.');
-    }
-
-  }
-
   // Defining use effect to sync data
   useEffect(() => {
     // Function to check and load data from cache
     const checkAndLoadCachedData = () => {
       // Getting cached data
       const cachedPlayers = JSON.parse(localStorage.getItem('playerData'));
-      const cachedTimestamp = localStorage.getItem('lastCheckTime');
+      const cachedTimestamp = localStorage.getItem('playerDataLastCheckTime');
       const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
 
       // Use cached data by default
@@ -60,13 +35,30 @@ const CurrentState: React.FC = () => {
 
       // If data outdated, call update function
       if (!cacheAge || cacheAge >= CACHE_EXPIRY_THRESHOLD) {
-          // Start Firestore listener
-          unsubscribeRef.current = subscribeToLocation(location, callCurrentState);
+        // Start Firestore listener
+        unsubscribeRef.current = subscribeToLocation(location, callCurrentState);
       } else {
         // Start timer to check cache expiry if user stays on page
         const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
         scheduledUpdateRef.current = setTimeout(checkAndLoadCachedData, timeTillCacheExpiry);
       }
+    };
+
+    // Define the function to update the in-queue status
+    const updateInQueueStatus = (fetchedData) => {
+      const isInQueue = fetchedData.queuePlayers.some(player => player.firebaseUID === firebaseUID);
+      localStorage.setItem("inQueue", isInQueue);
+    };
+
+    // Define the function to modify player name with ' (you)'
+    const updatePlayerNames = (fetchedData) => {
+      const active = fetchedData.activePlayers.map(player => 
+        player.firebaseUID === firebaseUID ? `${player.nickname} (you)` : player.nickname
+      );
+      const queue = fetchedData.queuePlayers.map(player => 
+        player.firebaseUID === firebaseUID ? `${player.nickname} (you)` : player.nickname
+      );
+      return { active, queue };
     };
 
     // Define the update handler for data changes
@@ -82,11 +74,15 @@ const CurrentState: React.FC = () => {
 
     // Define the function to call the current state endpoint
     const callCurrentState = async () => {
-      const cachedTimestamp = localStorage.getItem('lastCheckTime');
+      const cachedTimestamp = localStorage.getItem('playerDataLastCheckTime');
       const fetchedData = await fetchCurrentState(location, cachedTimestamp);
-      localStorage.setItem('lastCheckTime', new Date().toISOString());
+      localStorage.setItem('playerDataLastCheckTime', new Date().toISOString());
       if (fetchedData && fetchedData.updateRequired) {
-        handleUpdate({ activePlayersList: fetchedData.activePlayers, queuePlayersList: fetchedData.queuePlayers });
+        const updatedNames = updatePlayerNames(fetchedData);
+        updateInQueueStatus(fetchedData);
+        // Dispatch event for queue change
+        window.dispatchEvent(new Event("storage"));
+        handleUpdate({ activePlayersList: updatedNames.active, queuePlayersList: updatedNames.queue });
       }
     };
 
@@ -122,18 +118,9 @@ const CurrentState: React.FC = () => {
   }, []);
 
   return (
-    <>
     <div className="current-state">
       <PlayerList activePlayers={activePlayers} queuePlayers={queuePlayers} />
     </div>
-    <div>
-      {leaveButtonVisible && (
-        <button className="leave-button" onClick={handleLeaveQueue}>
-          Leave Queue
-        </button>
-      )}
-    </div>
-    </>
   );
 };
 

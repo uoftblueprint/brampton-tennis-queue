@@ -8,33 +8,24 @@ router.post('/endSession', async (req, res) => {
     try {
         // Extract location and user UID from the request body
         const { location, uid } = req.body
-        if (!location || !uid) {
-            return res.status(400).json({ message: 'Location and UID are required.' });
+        if (!location || !uid || uid.toLowerCase().startsWith("empty")) {
+            return res.status(400).json({ message: 'Valid location and UID are required.' });
         }
 
-        // Check if the location document exists
-        const locationDoc = await admin.firestore()
-        .collection('locations')
-        .doc(location)
-        .get();
-
-        if (!locationDoc.exists) {
-        return res.status(404).json({ message: 'Location not found.' });
-        }
-    
-        // Locate and delete the user from the active players collection
+        // Reference to activePlayers
         const activePlayersRef = admin.firestore()
             .collection('locations')
             .doc(location)
             .collection('activePlayers');
-    
+
+        // Check if the player exists in activePlayers (if found, location is implicitly valid)
         const activePlayerSnapshot = await activePlayersRef
             .where('firebaseUID', '==', uid)
             .limit(1)
             .get();
-    
+
         if (activePlayerSnapshot.empty) {
-            return res.status(404).json({ message: 'Player not found in active players.' });
+            return res.status(404).json({ message: 'Player or location not found.' });
         }
     
         // Delete the player from active players

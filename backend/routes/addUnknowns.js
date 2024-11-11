@@ -80,8 +80,8 @@ router.post('/addUnknowns', async (req, res) => {
     res.status(200).send({ success: 'Updated court information.' });
 
   } catch (error) {
-    console.error('Error in currentState endpoint: ', error);
-    res.status(500).send({ error: 'Failed to retrieve current state.' });
+    console.error('Error in addUnknowns endpoint: ', error);
+    res.status(500).send({ error: 'Failed to add unknowns.' });
   }
 });
 

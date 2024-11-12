@@ -7,7 +7,7 @@ const admin = require('firebase-admin');
 router.post('/endSession', async (req, res) => {
     try {
         // Extract location and user UID from the request body
-        const { location, uid } = req.body
+        const { location, uid } = req.body;
         if (!location || !uid || uid.toLowerCase().startsWith("empty")) {
             return res.status(400).json({ message: 'Valid location and UID are required.' });
         }
@@ -30,7 +30,16 @@ router.post('/endSession', async (req, res) => {
     
         // Delete the player from active players
         const activePlayerDoc = activePlayerSnapshot.docs[0];
-        await activePlayersRef.doc(activePlayerDoc.id).delete();
+        const courtNumber = parseInt(activePlayerDoc.id.replace("Court", ""));
+        const newName = "Empty" + courtNumber.toString();
+        await activePlayersRef.doc(activePlayerDoc.id).set(
+            {
+              playerWaiting: false,
+              firebaseUID: newName,
+              nickname: newName,
+            },
+            { merge: true }
+          );
   
         // Call the advanceQueue endpoint to move the queue forward
         // await advanceQueue(location);

@@ -5,6 +5,7 @@ frontend/src/firebase.ts
 backend/firebase-admin.json
 
 # DS Store Files
+.DS_Store
 *.DS_Store
 
 # Node modules

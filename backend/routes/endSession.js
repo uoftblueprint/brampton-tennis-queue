@@ -7,8 +7,8 @@ const admin = require('firebase-admin');
 router.post('/endSession', async (req, res) => {
     try {
         // Extract location and user UID from the request body
-        const { location, uid } = req.body;
-        if (!location || !uid || uid.toLowerCase().startsWith("empty")) {
+        const { location, firebaseUID } = req.body;
+        if (!location || !firebaseUID || firebaseUID.toLowerCase().startsWith("empty")) {
             return res.status(400).json({ message: 'Valid location and UID are required.' });
         }
 
@@ -20,7 +20,7 @@ router.post('/endSession', async (req, res) => {
 
         // Check if the player exists in activePlayers (if found, location is implicitly valid)
         const activePlayerSnapshot = await activePlayersRef
-            .where('firebaseUID', '==', uid)
+            .where('firebaseUID', '==', firebaseUID)
             .limit(1)
             .get();
 

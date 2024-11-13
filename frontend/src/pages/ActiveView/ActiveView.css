@@ -1,0 +1,27 @@
+.leave-button {
+  padding: 12px 24px;
+  background-color: #ffcfcf; /* Primary red color */
+  color: black; /* Text color */
+  border: none; /* Remove default border */
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  font-weight: bold; /* Make text bold */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for background and scale */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  margin-top: 30px; /* Increased space above the button */
+  display: inline-block; /* Ensure proper button display */
+}
+
+/* Hover effect */
+.leave-button:hover {
+  background-color: #f2b6b6; /* Darker red on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+/* Active effect */
+.leave-button:active {
+  background-color: #f2a7a7; /* Even darker red when active */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Change shadow on click */
+  transform: translateY(1px); /* Slight depression effect on click */
+}

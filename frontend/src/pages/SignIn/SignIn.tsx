@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "./SignIn.css";
 
 const Login: React.FC = () => {
+    // Declare provider object for Google Auth
     const provider = new GoogleAuthProvider();
-    const location = useLocation();
-    const nickname = (location.state as { nickname?: string })?.nickname || 'User';
     
     // State to track if user is authenticated
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    // Accessing location/nickname information through local storage
+    const location = localStorage.getItem('selectedLocation') || 'Cassie Campbell';
+    const nickname = localStorage.getItem('nickname') || 'User';
+
+    // Hook for navigating to the next page
+    const navigate = useNavigate();
 
     const handleGoogleSignIn = () => {
         signInWithPopup(auth, provider)
@@ -19,6 +25,8 @@ const Login: React.FC = () => {
             console.log("User: ", user);
             // Set authenticated state to true
             setIsAuthenticated(true);
+            localStorage.setItem("firebaseUID", user.uid);
+            navigate('/active-view'); // Navigate to the next page
         }).catch((error) => {
             console.log("Error: ", error);
         });

@@ -30,9 +30,15 @@ const UserInfo: React.FC = () => {
     } else if (value.split(' ').length > 1) {
       // Set error if nickname contains spaces
       setErrors((prev) => ({ ...prev, nickname: 'Nickname should be one word' }));
-    } else if (value.length > 20) {
-      // Set error if nickname exceeds 20 characters
-      setErrors((prev) => ({ ...prev, nickname: 'Nickname must be 20 characters or less' }));
+    } else if (value.length > 10) {
+      // Set error if nickname exceeds 10 characters
+      setErrors((prev) => ({ ...prev, nickname: 'Nickname must be 10 characters or less' }));
+    } else if (value.toLowerCase().startsWith("empty")) {
+      setErrors((prev) => ({ ...prev, nickname: 'Nickname must not start with "empty"' }));
+    } else if (value.toLowerCase().startsWith("unknown")) {
+      setErrors((prev) => ({ ...prev, nickname: 'Nickname must not start with "unknown"' }));
+    } else if (!/^[a-zA-Z]+$/.test(value)) {
+      setErrors((prev) => ({ ...prev, nickname: 'Nickname must only contain letters' }));
     } else {
       // Clear error if nickname is valid
       setErrors((prev) => ({ ...prev, nickname: '' }));

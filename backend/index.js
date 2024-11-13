@@ -19,11 +19,13 @@ app.use(express.json());
 const currentStateRoute = require('./routes/currentState');
 const resetCourtsRoute = require('./routes/resetCourts');
 const expectedWaitTimeRoute = require('./routes/expectedWaitTime');
+const endSessionRoute = require('./routes/endSession');
 
 // Use imported routes
 app.use('/api', currentStateRoute);  // currentState endpoint
 app.use('/api', resetCourtsRoute);  // resetCourts endpoint
 app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
+app.use('/api', endSessionRoute);  // endSession endpoint
 
 // Default route
 app.get('/', (req, res) => {

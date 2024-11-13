@@ -7,8 +7,8 @@ router.post('/addUnknowns', async (req, res) => {
   try {
     // Extract location and occupied courts from the request body
     const { location, occupiedCourts } = req.body;
-    if (!location || !Array.isArray(occupiedCourts)) {
-      return res.status(400).json({ message: 'Location and occupied court information is required.' });
+    if (!location || !Array.isArray(occupiedCourts) || !occupiedCourts.every(court => typeof court === 'number')) {
+      return res.status(400).json({ message: 'Location and array of court numbers is required.' });
     }
 
     // Retrieve active court information for the given location
@@ -16,7 +16,6 @@ router.post('/addUnknowns', async (req, res) => {
       .collection('locations')
       .doc(location)
       .collection('activePlayers')
-      .orderBy('courtNumber')
       .get();
 
     // Check for empty active player snapshot (as always filled with Empty/Unknown/Player objects)
@@ -26,7 +25,7 @@ router.post('/addUnknowns', async (req, res) => {
 
     // Creating shuffled timestamp adjustments
     const now = new Date();
-    const adjustments = [-40, -30, -20, -10, 0];
+    const adjustments = occupiedCourts.map((_, index) => -10 * (index + 1));
     const timestamps = adjustments.map(seconds => {
       const adjustedTime = new Date(now);
       adjustedTime.setSeconds(now.getSeconds() + seconds);
@@ -37,41 +36,37 @@ router.post('/addUnknowns', async (req, res) => {
 
     // Update each document based on user information
     const batch = admin.firestore().batch();
-    activePlayersSnapshot.docs.forEach(doc => {
+    activePlayersSnapshot.forEach(doc => {
       const courtNumber = doc.data().courtNumber;
-      const isOccupied = occupiedCourts.includes(courtNumber);
-      const isEmptyCourt = doc.data().firebaseUID.startsWith('Empty');
+      const isPhysicallyOccupied = occupiedCourts.includes(courtNumber);
+      const isVirtuallyEmpty = doc.data().firebaseUID.startsWith('Empty');
 
-      // If court is occupied, check if it's shown as empty
-      if (isOccupied) {
-        if (isEmptyCourt) {
-          const newName = `Unknown${courtNumber}`;
-          const timestamp = timestamps[lastTimestampIdx];
-          lastTimestampIdx += 1;
+      // If court is physically occupied, check if it's virtually shown as empty
+      if (isPhysicallyOccupied && isVirtuallyEmpty) {
+        const newName = `Unknown${courtNumber}`;
+        const timestamp = timestamps[lastTimestampIdx];
+        lastTimestampIdx += 1;
 
-          const updateObj = {
-            playerWaiting: false,
-            firebaseUID: newName,
-            nickname: newName,
-            timeStartedPlay: timestamp,
-          };
+        const updateObj = {
+          playerWaiting: false,
+          firebaseUID: newName,
+          nickname: newName,
+          timeStartedPlay: timestamp,
+        };
 
-          batch.set(doc.ref, updateObj, { merge: true });
-        }
+        batch.set(doc.ref, updateObj, { merge: true });
 
-      // If court is empty, check if it's shown as occupied
-      } else {
-        if (!isEmptyCourt) {
-          const newName = `Empty${courtNumber}`;
+      // If court is physically empty, check if it's virtually shown as occupied
+      } else if (!isPhysicallyOccupied && !isVirtuallyEmpty) {
+        const newName = `Empty${courtNumber}`;
 
-          const updateObj = {
-            playerWaiting: false,
-            firebaseUID: newName,
-            nickname: newName,
-          };
+        const updateObj = {
+          playerWaiting: false,
+          firebaseUID: newName,
+          nickname: newName,
+        };
 
-          batch.set(doc.ref, updateObj, { merge: true });
-        }
+        batch.set(doc.ref, updateObj, { merge: true });
       }
     });
 

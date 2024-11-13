@@ -6,9 +6,10 @@ import ConfirmationModal from './ConfirmationModal';
 const UserInfo: React.FC = () => {
   // State for nickname input field
   const [nickname, setNickname] = useState<string>('');
+  const [groupSize, setGroupSize] = useState<string>('');
 
   // State for validation error messages
-  const [errors, setErrors] = useState<{ nickname: string }>({ nickname: '' });
+  const [errors, setErrors] = useState<{ nickname: string, groupSize: string }>({ nickname: '', groupSize: '' });
 
   // State to control visibility of the confirmation modal
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -22,8 +23,14 @@ const UserInfo: React.FC = () => {
     validateNickname(e.target.value); // Validate nickname as user types
   };
 
+  // Updates the group size state and validates it on each change
+  const handleGroupSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGroupSize(e.target.value);
+    validateGroupSize(e.target.value); // Validate nickname as user types
+  };
+
   // Validation function to check nickname requirements
-  const validateNickname = (value: string) => {
+  const validateNickname = (value: string): boolean => {
     if (!value) {
       // Set error if nickname is empty
       setErrors((prev) => ({ ...prev, nickname: 'Nickname is required' }));
@@ -42,7 +49,34 @@ const UserInfo: React.FC = () => {
     } else {
       // Clear error if nickname is valid
       setErrors((prev) => ({ ...prev, nickname: '' }));
+      return true;
     }
+    return false;
+  };
+
+  // Validation function to check nickname requirements
+  const validateGroupSize = (value: string): boolean => {
+    if (!value) {
+      // Set error if nickname is empty
+      setErrors((prev) => ({ ...prev, groupSize: 'Group size is required' }));
+      return false;
+    }
+    if (!/^(0|[1-9]\d*)$/.test(value)) {
+      // Set error if groupSize is not numeric
+      setErrors((prev) => ({ ...prev, groupSize: 'Group size must be a number' }));
+      return false;
+    }
+    const groupNum = Number(value);
+    console.log(groupNum);
+    if (groupNum < 2 || groupNum > 8) {
+      // Set errors if groupSize is not in the range [2, 8]
+      setErrors((prev) => ({ ...prev, groupSize: 'Group size must be between 2 and 8' }));
+      return false;
+    }
+
+    // Clear error if nickname is valid
+    setErrors((prev) => ({ ...prev, groupSize: '' }));
+    return true;
   };
 
   // Form submission handler; validates nickname and shows confirmation modal
@@ -50,10 +84,16 @@ const UserInfo: React.FC = () => {
     e.preventDefault(); // Prevents page reload on form submission
 
     // Validate nickname before showing confirmation modal
-    validateNickname(nickname);
+    // Stop submission if the validator fails, because the errors state will not update until
+    //  after the page resets
+    const nicknameValid = !validateNickname(nickname);
+    const groupSizeValid = !validateGroupSize(groupSize);
+    if (nicknameValid || groupSizeValid) {
+      return;
+    }
 
     // Stop submission if there are validation errors
-    if (errors.nickname) {
+    if (errors.nickname || errors.groupSize) {
       return;
     }
 
@@ -65,6 +105,7 @@ const UserInfo: React.FC = () => {
   const handleConfirm = () => {
     setShowModal(false); // Close the modal
     localStorage.setItem('nickname', nickname)
+    // we are explicitly choosing NOT to save groupSize to local storage
     navigate('/sign-in'); // Navigate to the next page
   };
 
@@ -75,7 +116,7 @@ const UserInfo: React.FC = () => {
 
   return (
     <div className="user-info-form">
-      <h1 className="user-info-title">Choose Your Nickname</h1>
+      <h1 className="user-info-title">Choose Your Nickname & Group Size</h1>
       <form onSubmit={handleSubmit}>
         
         {/* Nickname input field */}
@@ -89,8 +130,30 @@ const UserInfo: React.FC = () => {
         {/* Display error message for nickname if validation fails */}
         {errors.nickname && <p className="user-info-error">{errors.nickname}</p>}
 
+        <datalist id="groupSizes">
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+        </datalist>
+
+        {/* Group Size input field */}
+        <label className="user-info-label">Group size:</label>
+        <input
+          value={groupSize}
+          list="groupSizes"
+          autoComplete="on"
+          onChange={handleGroupSizeChange}
+          className="user-info-input"
+        />
+        {/* Display error message for nickname if validation fails */}
+        {errors.groupSize && <p className="user-info-error">{errors.groupSize}</p>}
+
         {/* Submit button triggers validation and opens the confirmation modal */}
-        <button type="submit" className="user-info-button" disabled={!!errors.nickname}>
+        <button type="submit" className="user-info-button" disabled={!!errors.nickname && !errors.groupSize}>
           Next
         </button>
       </form>

@@ -40,7 +40,7 @@ router.post('/currentState', async (req, res) => {
       .doc(location)
       .collection('activePlayers')
       .orderBy('courtNumber')
-      .select('nickname')
+      .select('nickname', 'firebaseUID')
       .get();
 
     // Retrieve queue player information for the given location
@@ -49,7 +49,7 @@ router.post('/currentState', async (req, res) => {
       .doc(location)
       .collection('queuePlayers')
       .orderBy('timeJoinedQueue')
-      .select('nickname')
+      .select('nickname', 'firebaseUID')
       .get();
 
     // Check for empty active player snapshot (as always filled with Empty/Unknown/Player objects)
@@ -57,9 +57,15 @@ router.post('/currentState', async (req, res) => {
       return res.status(404).json({ message: 'Invalid location.' });
     }
 
-    // Convert snapshots to arrays
-    const activePlayers = activePlayersSnapshot.docs.map(doc => doc.data().nickname);
-    const queuePlayers = queuePlayersSnapshot.docs.map(doc => doc.data().nickname);
+    // Convert snapshots to arrays with both nickname and firebase UID
+    const activePlayers = activePlayersSnapshot.docs.map(doc => ({
+      nickname: doc.data().nickname,
+      firebaseUID: doc.data().firebaseUID,
+    }));
+    const queuePlayers = queuePlayersSnapshot.docs.map(doc => ({
+      nickname: doc.data().nickname,
+      firebaseUID: doc.data().firebaseUID,
+    }));
 
     // Send response back to client with updated player arrays
     res.status(200).json({

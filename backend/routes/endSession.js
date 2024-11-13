@@ -6,40 +6,38 @@ const admin = require('firebase-admin');
 // End Session Endpoint
 router.post('/endSession', async (req, res) => {
     try {
-        // Extract location and user UID from the request body
+        // Extract location and firebaseUID from the request body
         const { location, firebaseUID } = req.body;
         if (!location || !firebaseUID || firebaseUID.toLowerCase().startsWith("empty")) {
-            return res.status(400).json({ message: 'Valid location and UID are required.' });
+            return res.status(400).json({ message: 'Location and Firebase UID are required.' });
         }
 
-        // Reference to activePlayers
-        const activePlayersRef = admin.firestore()
+        // Find active player with given firebaseUID
+        const activePlayerSnapshot = await admin.firestore()
             .collection('locations')
             .doc(location)
-            .collection('activePlayers');
-
-        // Check if the player exists in activePlayers (if found, location is implicitly valid)
-        const activePlayerSnapshot = await activePlayersRef
+            .collection('activePlayers')
             .where('firebaseUID', '==', firebaseUID)
             .limit(1)
             .get();
 
+        // Check for empty snapshot
         if (activePlayerSnapshot.empty) {
             return res.status(404).json({ message: 'Player or location not found.' });
         }
     
-        // Delete the player from active players
+        // Reset the properties of the active player document
         const activePlayerDoc = activePlayerSnapshot.docs[0];
         const courtNumber = parseInt(activePlayerDoc.id.replace("Court", ""));
         const newName = "Empty" + courtNumber.toString();
-        await activePlayersRef.doc(activePlayerDoc.id).set(
+        await activePlayerDoc.ref.set(
             {
-              playerWaiting: false,
-              firebaseUID: newName,
-              nickname: newName,
+                playerWaiting: false,
+                firebaseUID: newName,
+                nickname: newName,
             },
             { merge: true }
-          );
+        );
   
         // Call the advanceQueue endpoint to move the queue forward
         // await advanceQueue(location);

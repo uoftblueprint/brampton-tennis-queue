@@ -5,30 +5,29 @@ const admin = require('firebase-admin');
 // Leave Queue Endpoint
 router.post('/leaveQueue', async (req, res) => {
     try {
+        // Extract location and firebaseUID from the request body
         const { location, firebaseUID } = req.body;
-
-        // Validate input
         if (!location || !firebaseUID) {
             return res.status(400).json({ message: 'Location and Firebase UID are required.' });
         }
 
-        // Reference to the player's document in the queue collection
-        const queueRef = admin.firestore()
+        // Find queue player with given firebaseUID
+        const queuePlayerSnapshot = await admin.firestore()
             .collection('locations')
             .doc(location)
             .collection('queuePlayers')
-            .where('firebaseUID', '==', firebaseUID);
+            .where('firebaseUID', '==', firebaseUID)
+            .limit(1)
+            .get();
 
-        // Fetch and delete the player from the queue
-        const snapshot = await queueRef.get();
-        if (snapshot.empty) {
-            return res.status(404).json({ message: 'Player not found in the queue.' });
+        // Check for empty snapshot
+        if (queuePlayerSnapshot.empty) {
+            return res.status(404).json({ message: 'Player or location not found.' });
         }
 
-        // Delete each matching document (should be one)
-        snapshot.forEach(async doc => {
-            await doc.ref.delete();
-        });
+        // Delete the queue player document
+        const queuePlayerDoc = queuePlayerSnapshot.docs[0];
+        await queuePlayerDoc.ref.delete();
 
         res.status(200).json({ message: 'Successfully removed from queue.' });
     } catch (error) {

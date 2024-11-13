@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './ActiveView.css';
 import { leaveQueue } from '../../utils/api';
+import { joinQueue } from '../../utils/api';
 import { Navigate } from 'react-router-dom';
 import CurrentState from './CurrentState';
 
@@ -18,6 +19,23 @@ const ActiveView: React.FC = () => {
   // Set the button to visible if the user is logged in and in the queue
   const [leaveButtonVisible, setLeaveButtonVisible] = useState<boolean>(false);
 
+  // Function to handle queue joining if authenticated
+  const joinQueueIfAuthenticated = async () => {
+    if (firebaseUID && location) {
+      try {
+        await joinQueue(location);
+        // Proceed to the main view if successfully added
+        return <Navigate to="/user-info" />;
+      } catch (error) {
+        console.error('Failed to join the queue:', error);
+        alert('Unable to join the queue. Please try again later.');
+      }
+    } else {
+      // If not signed in, redirect to sign-in page
+      return <Navigate to="/sign-in" />;
+    }
+  };
+
   // Check if the user is in the queue after CurrentState component is mounted
   useEffect(() => {
     // Listen for queue changes
@@ -29,6 +47,9 @@ const ActiveView: React.FC = () => {
 
     // Initial check
     handleQueueUpdate();
+
+    // Check if user should join the queue
+    joinQueueIfAuthenticated();
 
     // Event listener for changes in queue
     window.addEventListener('inQueueStatus', handleQueueUpdate);

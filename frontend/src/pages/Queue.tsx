@@ -1,53 +1,35 @@
 import LocationSelection from "./LocationSelection/LocationSelection";
 import { useState, useEffect } from "react";
+import { getExpectedWaitTime } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const Queue = () => {
   const [waitTime, setWaitTime] = useState<number | null>(null);
   const [isQueueFull, setIsQueueFull] = useState<boolean>(false);
-  const [buttonVisible, setButtonVisible] = useState<boolean>(true);
   const selectedLocation = localStorage.getItem('selectedLocation');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchQueueData = async () => {
+    const fetchWaitTime = async () => {
       try {
-        const response = await fetch(`/queueStatus?location=${selectedLocation}`);
-        const data = await response.json();
-        setWaitTime(data.waitTime); // Assuming the API returns waitTime in hours
-
-        if (data.waitTime >= 5) {
+        const data = await getExpectedWaitTime(selectedLocation);
+        setWaitTime(data.expectedWaitTime);
+        
+        // If wait time is 5 hours or more, mark the queue as full
+        if (data.expectedWaitTime >= 5) {
           setIsQueueFull(true);
         }
       } catch (error) {
-        console.error('Failed to fetch queue data:', error);
+        console.error('Failed to fetch expected wait time:', error);
       }
     };
 
-    fetchQueueData();
+    if (selectedLocation) fetchWaitTime();
   }, [selectedLocation]);
-
-  const handleJoinQueue = async () => {
-    try {
-      const response = await fetch('/joinQueue', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ location: selectedLocation }),
-      });
-
-      if (response.ok) {
-        setButtonVisible(false);
-        alert('You have successfully joined the queue.');
-      } else {
-        alert('Failed to join the queue. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error joining queue:', error);
-      alert('An error occurred. Please try again later.');
-    }
-  };
   
   return (
     <div>
-      {/* Render the Location Selection component (already here)*/}
+      {/* Render the Location Selection component*/}
       <LocationSelection />
 
       <div className="queue-info">
@@ -65,11 +47,10 @@ const Queue = () => {
               </p>
             )}
 
-            {buttonVisible && (
-              <button onClick={handleJoinQueue}>
-                {waitTime === 0 ? 'Start Playing' : 'Join Queue'}
-              </button>
-            )}
+            {/* Button only redirects, as joining queue will happen in ActiveView */}
+            <button onClick={() => navigate('/active-view')}>
+              {waitTime === 0 ? 'Start Playing' : 'Join Queue'}
+            </button>
           </>
         )}
       </div>

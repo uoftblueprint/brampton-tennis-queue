@@ -20,12 +20,14 @@ const currentStateRoute = require('./routes/currentState');
 const resetCourtsRoute = require('./routes/resetCourts');
 const expectedWaitTimeRoute = require('./routes/expectedWaitTime');
 const addUnknownsRoute = require('./routes/addUnknowns');
+const endSessionRoute = require('./routes/endSession');
 
 // Use imported routes
 app.use('/api', currentStateRoute);  // currentState endpoint
 app.use('/api', resetCourtsRoute);  // resetCourts endpoint
 app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
 app.use('/api', addUnknownsRoute);  // addUnknowns endpoint
+app.use('/api', endSessionRoute);  // endSession endpoint
 
 // Default route
 app.get('/', (req, res) => {

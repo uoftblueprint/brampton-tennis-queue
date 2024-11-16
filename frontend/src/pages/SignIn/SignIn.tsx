@@ -9,75 +9,72 @@ import {
 import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
 
-// Import icon images
+// Import Google icon
 import googleIcon from "../../assets/google-icon.svg";
 
 const Login: React.FC = () => {
-    const provider = new GoogleAuthProvider();
+    const provider = new GoogleAuthProvider(); // Google authentication provider
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [isSigningUp, setIsSigningUp] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    // State management for inputs and toggles
+    const [email, setEmail] = useState(""); // Email input
+    const [password, setPassword] = useState(""); // Password input
+    const [isSigningUp, setIsSigningUp] = useState(false); // Toggle for sign-up or sign-in
+    const [errorMessage, setErrorMessage] = useState(""); // Error message display
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Navigation hook for redirecting
 
+    // Handle Google sign-in
     const handleGoogleSignIn = () => {
         signInWithPopup(auth, provider)
             .then((result) => {
-                const user = result.user;
-                console.log("User: ", user);
-                navigate("/active-view");
+                navigate("/active-view"); // Navigate to active view on success
             })
             .catch((error) => {
-                console.log("Error: ", error);
-                setErrorMessage("Google sign-in failed. Please try again.");
+                setErrorMessage("Google sign-in failed. Please try again."); // Set error message
             });
     };
 
+    // Handle email-based authentication
     const handleEmailAuth = (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent page reload
         const authFunction = isSigningUp
             ? createUserWithEmailAndPassword
             : signInWithEmailAndPassword;
 
         authFunction(auth, email, password)
-            .then((result) => {
-                const user = result.user;
-                console.log("User: ", user);
-                navigate("/active-view");
+            .then(() => {
+                navigate("/active-view"); // Navigate to active view on success
             })
             .catch((error) => {
-                console.log("Error: ", error);
-
+                // Map Firebase error codes to user-friendly messages
                 let errorMsg = "An unexpected error occurred. Please try again.";
                 switch (error.code) {
                     case "auth/email-already-in-use":
                         errorMsg = "This email is already in use. Please try signing in instead.";
                         break;
                     case "auth/invalid-email":
-                        errorMsg = "The email address is not valid. Please check and try again.";
+                        errorMsg = "Invalid email address. Please try again.";
                         break;
                     case "auth/weak-password":
-                        errorMsg = "The password is too weak. Please choose a stronger password.";
+                        errorMsg = "Weak password. Choose a stronger one.";
                         break;
                     case "auth/wrong-password":
                         errorMsg = "Incorrect password. Please try again.";
                         break;
                     case "auth/user-not-found":
-                        errorMsg = "No account found with this email. Please sign up first.";
+                        errorMsg = "No account found. Please sign up.";
                         break;
                     case "auth/network-request-failed":
-                        errorMsg = "Network error. Please check your connection and try again.";
+                        errorMsg = "Network error. Check your connection.";
                         break;
                     case "auth/invalid-credential":
-                        errorMsg = "Invalid credential. Please ensure your credentials are correct.";
+                        errorMsg = "Invalid credentials. Try again.";
                         break;
                     default:
-                        errorMsg = error.message;
+                        errorMsg = error.message; // Default error message
                         break;
                 }
-                setErrorMessage(errorMsg);
+                setErrorMessage(errorMsg); // Update error message
             });
     };
 
@@ -85,6 +82,7 @@ const Login: React.FC = () => {
         <div className="login-container">
             <h2 className="login-title">{isSigningUp ? "Sign Up" : "Sign In"}</h2>
 
+            {/* Form for email and password */}
             <form className="login-form" onSubmit={handleEmailAuth}>
                 <div className="form-group">
                     <label htmlFor="email">Email:</label>
@@ -115,10 +113,9 @@ const Login: React.FC = () => {
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
 
+            {/* Toggle between sign-in and sign-up */}
             <p className="toggle-message">
-                {isSigningUp
-                    ? "Already have an account?"
-                    : "Don't have an account?"}{" "}
+                {isSigningUp ? "Already have an account?" : "Don't have an account?"}{" "}
                 <span
                     className="toggle-link"
                     onClick={() => {
@@ -130,12 +127,12 @@ const Login: React.FC = () => {
                 </span>
             </p>
 
+            {/* Google sign-in button */}
             <div className="google-signin-container">
-            <button className="button google-signin-button" onClick={handleGoogleSignIn}>
-                <img src={googleIcon} alt="Google Icon" className="button-icon" />
-                Sign in with Google
-            </button>
-
+                <button className="button google-signin-button" onClick={handleGoogleSignIn}>
+                    <img src={googleIcon} alt="Google Icon" className="button-icon" />
+                    Sign in with Google
+                </button>
             </div>
         </div>
     );

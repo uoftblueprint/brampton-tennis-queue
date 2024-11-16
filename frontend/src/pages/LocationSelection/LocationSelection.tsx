@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './LocationSelection.css';
 
 const LocationSelection: React.FC = () => {
-  // State to store the selected location
-  // Use this state to access the user selected location for queue purposes
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-
   // Sample locations list
   const locations = ["Cassie Campbell", "Option 1", "Option 2"];
+
+  // State to store the selected location
+  // Use this state to access the user selected location for queue purposes
+  // By default, select the first location (Cassie Campbell)
+  const [selectedLocation, setSelectedLocation] = useState<string>(locations[0]);
+
 
   // Hook for navigating to the next page
   const navigate = useNavigate();

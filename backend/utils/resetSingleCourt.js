@@ -1,4 +1,4 @@
-async function resetSingleCourt(locationRef, locationData, batch) {
+async function resetSingleCourt(locationRef, locationData, transaction) {
     const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers } = locationData;
 
     for (let i = 0; i < numberOfCourts; i++) {
@@ -10,7 +10,8 @@ async function resetSingleCourt(locationRef, locationData, batch) {
         activeWaitingPlayers[i] = false;
     }
 
-    batch.update(locationRef, {
+    // Update the location data within the transaction
+    transaction.update(locationRef, {
         activeFirebaseUIDs: activeFirebaseUIDs,
         activeNicknames: activeNicknames,
         activeWaitingPlayers: activeWaitingPlayers,

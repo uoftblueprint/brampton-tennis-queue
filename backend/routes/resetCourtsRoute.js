@@ -20,26 +20,30 @@ router.post("/resetCourts", async (req, res) => {
         //     return res.status(401).json({ message: "Password is incorrect." });
         // }
 
-        // Extract list of location documents and create batch
-        const locations = await admin.firestore().collection("locations");
-        const locationDocs = await locations.listDocuments();
-        const batch = admin.firestore().batch();
+        // Start a Firestore transaction
+        const db = admin.firestore();
+        const locationsRef = db.collection("locations");
 
-        // Iterate over all locations and reset the courts
-        for (const locationRef of locationDocs) {
-            const locationSnapshot = await locationRef.get();
-            const locationData = locationSnapshot.data();
-            await resetSingleCourt(locationRef, locationData, batch);
-        }
+        await db.runTransaction(async (transaction) => {
+            // Extract list of location documents
+            const locationDocs = await locationsRef.listDocuments();
 
-        // Commit batch and send success response
-        await batch.commit();
+            // Iterate over all locations and reset the courts
+            for (const locationRef of locationDocs) {
+                const locationSnapshot = await transaction.get(locationRef);
+                const locationData = locationSnapshot.data();
+                
+                // Perform court reset logic in transaction
+                await resetSingleCourt(locationRef, locationData, transaction);
+            }
+        });
+
+        // Send success response after the transaction
         res.status(200).json({
             message: "Reset all courts successfully",
         });
-
     } catch (error) {
-        console.error(error);
+        console.error("Error during reset:", error);
         res.status(500).send({ error: "Failed to reset courts." });
     }
 });

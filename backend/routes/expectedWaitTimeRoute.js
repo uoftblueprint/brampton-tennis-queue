@@ -5,24 +5,22 @@ const admin = require('firebase-admin');
 // Expected wait time endpoint
 router.post('/expectedWaitTime', async (req, res) => {
     try {
-        // Get the location from the request body.
-        const location = req.body.location
-
-        // Validate location provided.
+        // Get the location from the request body and validate
+        const location = req.body.location;
         if (!location) {
             return res.status(400).json({ message: "Location is required" });
         }
 
-        // Use Firestore's count aggregation to get the number of players in the queue.
-        const queuePlayersCount = await admin.firestore()
-            .collection('locations')
-            .doc(location)
-            .collection('queuePlayers')
-            .count()
-            .get()
-            .then(snapshot => snapshot.data().count);
+        // Get the location document snapshot
+        const locationRef = admin.firestore().collection('locations').doc(location);
+        const locationSnapshot = await locationRef.get();
+        if (!locationSnapshot.exists) {
+            return res.status(404).json({ message: 'Location not found.' });
+        }
 
-        // Calculate the expected wait time by estimating 0.5 hours per player.
+        // Access document data and compute wait time by estimating 0.5 hour per player
+        const locationData = locationSnapshot.data();
+        const queuePlayersCount = locationData.queueFirebaseUIDs.length;
         const expectedWaitTime = queuePlayersCount * 0.5;
 
         // Send response back with the expected wait time.

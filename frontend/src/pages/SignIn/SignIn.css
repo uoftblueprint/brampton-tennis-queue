@@ -1,32 +1,125 @@
-/* Login.css */
-
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
-  .login-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .login-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: #4285f4;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .login-button:hover {
-    background-color: #357ae8;
-  }
-  
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+}
+
+.login-title {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.login-form {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: calc(100% - 20px);
+  margin-left: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-button {
+  width: calc(100% - 20px);
+  margin-left: auto;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+  background-color: #0056b3;
+}
+
+
+.icon-placeholder {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  margin-top: 10px;
+  color: #ff4d4d;
+  font-size: 0.9rem;
+}
+
+.toggle-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+}
+
+.toggle-link {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.toggle-link:hover {
+  color: #0056b3;
+}
+
+/* Shared Button Styles */
+.button {
+  width: calc(100% - 20px);
+  margin-left: auto;
+  padding: 8px 12px; /* Smaller padding for compact buttons */
+  display: flex;
+  align-items: center; /* Center the icon and text vertically */
+  justify-content: center; /* Center contents horizontally */
+  font-size: 0.9rem; /* Slightly smaller font size */
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Google Button */
+.google-signin-button {
+  background-color: #db4437;
+}
+
+.google-signin-button:hover {
+  background-color: #c23321;
+}
+
+/* Icon Styling */
+.button-icon {
+  width: 16px; /* Make the icon smaller */
+  height: 16px; /* Match the height */
+  margin-right: 8px; /* Spacing between icon and text */
+  vertical-align: middle;
+}

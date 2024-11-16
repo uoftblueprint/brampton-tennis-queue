@@ -1,36 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const admin = require("firebase-admin");
-const bcrypt = require("bcrypt");
-
-async function bcryptCompare(plaintext, hashed) {
-    try {
-        return await bcrypt.compare(plaintext, hashed);
-    } catch (err) {
-        throw new Error("Bcrypt compare error: " + err.message);
-    }
-}
-
-async function resetSingleCourt(locationRef, locationData, batch) {
-    const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers } = locationData;
-
-    for (let i = 0; i < numberOfCourts; i++) {
-        const courtNumber = i + 1;
-        const newName = `Empty${courtNumber}`;
-
-        activeFirebaseUIDs[i] = newName;
-        activeNicknames[i] = newName;
-        activeWaitingPlayers[i] = false;
-    }
-
-    batch.update(locationRef, {
-        activeFirebaseUIDs: activeFirebaseUIDs,
-        activeNicknames: activeNicknames,
-        activeWaitingPlayers: activeWaitingPlayers,
-        queueFirebaseUIDs: [],
-        queueNicknames: [],
-    });
-}
+const bcryptCompare = require('../utils/passwordValidation');  // Import the password compare utility
+const resetSingleCourt = require('../utils/resetSingleCourt');  // Import the court reset utility
 
 // Reset Courts Endpoint
 router.post("/resetCourts", async (req, res) => {
@@ -41,7 +13,7 @@ router.post("/resetCourts", async (req, res) => {
             return res.status(400).json({ message: "Password is required." });
         }
 
-        // Compare password against enviroment hash before resetting courts
+        // Compare password against environment hash before resetting courts
         // const hashedPassword = process.env.ADMIN_PASSWORD;
         // const passwordIsValid = await bcryptCompare(requestPassword, hashedPassword);
         // if (!passwordIsValid) {
@@ -53,6 +25,7 @@ router.post("/resetCourts", async (req, res) => {
         const locationDocs = await locations.listDocuments();
         const batch = admin.firestore().batch();
 
+        // Iterate over all locations and reset the courts
         for (const locationRef of locationDocs) {
             const locationSnapshot = await locationRef.get();
             const locationData = locationSnapshot.data();
@@ -66,7 +39,7 @@ router.post("/resetCourts", async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).send({ error: "Failed to reset courts." });
     }
 });

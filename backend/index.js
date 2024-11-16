@@ -16,15 +16,13 @@ app.use(cors());
 app.use(express.json());
 
 // Import routes
-const currentStateRoute = require('./routes/currentState');
-const resetCourtsRoute = require('./routes/resetCourts');
-const expectedWaitTimeRoute = require('./routes/expectedWaitTime');
-const addUnknownsRoute = require('./routes/addUnknowns');
-const leaveQueueRoute = require('./routes/leaveQueue');
-const endSessionRoute = require('./routes/endSession');
+const resetCourtsRoute = require('./routes/resetCourtsRoute');
+const expectedWaitTimeRoute = require('./routes/expectedWaitTimeRoute');
+const addUnknownsRoute = require('./routes/addUnknownsRoute');
+const leaveQueueRoute = require('./routes/leaveQueueRoute');
+const endSessionRoute = require('./routes/endSessionRoute');
 
 // Use imported routes
-app.use('/api', currentStateRoute);  // currentState endpoint
 app.use('/api', resetCourtsRoute);  // resetCourts endpoint
 app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
 app.use('/api', addUnknownsRoute);  // addUnknowns endpoint

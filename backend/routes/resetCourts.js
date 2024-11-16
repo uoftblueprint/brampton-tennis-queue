@@ -3,81 +3,72 @@ const router = express.Router();
 const admin = require("firebase-admin");
 const bcrypt = require("bcrypt");
 
-function bcryptCompare(plaintext, hashed) {
-  return new Promise(function (resolve, reject) {
-    bcrypt.compare(plaintext, hashed, function (err, res) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(res);
-      }
+async function bcryptCompare(plaintext, hashed) {
+    try {
+        return await bcrypt.compare(plaintext, hashed);
+    } catch (err) {
+        throw new Error("Bcrypt compare error: " + err.message);
+    }
+}
+
+async function resetSingleCourt(locationRef, locationData, batch) {
+    const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers } = locationData;
+
+    for (let i = 0; i < numberOfCourts; i++) {
+        const courtNumber = i + 1;
+        const newName = `Empty${courtNumber}`;
+
+        activeFirebaseUIDs[i] = newName;
+        activeNicknames[i] = newName;
+        activeWaitingPlayers[i] = false;
+    }
+
+    batch.update(locationRef, {
+        activeFirebaseUIDs: activeFirebaseUIDs,
+        activeNicknames: activeNicknames,
+        activeWaitingPlayers: activeWaitingPlayers,
+        queueFirebaseUIDs: [],
+        queueNicknames: [],
     });
-  });
-}
-
-async function resetActivePlayers(location, batch) {
-  const active_players = await location
-    .collection("activePlayers")
-    .listDocuments();
-
-  active_players.forEach((playerRef) => {
-    const court_number = parseInt(playerRef.id.replace("Court", ""));
-    const new_name = "Empty" + court_number.toString();
-    const updateObj = {
-      playerWaiting: false,
-      firebaseUID: new_name,
-      nickname: new_name,
-    };
-    batch.set(playerRef, updateObj, { merge: true });
-  });
-}
-
-async function deleteQueuePlayers(location, batch) {
-  const queue_players = await location
-    .collection("queuePlayers")
-    .listDocuments();
-
-  queue_players.forEach((playerRef) => {
-    batch.delete(playerRef);
-  });
 }
 
 // Reset Courts Endpoint
 router.post("/resetCourts", async (req, res) => {
-  try {
-    // // assume that this is already set
-    const hashed_password = process.env.ADMIN_PASSWORD;
-    const request_password = req.body.password;
-    if (!request_password) {
-      return res.status(400).json({ message: "Password is required." });
+    try {
+        // Extract password from request body
+        const requestPassword = req.body.password;
+        if (!requestPassword) {
+            return res.status(400).json({ message: "Password is required." });
+        }
+
+        // Compare password against enviroment hash before resetting courts
+        // const hashedPassword = process.env.ADMIN_PASSWORD;
+        // const passwordIsValid = await bcryptCompare(requestPassword, hashedPassword);
+        // if (!passwordIsValid) {
+        //     return res.status(401).json({ message: "Password is incorrect." });
+        // }
+
+        // Extract list of location documents and create batch
+        const locations = await admin.firestore().collection("locations");
+        const locationDocs = await locations.listDocuments();
+        const batch = admin.firestore().batch();
+
+        for (const locationRef of locationDocs) {
+            const locationSnapshot = await locationRef.get();
+            const locationData = locationSnapshot.data();
+            await resetSingleCourt(locationRef, locationData, batch);
+        }
+
+        // Commit batch and send success response
+        await batch.commit();
+        res.status(200).json({
+            message: "Reset all courts successfully",
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: "Failed to reset courts." });
     }
-
-    // try {
-    //   await bcryptCompare(request_password, hashed_password);
-    // } catch (_) {
-    //   return res.status(401).json({ message: "Password is incorrect." });
-    // }
-
-    const locations = await admin.firestore().collection("locations");
-
-    const location_docs = await locations.listDocuments();
-
-    const batch = admin.firestore().batch();
-
-    for (var i = 0; i < location_docs.length; i++) {
-      await resetActivePlayers(location_docs[i], batch);
-      await deleteQueuePlayers(location_docs[i], batch);
-    }
-
-    await batch.commit();
-
-    res.status(200).json({
-      message: "Reset all courts successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error: "Failed to reset courts." });
-  }
 });
 
 module.exports = router;

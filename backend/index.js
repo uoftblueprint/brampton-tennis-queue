@@ -7,8 +7,8 @@ const serviceAccount = require('./firebase-admin.json');
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://brampton-tennis-queue.firebaseio.com'
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://brampton-tennis-queue.firebaseio.com'
 });
 
 // Middleware
@@ -33,10 +33,10 @@ app.use('/api', endSessionRoute);  // endSession endpoint
 
 // Default route
 app.get('/', (req, res) => {
-  res.send('Brampton Tennis Queue API');
+    res.send('Brampton Tennis Queue API');
 });
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });

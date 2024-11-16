@@ -11,23 +11,32 @@ router.post('/leaveQueue', async (req, res) => {
             return res.status(400).json({ message: 'Location and Firebase UID are required.' });
         }
 
-        // Find queue player with given firebaseUID
-        const queuePlayerSnapshot = await admin.firestore()
-            .collection('locations')
-            .doc(location)
-            .collection('queuePlayers')
-            .where('firebaseUID', '==', firebaseUID)
-            .limit(1)
-            .get();
-
-        // Check for empty snapshot
-        if (queuePlayerSnapshot.empty) {
-            return res.status(404).json({ message: 'Player or location not found.' });
+        // Get the location document snapshot
+        const locationRef = admin.firestore().collection('locations').doc(location);
+        const locationSnapshot = await locationRef.get();
+        if (!locationSnapshot.exists) {
+            return res.status(404).json({ message: 'Location not found.' });
         }
 
-        // Delete the queue player document
-        const queuePlayerDoc = queuePlayerSnapshot.docs[0];
-        await queuePlayerDoc.ref.delete();
+        // Access relevant arrays
+        const locationData = locationSnapshot.data();
+        const { queueFirebaseUIDs, queueNicknames } = locationData;
+
+        // Check whether player exists
+        const playerIndex = queueFirebaseUIDs.indexOf(firebaseUID);
+        if (playerIndex === -1) {
+            return res.status(404).json({ message: 'FirebaseUID not found.' });
+        }
+
+        // Update the relevant fields
+        queueFirebaseUIDs.splice(playerIndex, 1);
+        queueNicknames.splice(playerIndex, 1);
+
+        // Write new data to Firestore
+        await locationRef.update({
+            queueFirebaseUIDs: queueFirebaseUIDs,
+            queueNicknames: queueNicknames,
+        });
 
         res.status(200).json({ message: 'Successfully removed from queue.' });
     } catch (error) {

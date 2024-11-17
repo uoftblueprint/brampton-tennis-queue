@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './ActiveView.css';
 import { leaveQueue } from '../../utils/api';
+import { joinQueue } from '../../utils/api';
 import { Navigate } from 'react-router-dom';
 import CurrentState from './CurrentState';
 
@@ -17,9 +18,28 @@ const ActiveView: React.FC = () => {
 
   // Set the button to visible if the user is logged in and in the queue
   const [leaveButtonVisible, setLeaveButtonVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(!localStorage.getItem('addedToGame'));
+
 
   // Check if the user is in the queue after CurrentState component is mounted
   useEffect(() => {
+    const joinQueueIfNotJoined = async () => {
+      if (!localStorage.getItem('addedToGame') && firebaseUID && location) {
+        try {
+          await joinQueue(location);
+          localStorage.setItem('addedToGame', 'true');
+        } catch (error) {
+          console.error('Failed to join the queue:', error);
+          alert('Unable to join the queue. Please try again later.');
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+  
+    joinQueueIfNotJoined();
     // Listen for queue changes
     const handleQueueUpdate = () => {
       // Check if the user is in the queue
@@ -68,7 +88,7 @@ const ActiveView: React.FC = () => {
         </button>
       )}
     </div>
-    <CurrentState />
+    {!loading && <CurrentState />}
     </div>
   );
 };

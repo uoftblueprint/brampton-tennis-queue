@@ -60,6 +60,57 @@ export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay =
   }
 };
 
+// Get expected wait time
+export const getExpectedWaitTime = async (location, retries = 3, delay = 500) => {
+    try {
+      const response = await fetch(`${BACKEND_API}/api/expectedWaitTime`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ location }),
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch expected wait time');
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (retries > 0) {
+        console.log(`Retrying expectedWaitTime (${retries} retries left)...`);
+        await new Promise(res => setTimeout(res, delay));  // Exponential backoff
+        return await getExpectedWaitTime(location, retries - 1, delay * 2); // Retry with increased delay
+      } else {
+        console.error("Error fetching expected wait time:", error);
+        throw error;
+      }
+    }
+  };
+
+// Add player to queue with /joinQueue endpoint
+export const joinQueue = async (locationName, firebaseUID, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/joinQueue`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+        firebaseUID: firebaseUID,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to join queue.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying joinQueue (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
+      return await joinQueue(locationName, firebaseUID, retries - 1, delay * 2);  // Retry with increased delay
+    }
+    console.error("Error joining queue:", error);
+    return null;
+  }
+};
 
 // ** UTILITY FUNCTIONS TO CREATE FIRESTORE LISTENER **
 

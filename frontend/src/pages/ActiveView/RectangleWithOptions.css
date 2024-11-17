@@ -1,0 +1,55 @@
+.rectangle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  position: relative;
+  flex: 1 1 20%; /* Each rectangle will take up 20% of the available width */
+  box-sizing: border-box; /* Ensure padding is included in the width calculation */
+}
+
+.dots-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 16px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background-color: #333;
+  border-radius: 50%;
+}
+
+.action-button {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 5px; /* Position the button right below the rectangle */
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  position: absolute;
+  top: 100%; /* Position below the rectangle */
+  left: 0;
+}

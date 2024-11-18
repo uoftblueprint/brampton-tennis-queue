@@ -73,6 +73,10 @@ label {
   font-size: 0.9rem;
 }
 
+.input-error {
+  border: 2px solid red;
+}
+
 .toggle-message {
   margin-top: 10px;
   font-size: 0.9rem;

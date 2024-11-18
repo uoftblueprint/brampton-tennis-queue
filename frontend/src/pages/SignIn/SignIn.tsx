@@ -20,23 +20,51 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState(""); // Password input
     const [isSigningUp, setIsSigningUp] = useState(false); // Toggle for sign-up or sign-in
     const [errorMessage, setErrorMessage] = useState(""); // Error message display
+    const [inputError, setInputError] = useState(""); // Input-specific error messages
 
     const navigate = useNavigate(); // Navigation hook for redirecting
 
     // Handle Google sign-in
     const handleGoogleSignIn = () => {
         signInWithPopup(auth, provider)
-            .then((result) => {
+            .then(() => {
                 navigate("/active-view"); // Navigate to active view on success
             })
-            .catch((error) => {
+            .catch(() => {
                 setErrorMessage("Google sign-in failed. Please try again."); // Set error message
             });
+    };
+
+    // Validate email format
+    const isValidEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    // Validate password length
+    const isValidPassword = (password: string) => {
+        return password.length >= 8;
     };
 
     // Handle email-based authentication
     const handleEmailAuth = (e: React.FormEvent) => {
         e.preventDefault(); // Prevent page reload
+
+        // Reset input errors
+        setInputError("");
+        setErrorMessage("");
+
+        // Input validation
+        if (!isValidEmail(email)) {
+            setInputError("Invalid email format. Please enter a valid email address.");
+            return;
+        }
+
+        if (!isValidPassword(password)) {
+            setInputError("Password must be at least 8 characters long.");
+            return;
+        }
+
         const authFunction = isSigningUp
             ? createUserWithEmailAndPassword
             : signInWithEmailAndPassword;
@@ -89,7 +117,7 @@ const Login: React.FC = () => {
                     <input
                         type="email"
                         id="email"
-                        className="form-input"
+                        className={`form-input ${inputError ? "input-error" : ""}`}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -100,7 +128,7 @@ const Login: React.FC = () => {
                     <input
                         type="password"
                         id="password"
-                        className="form-input"
+                        className={`form-input ${inputError ? "input-error" : ""}`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -111,6 +139,7 @@ const Login: React.FC = () => {
                 </button>
             </form>
 
+            {inputError && <p className="error-message">{inputError}</p>}
             {errorMessage && <p className="error-message">{errorMessage}</p>}
 
             {/* Toggle between sign-in and sign-up */}
@@ -121,6 +150,7 @@ const Login: React.FC = () => {
                     onClick={() => {
                         setIsSigningUp(!isSigningUp);
                         setErrorMessage("");
+                        setInputError("");
                     }}
                 >
                     {isSigningUp ? "Sign In" : "Sign Up"}

@@ -20,14 +20,11 @@ router.post('/getTaken', async (req, res) => {
         return res.status(404).json({ message: 'Location not found.' });
     }
 
-    // Access document data and get active and queue players
+    // Access document data, get active / queue players and number of courts
     const locationData = locationSnapshot.data();
-
-    // Get active players from the location data
     const activePlayers = locationData.activeFirebaseUIDs;
-
-    // Get queue players from the location data
     const queuePlayers = locationData.queueFirebaseUIDs;
+    const numberOfCourts = locationData.numberOfCourts;
 
     // If there are entries in the queue, no update is required, return 200 status code with updateRequired as false
     if (queuePlayers.length > 0) {
@@ -36,19 +33,15 @@ router.post('/getTaken', async (req, res) => {
       });
     }
 
-    // Otherwise, return court information where firebaseUID doesn't start with 'Empty'
+    // Else, iterate through active firebaseUIDs to store occupied court numbers where the id does not start with 'Empty'
     const takenCourts = [];
-    let numberOfCourts = 0;
-
-    // Iterate through active players to find the taken courts, and increment the number of courts
     activePlayers.forEach((player) => {
       if (!player.startsWith('Empty')) {
         takenCourts.push(activePlayers.indexOf(player) + 1);
-        numberOfCourts++;
       }
     });
 
-    // Return the taken courts and the number of courts, along with updateRequired as true
+    // Return the taken courts and the total number of courts, along with updateRequired as true
     return res.status(200).json({
       takenCourts: takenCourts,
       numberOfCourts: numberOfCourts,

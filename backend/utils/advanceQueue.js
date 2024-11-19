@@ -27,8 +27,11 @@ async function advanceQueue(locationData) {
     // Call dynamicBuffer 
     // await dynamicBuffer(locationData);
 
-    // Notify second player that they are next
-    // await sendWebNotification(locationData, secondPlayer);
+    // If queue is not empty, notify next player that they are now first in line
+    // if (queueFirebaseUIDs.length > 0) {
+    //     const nextPlayerUID = queueFirebaseUIDs[0];
+    //     await sendWebNotification(nextPlayerUID, 'You are now first in line!');
+    // }
 }
 
 module.exports = advanceQueue;

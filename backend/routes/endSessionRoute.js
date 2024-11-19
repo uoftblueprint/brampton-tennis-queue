@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const endSession = require('../utils/endSession');  // Import the end session utility
-// const advanceQueue = require('../utils/advanceQueue');  // Import the advance queue utility
+const advanceQueue = require('../utils/advanceQueue');  // Import the advance queue utility
 
 // End Session Endpoint
 router.post('/endSession', async (req, res) => {
@@ -29,14 +29,16 @@ router.post('/endSession', async (req, res) => {
             await endSession(locationData, firebaseUID);
 
             // Call advanceQueue to move the queue forward
-            // await advanceQueue(locationData);
+            await advanceQueue(locationData);
 
             // Write the updated data back to Firestore in the transaction
             transaction.update(locationRef, {
                 activeFirebaseUIDs: locationData.activeFirebaseUIDs,
                 activeNicknames: locationData.activeNicknames,
+                activeStartTimes: locationData.activeStartTimes,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
-                // Add relevant update fields when advance queue is uncommented!
+                queueFirebaseUIDs: locationData.queueFirebaseUIDs,
+                queueNicknames: locationData.queueNicknames
             });
         });
   

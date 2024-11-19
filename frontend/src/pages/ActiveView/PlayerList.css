@@ -1,46 +1,50 @@
+@media (max-width: 768px) {
+  .courts {
+    flex-direction: column; /* Stack players vertically on small screens */
+  }
+
+  h2 {
+    font-size: 1.2em; /* Slightly smaller headings for compact screens */
+  }
+}
+
 .player-list {
-  padding: 16px;
+  padding: 20px;
   font-family: Arial, sans-serif;
 }
 
 h2 {
   font-size: 1.5em;
   margin-bottom: 10px;
+  color: #333;
+}
+
+.active-players,
+.queue-players {
+  margin-bottom: 20px;
 }
 
 .courts {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.court {
-  background-color: #007bff;
-  color: white;
-  border-radius: 8px;
-  padding: 20px;
-  flex: 1;
-  margin: 0 5px; /* Space between courts */
-  text-align: center;
-  min-width: 60px; /* Ensures minimum size */
-}
-
-.queue-players {
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  flex-wrap: wrap; /* Allow items to wrap into the next line */
+  gap: 10px; /* Space between rectangles */
+  background-color: #f8f9fa; /* Light background for the active players section */
   padding: 10px;
+  border-radius: 8px;
 }
 
-.queue-players ul {
-  list-style: none;
-  padding: 0;
+.queue-list {
+  display: flex;
+  flex-direction: column; /* Stack players vertically */
+  gap: 10px; /* Space between rectangles */
+  background-color: #f8f9fa; /* Light background for the queue players section */
+  padding: 10px;
+  border-radius: 8px;
 }
 
-.queue-players li {
-  padding: 5px;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.queue-players li:last-child {
-  border-bottom: none;
+p {
+  margin: 0;
+  font-size: 1em;
+  color: #666;
+  text-align: center;
 }

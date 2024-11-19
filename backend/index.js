@@ -21,6 +21,8 @@ const expectedWaitTimeRoute = require('./routes/expectedWaitTimeRoute');
 const addUnknownsRoute = require('./routes/addUnknownsRoute');
 const leaveQueueRoute = require('./routes/leaveQueueRoute');
 const endSessionRoute = require('./routes/endSessionRoute');
+const currentStateRoute = require('./routes/currentStateRoute');
+const joinGameRoute = require('./routes/joinGameRoute');
 
 // Use imported routes
 app.use('/api', resetCourtsRoute);  // resetCourts endpoint
@@ -28,6 +30,8 @@ app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
 app.use('/api', addUnknownsRoute);  // addUnknowns endpoint
 app.use('/api', leaveQueueRoute);  // leaveQueue endpoint
 app.use('/api', endSessionRoute);  // endSession endpoint
+app.use('/api', currentStateRoute); // currentState endpoint
+app.use('/api', joinGameRoute); // DUMMY joinGame endpoint - REPLACE WITH ACTUAL CODE IN ROUTE FILE!
 
 // Default route
 app.get('/', (req, res) => {

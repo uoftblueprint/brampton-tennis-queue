@@ -25,17 +25,15 @@ router.post('/getTaken', async (req, res) => {
 
     // Get active players from the location data
     const activePlayers = locationData.activeFirebaseUIDs;
+    console.log(activePlayers);
 
     // Get queue players from the location data
     const queuePlayers = locationData.queueFirebaseUIDs;
-
-    // Check for empty active player snapshot
-    if (activePlayers.empty) {
-      return res.status(404).json({ message: 'Invalid location.' });
-    }
+    console.log(queuePlayers);
+    console.log(queuePlayers.length);
 
     // If there are entries in the queue, no update is required, return 200 status code with updateRequired as false
-    if (!queuePlayers.empty) {
+    if (queuePlayers.length > 0) {
       return res.status(200).json({
         updateRequired: false
       });

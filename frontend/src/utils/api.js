@@ -7,7 +7,7 @@ const BACKEND_API = 'http://localhost:5001';
 // ** UTILITY FUNCTIONS TO CALL BACKEND ENDPOINTS **
 
 // Fetch data from /currentState endpoint
-export const fetchCurrentState = async (locationName, timestamp = null, retries = 3, delay = 500) => {
+export const fetchCurrentState = async (locationName, retries = 3, delay = 500) => {
   try {
     const response = await fetch(`${BACKEND_API}/api/currentState`, {
       method: 'POST',
@@ -16,7 +16,6 @@ export const fetchCurrentState = async (locationName, timestamp = null, retries 
       },
       body: JSON.stringify({
         location: locationName,
-        userLastCheckTime: timestamp,
       }),
     });
     if (!response.ok) throw new Error('Failed to retrieve current state.');
@@ -26,9 +25,64 @@ export const fetchCurrentState = async (locationName, timestamp = null, retries 
     if (retries > 0) {
       console.log(`Retrying fetchCurrentState (${retries} retries left)...`);
       await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await fetchCurrentState(locationName, timestamp, retries - 1, delay * 2);  // Up to 3 retries
+      return await fetchCurrentState(locationName, retries - 1, delay * 2);  // Up to 3 retries
     }
     console.error("Error fetching current state:", error);
+    return null;
+  }
+};
+
+// End a player's session using the /endSession endpoint
+export const endSession = async (locationName, firebaseUID, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/endSession`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+        firebaseUID: firebaseUID,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to end session.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying endSession (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
+      return await endSession(locationName, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+    }
+    console.error("Error ending session:", error);
+    return null;
+  }
+};
+
+// Add player to game with /joinGame endpoint
+export const joinGame = async (locationName, nickname, firebaseUID, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/joinGame`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+        nickname: nickname,
+        firebaseUID: firebaseUID,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to join game.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying join game (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
+      return await joinGame(locationName, nickname, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+    }
+    console.error("Error joining game:", error);
     return null;
   }
 };
@@ -61,40 +115,31 @@ export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay =
 };
 
 
-// ** UTILITY FUNCTIONS TO CREATE FIRESTORE LISTENER **
+// ** UTILITY FUNCTION TO CREATE FIRESTORE LISTENER **
 
-// Subscribe to Firestore snapshot for given location document
-export const subscribeToLocation = (location, callCurrentState) => {
-  // Create reference to location document and store last update timestamp
+// Subscribe to Firestore snapshot for a specific location document
+export const subscribeToLocation = (location, updateState) => {
+  // Create reference to location document
   const locationRef = doc(db, 'locations', location);
-  let lastProcessedUpdateTime = null;
 
   // Listener function
-  const locationListener = onSnapshot(
+  const unsubscribe = onSnapshot(
     locationRef,
     (docSnapshot) => {
       if (!docSnapshot.exists()) {
-        console.error("Location document does not exist");
+        console.error(`Location document "${location}" does not exist`);
         return;
       }
 
-      // Get new update time and return if snapshot update time hasn't changed
-      const newUpdateTime = docSnapshot.data().lastUpdateTime.toMillis();
-      if (lastProcessedUpdateTime && newUpdateTime <= lastProcessedUpdateTime) {
-        return;
-      }
-
-      // Update last processed update time and call endpoint
-      lastProcessedUpdateTime = newUpdateTime;
-      callCurrentState();
+      // Get document data and update the state
+      const locationData = docSnapshot.data();
+      updateState(locationData);
     },
     (error) => {
-      console.error("Error in location listener: ", error);
+      console.error("Error in location listener:", error);
     }
   );
 
-  // Return unsubscribe function for listener
-  return () => {
-    locationListener();
-  };
+  // Return the unsubscribe function
+  return unsubscribe;
 };

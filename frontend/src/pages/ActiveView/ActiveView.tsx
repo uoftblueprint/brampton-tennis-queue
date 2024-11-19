@@ -1,74 +1,48 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ActiveView.css';
-import { leaveQueue } from '../../utils/api';
-import { Navigate } from 'react-router-dom';
 import CurrentState from './CurrentState';
+import { joinGame } from '../../utils/api';
 
 const ActiveView: React.FC = () => {
-  // Accessing user information through local storage
-  const location = localStorage.getItem('selectedLocation') || 'Cassie Campbell';
-  const nickname = localStorage.getItem('nickname') || 'User';
+  const location = localStorage.getItem('selectedLocation');
   const firebaseUID = localStorage.getItem('firebaseUID');
+  const nickname = localStorage.getItem('nickname');
 
-  // If the user is not logged in, redirect them back to the home page without loading CurrentState
-  if (!firebaseUID) {
-    return <Navigate to='/' />;
-  }
+  const [loading, setLoading] = useState<boolean>(true);  // Initially set loading to true
 
-  // Set the button to visible if the user is logged in and in the queue
-  const [leaveButtonVisible, setLeaveButtonVisible] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  // Check if the user is in the queue after CurrentState component is mounted
   useEffect(() => {
-    // Listen for queue changes
-    const handleQueueUpdate = () => {
-      // Check if the user is in the queue
-      const joined = localStorage.getItem('inQueue') === 'true';
-      setLeaveButtonVisible(!!firebaseUID && joined)
-    };
-
-    // Initial check
-    handleQueueUpdate();
-
-    // Event listener for changes in queue
-    window.addEventListener('inQueueStatus', handleQueueUpdate);
-
-    return () => {
-      window.removeEventListener('inQueueStatus', handleQueueUpdate);
-    };
+    if (!firebaseUID) {
+      setTimeout(() => {}, 1000);  // 1-second timeout for UID to load
+    }
+    if (!firebaseUID) {
+      navigate('/'); // If firebaseUID is not available, redirect to home
+      return;
+    }
+    initializeGame();
   }, []);
 
-  const handleLeaveQueue = async () => {
-    try {
-      const data = await leaveQueue(location, firebaseUID);
-
-      if (data) {
-        setLeaveButtonVisible(false);
-        alert('You have successfully left the queue.');
-        // Sign out the user after they leave the queue
-        // localStorage.setItem("firebaseUID", '');
-        // TODO: Call sign out endpoint
-        // Redirect to home page
-        // navigate('/');
-      } else {
-        alert('Failed to leave the queue. Please try again.');
+  const initializeGame = async () => {
+    const addedToGame = localStorage.getItem('addedToGame') === 'true';
+    if (!addedToGame) {
+      setLoading(true);
+      try {
+        const { status } = await joinGame(location, nickname, firebaseUID); // Call to backend
+        localStorage.setItem('addedToGame', 'true');
+        localStorage.setItem('inQueue', status === 'queue' ? 'true' : 'false');
+      } catch (error) {
+        console.error('Error joining queue:', error);
+        alert('Failed to join the queue. Please try again.');
       }
-    } catch (error) {
-      console.error('Error leaving queue:', error);
-      alert('An error occurred. Please try again later.');
     }
-  }
+    setLoading(false);
+  };
 
   return (
     <div className="active-view">
-    <div>
-      {leaveButtonVisible && (
-        <button className="leave-button" onClick={handleLeaveQueue}>
-          Leave Queue
-        </button>
-      )}
-    </div>
-    <CurrentState />
+      {loading ? <p>Loading...</p> : <CurrentState />}
     </div>
   );
 };

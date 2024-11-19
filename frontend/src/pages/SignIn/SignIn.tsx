@@ -19,6 +19,7 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     const handleGoogleSignIn = () => {
+        localStorage.setItem("addedToGame", "false");
         signInWithPopup(auth, provider)
         .then((result) => {
             const user = result.user;
@@ -26,6 +27,7 @@ const Login: React.FC = () => {
             // Set authenticated state to true
             setIsAuthenticated(true);
             localStorage.setItem("firebaseUID", user.uid);
+            setTimeout(() => {}, 1000);
             navigate('/active-view'); // Navigate to the next page
         }).catch((error) => {
             console.log("Error: ", error);

@@ -40,9 +40,10 @@ async function dynamicBuffer(locationData) {
         
         // Update the ACTIVE player’s nickname to include the expiry time: “John (8:15 PM)”
         const endTime = new Date(((player.startTime._seconds) / 60 + bufferTime) * 60 * 1000)
-        const formattedTime = `${String(endTime.getHours())
-            .padStart(2, '0')}:${String(endTime.getMinutes())
-            .padStart(2, '0')} ${endTime.getHours() < 12 ? 'AM' : 'PM'}`;
+        const formattedTime = `${
+            String(endTime.getHours() % 12 ? endTime.getHours() % 12 : 12)}:${
+            String(endTime.getMinutes()).padStart(2, '0')} ${
+            endTime.getHours() < 12 ? 'AM' : 'PM'}`;
         // If the nickname has already been formatted with a time, rewrite it
         const nickname = activeNicknames[player.index];
         const spaceIndex = nickname.indexOf(' ');

@@ -1,4 +1,4 @@
-// const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer 
+const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer 
 // const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification 
 
 async function advanceQueue(locationData) {

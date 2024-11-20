@@ -38,7 +38,7 @@ async function dynamicBuffer(locationData) {
         // Update the playerWaiting to true
         activeWaitingPlayers[player.index] = true;
         
-        // Update the ACTIVE player’s nickname to include the expiry time: “John (8:15 PM)”
+        // Update the ACTIVE player’s nickname to include the expiry time: “John [8:15 PM]”
         const endTime = new Date(((player.startTime._seconds) / 60 + bufferTime) * 60 * 1000)
         const formattedTime = `${
             String(endTime.getHours() % 12 ? endTime.getHours() % 12 : 12)}:${

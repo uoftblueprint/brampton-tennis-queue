@@ -114,6 +114,59 @@ export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay =
   }
 };
 
+// Get taken courts with getTaken endpoint
+export const getTaken = async (locationName, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/getTaken`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to retrieve taken courts.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying getTaken (${retries} retries left)...`);
+      await new Promise((res) => setTimeout(res, delay));
+      return await getTaken(locationName, retries - 1, delay * 2);
+    }
+    console.error('Error fetching taken courts:', error);
+    return null;
+  }
+};
+
+// Add unknown courts with addUnknowns endpoint
+export const addUnknowns = async (locationName, occupiedCourts, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/addUnknowns`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+        occupiedCourts: occupiedCourts,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to add unknown courts.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying addUnknowns (${retries} retries left)...`);
+      await new Promise((res) => setTimeout(res, delay));
+      return await addUnknowns(locationName, occupiedCourts, retries - 1, delay * 2);
+    }
+    console.error('Error adding unknown courts:', error);
+    return null;
+  }
+};
+
 
 // ** UTILITY FUNCTION TO CREATE FIRESTORE LISTENER **
 

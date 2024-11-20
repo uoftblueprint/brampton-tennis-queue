@@ -17,7 +17,7 @@ function App() {
 
       {/* Define Routes */}
       <Routes>
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} /> */
         <Route path="/" element={<LocationSelection />} />
         <Route path="/user-info" element={<UserInfo />} />
         <Route path="/sign-in" element={<SignIn />} />

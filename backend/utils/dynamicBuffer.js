@@ -30,10 +30,10 @@ async function dynamicBuffer(locationData) {
         // Calculate the time the player has played, in minutes
         const timePlayed = Math.floor((currentTime - player.startTime._seconds) / 60);
 
-        // Use dynamic buffer to calculate amount of time player has left
-        const bufferTime = (timePlayed < 30) ? Math.min(timePlayed + 30, 45) :
+        // Use dynamic buffer to calculate amount of time player has left, to a minimum of 5 minutes
+        const bufferTime = Math.max(5, (timePlayed < 30) ? Math.min(timePlayed + 30, 45) :
             (timePlayed >= 30 && timePlayed < 60) ? Math.min(timePlayed + 15, 65) :
-            timePlayed + 5;
+            timePlayed + 5);
 
         // Update the playerWaiting to true
         activeWaitingPlayers[player.index] = true;
@@ -50,7 +50,7 @@ async function dynamicBuffer(locationData) {
         if (spaceIndex !== -1) {
             activeNicknames[player.index] = nickname.substring(0, spaceIndex);
         }
-        activeNicknames[player.index] += ` (${formattedTime})`
+        activeNicknames[player.index] += ` [${formattedTime}]`
 
         // Send a web based notification to their browser informing them of remaining time
         // sendWebNotification(player.firebaseUID, bufferTime);

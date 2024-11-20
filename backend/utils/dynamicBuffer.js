@@ -31,7 +31,7 @@ async function dynamicBuffer(locationData) {
         const timePlayed = Math.floor((currentTime - player.startTime._seconds) / 60);
 
         // Use dynamic buffer to calculate amount of time player has left, to a minimum of 5 minutes
-        const bufferTime = Math.max(5, (timePlayed < 30) ? Math.min(timePlayed + 30, 45) :
+        const bufferTime = Math.max(timePlayed + 5, (timePlayed < 30) ? Math.min(timePlayed + 30, 45) :
             (timePlayed >= 30 && timePlayed < 60) ? Math.min(timePlayed + 15, 65) :
             timePlayed + 5);
 

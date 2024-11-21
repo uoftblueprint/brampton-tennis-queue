@@ -1,14 +1,10 @@
+const createTimestamps = require('./createTimestamps');
+
 async function addUnknowns(locationData, occupiedCourts) {
     const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers, activeStartTimes } = locationData;
 
-    const now = new Date();
-    const adjustments = occupiedCourts.map((_, index) => -10 * (index + 1));
-    const timestamps = adjustments.map(seconds => {
-        const adjustedTime = new Date(now);
-        adjustedTime.setSeconds(now.getSeconds() + seconds);
-        return adjustedTime;
-    });
-    shuffleArray(timestamps);
+    // Create an array of adjusted timestamps
+    const timestamps = await createTimestamps(occupiedCourts.length);
     let lastTimestampIdx = 0;
 
     // Process each court based on occupancy status
@@ -38,13 +34,5 @@ async function addUnknowns(locationData, occupiedCourts) {
         }
     }
 }
-
-// Shuffle function
-const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));  // Random index
-        [array[i], array[j]] = [array[j], array[i]];  // Swap elements
-    }
-};
 
 module.exports = addUnknowns;

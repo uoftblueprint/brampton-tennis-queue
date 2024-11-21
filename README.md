@@ -1,6 +1,6 @@
 # BTQ - Brampton Tennis Queue
 
-Our objective is to build an online queue system for local tennis courts in Brampton with real-time notifications, no-shows, and dynamic buffer time tracking. The system should prioritize ease of use, especially for elderly people, and ensure privacy and data security. We are working with the City of Brampton's recreation team to launch this app in local courts by Summer 2025!
+Our objective is to build an online queue system for local tennis courts in the City of Brampton with real-time notifications, no-shows, and dynamic buffer time tracking. The system should prioritize ease of use, especially for elderly people, and ensure privacy and data security. We are working with the City of Brampton's recreation team to launch this app in local courts by Summer 2025!
 
 # Design Doc
 

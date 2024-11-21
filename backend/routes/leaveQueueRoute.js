@@ -12,8 +12,9 @@ router.post('/leaveQueue', async (req, res) => {
             return res.status(400).json({ message: 'Location and Firebase UID are required.' });
         }
 
-        // Get the location document reference
+        // Get the location document reference and set return message
         const locationRef = admin.firestore().collection('locations').doc(location);
+        let responseMessage = "Successfully removed from queue.";
 
         // Start a transaction
         await admin.firestore().runTransaction(async (transaction) => {
@@ -25,7 +26,11 @@ router.post('/leaveQueue', async (req, res) => {
 
             // Use the leaveQueue function to update the data
             const locationData = locationSnapshot.data();
-            await leaveQueue(locationData, firebaseUID);
+            const result = await leaveQueue(locationData, firebaseUID);
+            if (result === 204) {
+                responseMessage = "FirebaseUID was not found. Aborting /leaveQueue.";
+                return;
+            }
 
             // Write the updated data back to Firestore in the transaction
             transaction.update(locationRef, {
@@ -34,7 +39,7 @@ router.post('/leaveQueue', async (req, res) => {
             });
         });
 
-        res.status(200).json({ message: 'Successfully removed from queue.' });
+        res.status(200).json({ message: responseMessage });
     } catch (error) {
         console.error('Error removing player from queue:', error);
         res.status(500).json({ message: error.message || 'Server error' });

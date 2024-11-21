@@ -4,13 +4,11 @@ import './LocationSelection.css';
 
 const LocationSelection: React.FC = () => {
   // Sample locations list
-  const locations = ["Cassie Campbell", "Option 1", "Option 2"];
+  const locations = ["Cassie Campbell"];
 
   // State to store the selected location
   // Use this state to access the user selected location for queue purposes
-  // By default, select the first location (Cassie Campbell)
-  const [selectedLocation, setSelectedLocation] = useState<string>(locations[0]);
-
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
 
   // Hook for navigating to the next page
   const navigate = useNavigate();
@@ -48,7 +46,7 @@ const LocationSelection: React.FC = () => {
         value={selectedLocation}
         onChange={handleLocationChange}
       >
-        <option value="" disabled>Select From...</option>
+        <option value="">Select From...</option>
         {locations.map((location, index) => (
           <option key={index} value={location}>
             {location}

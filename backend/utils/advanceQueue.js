@@ -4,11 +4,6 @@
 async function advanceQueue(locationData) {
     const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames } = locationData;
 
-    // If there are no players in the queue, return early (don't advance the queue)
-    if (queueFirebaseUIDs.length === 0) {
-        return;
-    }
-
     // Keep track of current unique adjustment and the current time
     currAdjustment = 0;
     const now = new Date();

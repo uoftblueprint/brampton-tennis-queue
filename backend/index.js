@@ -21,6 +21,8 @@ const expectedWaitTimeRoute = require('./routes/expectedWaitTimeRoute');
 const addUnknownsRoute = require('./routes/addUnknownsRoute');
 const leaveQueueRoute = require('./routes/leaveQueueRoute');
 const endSessionRoute = require('./routes/endSessionRoute');
+const dynamicBufferRoute = require('./routes/dynamicBufferRoute');
+const getTakenRoute = require('./routes/getTakenRoute');
 const currentStateRoute = require('./routes/currentStateRoute');
 const joinGameRoute = require('./routes/joinGameRoute');
 const advanceQueueRoute = require('./routes/advanceQueueRoute');
@@ -31,6 +33,8 @@ app.use('/api', expectedWaitTimeRoute);  // expectedWaitTime endpoint
 app.use('/api', addUnknownsRoute);  // addUnknowns endpoint
 app.use('/api', leaveQueueRoute);  // leaveQueue endpoint
 app.use('/api', endSessionRoute);  // endSession endpoint
+app.use('/api', dynamicBufferRoute);  // dynamicBuffer endpoint
+app.use('/api', getTakenRoute); // getTaken endpoint
 app.use('/api', currentStateRoute); // currentState endpoint
 app.use('/api', joinGameRoute); // DUMMY joinGame endpoint - REPLACE WITH ACTUAL CODE IN ROUTE FILE!
 app.use('/api', advanceQueueRoute);  // advanceQueue endpoint

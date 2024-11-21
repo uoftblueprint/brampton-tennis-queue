@@ -11,9 +11,10 @@ router.post('/advanceQueue', async (req, res) => {
             return res.status(400).json({ message: "Location is required." });
         }
         
-        // Get reference to location document
+        // Get reference to location document and set return message
         const db = admin.firestore();
         const locationRef = db.collection('locations').doc(location);
+        let responseMessage = "Queue advanced successfully.";
 
         // Start transaction to update location data
         await db.runTransaction(async (transaction) => {
@@ -25,7 +26,11 @@ router.post('/advanceQueue', async (req, res) => {
 
             // Call advanceQueue function to move queue forward
             const locationData = locationSnapshot.data();
-            await advanceQueue(locationData);
+            const result = await advanceQueue(locationData);
+            if (result === 204) {
+                responseMessage = "Courts occupied or queue is empty. Aborting /advanceQueue.";
+                return;
+            }
 
             // Update location data to Firestore in transaction
             transaction.update(locationRef, {
@@ -38,7 +43,7 @@ router.post('/advanceQueue', async (req, res) => {
             });
         });
 
-        res.status(200).json({ message: "Queue advanced successfully." });
+        res.status(200).json({ message: responseMessage });
     } catch (error) {
         // If an error occurs, send an error message.
         console.error("Failed to advance queue: ", error);

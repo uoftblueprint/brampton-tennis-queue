@@ -13,8 +13,9 @@ router.post('/endSession', async (req, res) => {
             return res.status(400).json({ message: 'Location and Firebase UID are required.' });
         }
 
-        // Get the location document reference
+        // Get the location document reference and set return message
         const locationRef = admin.firestore().collection('locations').doc(location);
+        let responseMessage = "Session ended successfully and queue advanced.";
         
         // Start a transaction
         await admin.firestore().runTransaction(async (transaction) => {
@@ -26,7 +27,11 @@ router.post('/endSession', async (req, res) => {
 
             // Use the end session function to process the data
             const locationData = locationSnapshot.data();
-            await endSession(locationData, firebaseUID);
+            const result = await endSession(locationData, firebaseUID);
+            if (result === 204) {
+                responseMessage = "FirebaseUID was not found. Aborting /endSession.";
+                return;
+            }
 
             // Call advanceQueue to move the queue forward
             await advanceQueue(locationData);
@@ -42,7 +47,7 @@ router.post('/endSession', async (req, res) => {
             });
         });
   
-        res.status(200).json({ message: 'Session ended successfully and queue advanced.' });
+        res.status(200).json({ message: responseMessage });
     } catch (error) {
         console.error('Error ending session:', error);
         res.status(500).json({ error: error.message || 'Failed to end session.' });

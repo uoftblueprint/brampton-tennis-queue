@@ -4,7 +4,7 @@ async function endSession(locationData, firebaseUID) {
     // Check whether the player exists
     const playerIndex = activeFirebaseUIDs.indexOf(firebaseUID);
     if (playerIndex === -1) {
-        throw new Error('FirebaseUID not found.');
+        return 204;  // No need for update as UID does not exist
     }
 
     // Update the relevant fields
@@ -12,6 +12,7 @@ async function endSession(locationData, firebaseUID) {
     activeFirebaseUIDs[playerIndex] = newName;
     activeNicknames[playerIndex] = newName;
     activeWaitingPlayers[playerIndex] = false;
+    return 200;
 }
 
 module.exports = endSession;

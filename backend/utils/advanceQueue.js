@@ -39,7 +39,7 @@ async function advanceQueue(locationData) {
 
     // If queue was not advanced, return early (no need to call dynamicBuffer and sendWebNotification)
     if (!queueAdvanced) {
-        return;
+        return 204;  // No need for update as courts occupied or queue empty
     }
 
     // Call dynamicBuffer
@@ -50,6 +50,7 @@ async function advanceQueue(locationData) {
     //     const nextPlayerUID = queueFirebaseUIDs[0];
     //     await sendWebNotification(nextPlayerUID, 'You are now first in line!');
     // }
+    return 200;
 }
 
 module.exports = advanceQueue;

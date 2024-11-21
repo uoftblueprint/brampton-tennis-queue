@@ -1,4 +1,4 @@
-// const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer 
+const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer 
 // const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification 
 
 async function advanceQueue(locationData) {
@@ -25,7 +25,7 @@ async function advanceQueue(locationData) {
     activeWaitingPlayers[emptyCourtIdx] = false;    
 
     // Call dynamicBuffer 
-    // await dynamicBuffer(locationData);
+    await dynamicBuffer(locationData);
 
     // If queue is not empty, notify next player that they are now first in line
     // if (queueFirebaseUIDs.length > 0) {

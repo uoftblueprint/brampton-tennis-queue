@@ -26,7 +26,7 @@ const Login: React.FC = () => {
 
     // Handle Google sign-in
     const handleGoogleSignIn = () => {
-        localStorage.setItem("AddedToGame", "false"); // Reset added to game status
+        localStorage.setItem("addedToGame", "false"); // Reset added to game status
         signInWithPopup(auth, provider)
             .then((result) => {
                 const user = result.user

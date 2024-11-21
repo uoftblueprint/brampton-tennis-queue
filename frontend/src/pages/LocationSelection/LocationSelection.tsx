@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LocationSelection.css';
 
 const LocationSelection: React.FC = () => {
-  useEffect(() => {
-    localStorage.clear();  // Clear local storage on page load
-  }, []);
-
   // Sample locations list
   const locations = ["Cassie Campbell"];
 

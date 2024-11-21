@@ -1,12 +1,13 @@
-const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer 
-// const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification 
+const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer
+// const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification
+const createTimestamps = require('./createTimestamps');
 
 async function advanceQueue(locationData) {
     const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames } = locationData;
 
-    // Keep track of current unique adjustment and the current time
-    currAdjustment = 0;
-    const now = new Date();
+    // Create an array of adjusted timestamps
+    const timestamps = await createTimestamps(activeFirebaseUIDs.length);
+    let lastTimestampIdx = 0;
 
     queueAdvanced = false;
     for (let i = 0; i < activeFirebaseUIDs.length; i++) {
@@ -18,11 +19,6 @@ async function advanceQueue(locationData) {
 
         // If current court is empty, move first player in the current queue to active
         if (activeFirebaseUIDs[i].startsWith('Empty')) {
-            // Create adjusted timestamp for the new player
-            const adjustedTime = new Date(now);
-            adjustedTime.setSeconds(now.getSeconds() + currAdjustment);
-            currAdjustment -= 10;
-            
             // Get UID and nickname of first player in the current queue
             const firstQueuePlayerUID = queueFirebaseUIDs.shift();
             const firstQueuePlayerNickname = queueNicknames.shift();
@@ -30,9 +26,10 @@ async function advanceQueue(locationData) {
             // Update active data to reflect the new player
             activeFirebaseUIDs[i] = firstQueuePlayerUID; 
             activeNicknames[i] = firstQueuePlayerNickname;
-            activeStartTimes[i] = adjustedTime;
+            activeStartTimes[i] = timestamps[lastTimestampIdx];
             activeWaitingPlayers[i] = false;  
 
+            lastTimestampIdx += 1;
             queueAdvanced = true;
 
             // Notify the player that it's now their turn

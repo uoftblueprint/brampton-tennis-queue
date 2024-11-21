@@ -25,13 +25,15 @@ async function advanceQueue(locationData) {
             const firstQueuePlayerNickname = queueNicknames.shift();
             
             // Update active data to reflect the new player
-            activeFirebaseUIDs[emptyCourtIdx] = firstQueuePlayerUID; 
-            activeNicknames[emptyCourtIdx] = firstQueuePlayerNickname;
-            activeStartTimes[emptyCourtIdx] = new Date();
-            activeWaitingPlayers[emptyCourtIdx] = false;  
+            activeFirebaseUIDs[i] = firstQueuePlayerUID; 
+            activeNicknames[i] = firstQueuePlayerNickname;
+            activeStartTimes[i] = new Date();
+            activeWaitingPlayers[i] = false;  
 
-            await sendWebNotification(firstQueuePlayerUID, `It\'s now your turn at court ${i + 1}!`);
             queueAdvanced = true;
+
+            // Notify the player that it's now their turn
+            // await sendWebNotification(firstQueuePlayerUID, `It\'s now your turn at court ${i + 1}!`);
         }
     }
 

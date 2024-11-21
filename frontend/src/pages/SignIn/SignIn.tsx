@@ -26,8 +26,14 @@ const Login: React.FC = () => {
 
     // Handle Google sign-in
     const handleGoogleSignIn = () => {
+        localStorage.setItem("AddedToGame", "false"); // Reset added to game status
         signInWithPopup(auth, provider)
-            .then(() => {
+            .then((result) => {
+                const user = result.user
+                console.log("user", user)
+
+                localStorage.setItem("firebaseUID", user.uid); // Store user UID in local storage
+                setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
                 navigate("/active-view"); // Navigate to active view on success
             })
             .catch(() => {

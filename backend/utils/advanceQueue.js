@@ -9,22 +9,38 @@ async function advanceQueue(locationData) {
         return;
     }
 
-    // Get empty court index, and validate
-    const emptyCourtIdx = activeFirebaseUIDs.findIndex((firebaseUID) => firebaseUID.startsWith('Empty'));
-    // if there are no empty courts, emptyCourtIdx will be -1 (don't advance the queue)
-    if (emptyCourtIdx === -1) { 
+    // // If there are still empty courts, advance the queue further
+    queueAdvanced = false;
+    for (let i = 0; i < activeFirebaseUIDs.length; i++) {
+        
+        // If there are no more players in the queue, return early (don't advance the queue further)
+        if (queueFirebaseUIDs.length === 0) {
+            break;
+        }
+
+        // If current court is empty, move first player in the current queue to active
+        if (activeFirebaseUIDs[i].startsWith('Empty')) {
+            // Get UID and nickname of first player in the current queue
+            const firstQueuePlayerUID = queueFirebaseUIDs.shift();
+            const firstQueuePlayerNickname = queueNicknames.shift();
+            
+            // Update active data to reflect the new player
+            activeFirebaseUIDs[emptyCourtIdx] = firstQueuePlayerUID; 
+            activeNicknames[emptyCourtIdx] = firstQueuePlayerNickname;
+            activeStartTimes[emptyCourtIdx] = new Date();
+            activeWaitingPlayers[emptyCourtIdx] = false;  
+
+            await sendWebNotification(firstQueuePlayerUID, `It\'s now your turn at court ${i + 1}!`);
+            queueAdvanced = true;
+        }
+    }
+
+    // If queue was not advanced, return early (no need to call dynamicBuffer and sendWebNotification)
+    if (!queueAdvanced) {
         return;
     }
 
-    // Move first player in the queue to active
-    const firstPlayerUID = queueFirebaseUIDs.shift();
-    const firstPlayerNickname = queueNicknames.shift();
-    activeFirebaseUIDs[emptyCourtIdx] = firstPlayerUID; 
-    activeNicknames[emptyCourtIdx] = firstPlayerNickname;
-    activeStartTimes[emptyCourtIdx] = new Date();
-    activeWaitingPlayers[emptyCourtIdx] = false;    
-
-    // Call dynamicBuffer 
+    // Call dynamicBuffer
     // await dynamicBuffer(locationData);
 
     // If queue is not empty, notify next player that they are now first in line

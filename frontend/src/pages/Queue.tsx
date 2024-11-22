@@ -2,6 +2,7 @@ import LocationSelection from "./LocationSelection/LocationSelection";
 import { useState, useEffect, useRef } from "react";
 import { getExpectedWaitTime } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 
 const Queue = () => {
   const [waitTime, setWaitTime] = useState<number | null>(null);
@@ -23,13 +24,14 @@ const Queue = () => {
       if (cachedWaitTime && cacheAge !== null && cacheAge < CACHE_EXPIRY_THRESHOLD) {
         const cachedTime = parseFloat(cachedWaitTime);
         setWaitTime(cachedTime);
-        setIsQueueFull(cachedTime >= 5);
+        setIsQueueFull(cachedTime >= 2.5);
 
         // Schedule cache expiry if the user remains on the page
         const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
         cacheExpiryTimeoutRef.current = setTimeout(() => {
           localStorage.removeItem("expectedWaitTime");
           localStorage.removeItem("expectedWaitTimeLastCheckTime");
+          if (selectedLocation) fetchWaitTime();
         }, timeTillCacheExpiry);
       } else {
         try {
@@ -38,7 +40,7 @@ const Queue = () => {
           const expectedWaitTime = data.expectedWaitTime;
 
           setWaitTime(expectedWaitTime);
-          setIsQueueFull(expectedWaitTime >= 5);
+          setIsQueueFull(expectedWaitTime >= 2.5);
 
           // Cache the updated data
           localStorage.setItem("expectedWaitTime", expectedWaitTime.toString());
@@ -48,6 +50,7 @@ const Queue = () => {
           cacheExpiryTimeoutRef.current = setTimeout(() => {
             localStorage.removeItem("expectedWaitTime");
             localStorage.removeItem("expectedWaitTimeLastCheckTime");
+            if (selectedLocation) fetchWaitTime();
           }, CACHE_EXPIRY_THRESHOLD);
         } catch (error) {
           console.error("Failed to fetch expected wait time:", error);
@@ -55,15 +58,31 @@ const Queue = () => {
       }
     };
 
-    // Fetch wait time if a location is selected
-    if (selectedLocation) fetchWaitTime();
-
-    // Cleanup function to clear timeout on unmount
-    return () => {
+    // Function to stop cache expiry timer
+    const stopUpdating = () => {
       if (cacheExpiryTimeoutRef.current) {
         clearTimeout(cacheExpiryTimeoutRef.current);
         cacheExpiryTimeoutRef.current = null;
       }
+    };
+
+    // Define a debounced visibility change handler
+    const handleVisibilityChange = debounce(() => {
+      if (document.visibilityState === 'visible') {
+        if (selectedLocation) fetchWaitTime();  // Fetch data when page is visible
+      } else {
+        stopUpdating();   // Stop updates when page is hidden
+      }
+    }, 300);
+
+    // Fetch wait time if a location is selected
+    if (selectedLocation) fetchWaitTime();
+
+    // Setup visibility listener and cleanup on unmount
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      stopUpdating();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [selectedLocation]);
   

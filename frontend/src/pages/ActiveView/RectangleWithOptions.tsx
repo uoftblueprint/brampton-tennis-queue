@@ -21,12 +21,12 @@ const BUTTON_TEXT = {
 };
 
 const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
-  nickname,
-  firebaseUID,
-  userFirebaseUID,
-  userInQueue,
-  inQueue,
-  location,
+  nickname = "",
+  firebaseUID = "",
+  userFirebaseUID = "",
+  userInQueue = false,
+  inQueue = false,
+  location = "",
 }) => {
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);  // Track modal visibility
@@ -59,7 +59,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   // Determines if the button should be ignored based on the UID and queue status
   const shouldIgnoreButton = () => {
     return (
-      firebaseUID.startsWith("Empty") ||  // Ignore empty courts
+      (firebaseUID && firebaseUID.startsWith("Empty")) ||  // Ignore empty courts
       (inQueue && firebaseUID !== userFirebaseUID) ||  // Ignore queue for other players
       (!userInQueue && firebaseUID !== userFirebaseUID)  // If user is active, ignore everything except their own court
     );

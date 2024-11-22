@@ -17,14 +17,11 @@ const ActiveView: React.FC = () => {
   const firebaseUID =  localStorage.getItem('firebaseUID');
   const nickname = localStorage.getItem('nickname');
 
-  console.log(firebaseUID)
-  console.log(nickname)
-
   const [loading, setLoading] = useState<boolean>(true);  // Initially set loading to true
   const [showCheckboxModal, setShowCheckboxModal] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
-  const [onConfirmCallback, setOnConfirmCallback] = useState<(() => void) | null>(null);
+  const [onConfirmCallback, setOnConfirmCallback] = useState<(() => Promise<void>) | null>(null);
 
   const navigate = useNavigate();
 
@@ -40,11 +37,7 @@ const ActiveView: React.FC = () => {
   }, []);
 
   const initializeGame = async () => {
-    console.log('initializeGame')
-
     const addedToGame = localStorage.getItem('addedToGame') === 'true';
-
-    console.log(addedToGame)
 
     if (!addedToGame) {
       setLoading(true);
@@ -63,10 +56,6 @@ const ActiveView: React.FC = () => {
     try {
       // Step 1: Call /getTaken to check if update is required
       const { updateRequired, takenCourts, numberOfCourts } = await getTaken(location);
-
-      console.log(updateRequired)
-      console.log(takenCourts)
-      console.log(numberOfCourts)
 
       if (!updateRequired) {
         // If no update is required, directly proceed to join game
@@ -98,10 +87,13 @@ const ActiveView: React.FC = () => {
       const occupiedCourts = selectedOptions.filter((opt) => opt.checked).map((opt) => opt.value);
 
       // Step 4: Show confirmation modal before calling /addUnknowns
-      setOnConfirmCallback(async () => {
-        await addUnknowns(location, occupiedCourts);
-        console.log('Courts updated.');
-        await handleJoinGame(); // Proceed to join game
+      setOnConfirmCallback(() => async () => {
+        try {
+          await addUnknowns(location, occupiedCourts);
+          console.log('Courts updated.');
+        } catch (error) {
+          console.error('Error updating courts or joining game:', error);
+        }
       });
       setShowConfirmation(true);
     } catch (error) {
@@ -136,7 +128,7 @@ const ActiveView: React.FC = () => {
 
   // Cancel the confirmation modal
   const handleCancelAction = () => setShowConfirmation(false);
-
+  
   return (
     <div className="active-view">
       {loading ? <p>Loading...</p> : <CurrentState />}

@@ -56,7 +56,3 @@ router.post('/joinGame', async (req, res) => {
 });
 
 module.exports = router;
-
-
-
-

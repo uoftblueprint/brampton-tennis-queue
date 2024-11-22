@@ -4,12 +4,13 @@ async function leaveQueue(locationData, firebaseUID) {
     // Check whether the player exists
     const playerIndex = queueFirebaseUIDs.indexOf(firebaseUID);
     if (playerIndex === -1) {
-        throw new Error('FirebaseUID not found in queue.');
+        return 204;  // No need for update as UID does not exist
     }
 
     // Update the relevant fields
     queueFirebaseUIDs.splice(playerIndex, 1);
     queueNicknames.splice(playerIndex, 1);
+    return 200;
 }
 
 module.exports = leaveQueue;

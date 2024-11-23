@@ -1,5 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom';
-import './App.css';
+import { Routes, Route } from 'react-router-dom';
 import NotFound from './pages/NotFound';
 import LocationSelection from './pages/LocationSelection/LocationSelection'
 import UserInfo from './pages/UserInfo/UserInfoForm';
@@ -12,7 +11,6 @@ function App() {
     <> 
       {/* Navigation Links */}
       <nav>
-        <Link to="/">Home</Link>
       </nav>
 
       {/* Define Routes */}

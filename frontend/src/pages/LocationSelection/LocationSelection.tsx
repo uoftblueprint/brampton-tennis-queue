@@ -32,27 +32,28 @@ const LocationSelection: React.FC = () => {
     <div className="location-selection">
 
       {/* Page heading */}
-      <h2 className="title">Brampton Tennis Queue</h2>
+      <h2 className="title"><span>Brampton</span><br/>Tennis Queue</h2>
       {/* Label for Selecting location */}
-      <label htmlFor="locationDropdown" className="label">
-        Select Community Centre
-      </label>
-      <br></br>
+      <div id='selection-container'>
+        <label htmlFor="locationDropdown" className="label">
+          Select Community Centre
+        </label>
 
-      {/* Select dropdown menu */}
-      <select
-        id="locationDropdown"
-        className="dropdown"
-        value={selectedLocation}
-        onChange={handleLocationChange}
-      >
-        <option value="">Select From...</option>
-        {locations.map((location, index) => (
-          <option key={index} value={location}>
-            {location}
-          </option>
-        ))}
-      </select>
+        {/* Select dropdown menu */}
+        <select
+          id="locationDropdown"
+          className="dropdown"
+          value={selectedLocation}
+          onChange={handleLocationChange}
+        >
+          <option value="">Select from...</option>
+          {locations.map((location, index) => (
+            <option key={index} value={location}>
+              {location}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Simple Next Page Button */}
       <button 

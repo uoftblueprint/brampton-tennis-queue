@@ -17,7 +17,7 @@ interface RectangleWithOptionsProps {
 const BUTTON_TEXT = {
   OWN_SESSION: "End your session?",
   IN_QUEUE: "Leave the queue?",
-  LEFT_EARLY: "No-show? / Player left early?"
+  LEFT_EARLY: "Report Empty"
 };
 
 const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({

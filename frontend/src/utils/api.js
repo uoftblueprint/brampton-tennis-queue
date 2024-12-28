@@ -115,6 +115,35 @@ export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay =
 };
 
 
+// Send a reminder to an active player with the /sendWebNotification  endpoint
+export const sendWebNotification = async (locationName, firebaseUID, message, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/sendWebNotification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+        firebaseUID: firebaseUID,
+        message: message,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to send web notification.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying sendWebNotification (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
+      return await leaveQueue(locationName, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+    }
+    console.error("Error leaving queue:", error);
+    return null;
+  }
+};
+
+
 // ** UTILITY FUNCTION TO CREATE FIRESTORE LISTENER **
 
 // Subscribe to Firestore snapshot for a specific location document

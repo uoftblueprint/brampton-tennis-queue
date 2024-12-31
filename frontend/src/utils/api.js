@@ -136,9 +136,9 @@ export const sendWebNotification = async (locationName, firebaseUID, message, re
     if (retries > 0) {
       console.log(`Retrying sendWebNotification (${retries} retries left)...`);
       await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await leaveQueue(locationName, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+      return await sendWebNotification(locationName, firebaseUID, message, retries - 1, delay * 2);  // Up to 3 retries
     }
-    console.error("Error leaving queue:", error);
+    console.error("Error sending web notification:", error);
     return null;
   }
 };

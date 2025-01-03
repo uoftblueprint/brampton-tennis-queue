@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";  // For navigation
 import { leaveQueue, endSession, sendWebNotification } from "../../utils/api";  // Import utility functions
 import ConfirmationModal from "./ConfirmationModal";  // Import modal
 import "./RectangleWithOptions.css";
+import { LocalStorageContext } from "../../context/LocalStorageContext";
 
 interface RectangleWithOptionsProps {
   nickname: string;
   firebaseUID: string;
-  userFirebaseUID: string;
-  userInQueue: boolean;
   inQueue: boolean;
-  location: string;
 }
 
 // Button text constants
@@ -28,17 +26,19 @@ const ACTIONS = {
   END_SESSION: "endSession",
   END_OTHER_SESSION: "endOtherSession",
   SEND_WEB_REMINDER: "sendWebReminder",
-  
 }
 
 const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   nickname,
   firebaseUID,
-  userFirebaseUID,
-  userInQueue,
   inQueue,
-  location,
 }) => {
+  const context = useContext(LocalStorageContext);
+
+  const userFirebaseUID = context.firebaseUID;
+  const userInQueue = context.inQueue;
+  const location = context.selectedLocation;
+
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);  // Track modal visibility
   const [actionToConfirm, setActionToConfirm] = useState("");  // Track the action to confirm
@@ -142,7 +142,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
       // Navigate only if the action was related to the user's own session or leaving the queue
       if (actionToConfirm === "leaveQueue" || actionToConfirm === "endSession") {
         setTimeout(() => {
-          localStorage.clear();  // Clear local storage
+          context.clear();  // Clear local storage
           navigate("/");  // After closing the modal, navigate to the home page
         }, 300); // Optional: small delay to ensure smooth transition
       }

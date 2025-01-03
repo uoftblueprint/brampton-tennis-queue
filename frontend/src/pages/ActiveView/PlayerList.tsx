@@ -1,15 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import RectangleWithOptions from "./RectangleWithOptions";
 import "./PlayerList.css";
+import { LocalStorageContext } from "../../context/LocalStorageContext";
 
 interface PlayerListProps {
   activePlayers: string[];
   queuePlayers: string[];
   activeFirebaseUIDs: string[];
   queueFirebaseUIDs: string[];
-  userFirebaseUID: string;
-  userInQueue: boolean;
-  location: string;
 }
 
 const PlayerList: React.FC<PlayerListProps> = ({
@@ -17,9 +15,6 @@ const PlayerList: React.FC<PlayerListProps> = ({
   queuePlayers,
   activeFirebaseUIDs,
   queueFirebaseUIDs,
-  userFirebaseUID,
-  userInQueue,
-  location,
 }) => {
   // Function to clean up nicknames
   const formatNickname = (nickname: string) => {
@@ -39,10 +34,7 @@ const PlayerList: React.FC<PlayerListProps> = ({
               key={index}
               nickname={formatNickname(nickname)}
               firebaseUID={activeFirebaseUIDs[index]}
-              userFirebaseUID={userFirebaseUID}
-              userInQueue={userInQueue}
               inQueue={false}
-              location={location}
             />
           ))}
         </div>
@@ -56,10 +48,7 @@ const PlayerList: React.FC<PlayerListProps> = ({
                 key={index}
                 nickname={formatNickname(nickname)}
                 firebaseUID={queueFirebaseUIDs[index]}
-                userFirebaseUID={userFirebaseUID}
-                userInQueue={userInQueue}
                 inQueue={true}
-                location={location}
               />
             ))
           ) : (

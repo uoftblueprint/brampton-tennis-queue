@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UserInfoForm.css';
 import ConfirmationModal from './ConfirmationModal';
+import { LocalStorageContext } from '../../context/LocalStorageContext';
 
 const UserInfo: React.FC = () => {
+  const context = useContext(LocalStorageContext);
+
   // State for nickname input field
   const [nickname, setNickname] = useState<string>('');
   const [groupSize, setGroupSize] = useState<string>('');
@@ -105,7 +108,7 @@ const UserInfo: React.FC = () => {
   const handleConfirm = () => {
     setShowModal(false); // Close the modal
     const nicknameWithGroup = `${nickname} +${Number(groupSize) - 1}`;
-    localStorage.setItem('nickname', nicknameWithGroup);
+    context.setNickname(nicknameWithGroup);
     // we are explicitly choosing NOT to save groupSize to local storage
     navigate('/sign-in'); // Navigate to the next page
   };

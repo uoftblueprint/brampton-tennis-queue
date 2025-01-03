@@ -2,26 +2,29 @@ import React, { createContext, useState, useEffect } from 'react';
 
 // INFO: All possible props in this context
 const UserInfoEnum = {
-    selectedLocation: "selectedLocation",
-    firebaseUID: "firebaseUID",
-    nickname: "nickname",
-    addedToGame: "addedToGame",
-    inQueue: "inQueue",
-    playerData: "playerData",
-    playerDataLastUpdateTime: "playerDataLastUpdateTime",
+  selectedLocation: "selectedLocation",
+  firebaseUID: "firebaseUID",
+  nickname: "nickname",
+  addedToGame: "addedToGame",
+  inQueue: "inQueue",
+  playerData: "playerData",
+  playerDataLastUpdateTime: "playerDataLastUpdateTime",
 };
 
 // Context for why this type is set to any: https://stackoverflow.com/a/74967045
-export const LocalStorageContext = createContext<any>({});
+export const LocalStorageContext = createContext<any>({
+  
+});
 
-export function LocalStorageProvider({ children }) {
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [firebaseUID, setFirebaseUID] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [addedToGame, setAddedToGame] = useState(false);
-  const [inQueue, setInQueue] = useState(false);
-  const [playerData, setPlayerData] = useState({});
-  const [playerDataLastUpdateTime, setPlayerDataLastUpdateTime] = useState('');
+export function LocalStorageProvider( { children } ) {
+  //  Pull default context from local storage to persist on page reload
+  const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(UserInfoEnum.selectedLocation) || '');
+  const [firebaseUID, setFirebaseUID] = useState(localStorage.getItem(UserInfoEnum.firebaseUID) || '');
+  const [nickname, setNickname] = useState(localStorage.getItem(UserInfoEnum.nickname) || '');
+  const [addedToGame, setAddedToGame] = useState(localStorage.getItem(UserInfoEnum.addedToGame) === 'true' ? true : false);
+  const [inQueue, setInQueue] = useState(localStorage.getItem(UserInfoEnum.inQueue) === 'true' ? true : false);
+  const [playerData, setPlayerData] = useState(localStorage.getItem(UserInfoEnum.playerData) ? JSON.parse(localStorage.getItem(UserInfoEnum.playerData)!) : '');
+  const [playerDataLastUpdateTime, setPlayerDataLastUpdateTime] = useState(localStorage.getItem(UserInfoEnum.playerDataLastUpdateTime) || '');
 
   // Initialize state from localStorage
   useEffect(() => {
@@ -43,40 +46,51 @@ export function LocalStorageProvider({ children }) {
   }, []);
 
   // Helper functions to update both context and localStorage
-  const updateSelectedLocation = (value) => {
+  const updateSelectedLocation = (value: string) => {
     setSelectedLocation(value);
     localStorage.setItem(UserInfoEnum.selectedLocation, value);
   };
 
-  const updateFirebaseUID = (value) => {
+  const updateFirebaseUID = (value: string) => {
     setFirebaseUID(value);
     localStorage.setItem(UserInfoEnum.firebaseUID, value);
   };
   
-  const updateNickname = (value) => {
+  const updateNickname = (value: string) => {
     setNickname(value);
     localStorage.setItem(UserInfoEnum.nickname, value);
   };
 
-  const updateAddedToGame = (value) => {
+  const updateAddedToGame = (value: boolean) => {
     setAddedToGame(value);
-    localStorage.setItem(UserInfoEnum.addedToGame, value);
+    localStorage.setItem(UserInfoEnum.addedToGame, value.toString());
   };
 
-  const updateInQueue = (value) => {
+  const updateInQueue = (value: boolean) => {
     setInQueue(value);
     localStorage.setItem(UserInfoEnum.inQueue, value.toString());
   };
   
-  const updatePlayerData = (value) => {
+  const updatePlayerData = (value: string) => {
     setPlayerData(value);
     localStorage.setItem(UserInfoEnum.playerData, value);
   };
 
-  const updatePlayerDataLastUpdateTime = (value) => {
+  const updatePlayerDataLastUpdateTime = (value: string) => {
     setPlayerDataLastUpdateTime(value);
     localStorage.setItem(UserInfoEnum.playerDataLastUpdateTime, value);
   };
+
+  const clear = () => {
+    setSelectedLocation('');
+    setFirebaseUID('');
+    setNickname('');
+    setAddedToGame(false);
+    setInQueue(false);
+    setPlayerData({});
+    setPlayerDataLastUpdateTime('');
+    localStorage.clear();
+  }
 
   return (
     <LocalStorageContext.Provider
@@ -95,6 +109,7 @@ export function LocalStorageProvider({ children }) {
         setPlayerData: updatePlayerData,
         playerDataLastUpdateTime,
         setPlayerDataLastUpdateTime: updatePlayerDataLastUpdateTime,
+        clear: clear,
       }}
     >
       {children}

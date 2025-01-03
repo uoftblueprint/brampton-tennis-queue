@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { auth } from "../../firebase";
 import {
     signInWithPopup,
@@ -12,7 +12,11 @@ import "./SignIn.css";
 // Import Google icon
 import googleIcon from "../../assets/google-icon.svg";
 
+import { LocalStorageContext } from "../../context/LocalStorageContext";
+
 const Login: React.FC = () => {
+    const context = useContext(LocalStorageContext);
+
     const provider = new GoogleAuthProvider(); // Google authentication provider
 
     // State management for inputs and toggles
@@ -26,13 +30,13 @@ const Login: React.FC = () => {
 
     // Handle Google sign-in
     const handleGoogleSignIn = () => {
-        localStorage.setItem("addedToGame", "false"); // Reset added to game status
+        context.setAddedToGame(false); // Reset added to game status
         signInWithPopup(auth, provider)
             .then((result) => {
                 const user = result.user
                 console.log("user", user)
 
-                localStorage.setItem("firebaseUID", user.uid); // Store user UID in local storage
+                context.setFirebaseUID(user.uid); // Store user UID in local storage
                 setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
                 navigate("/active-view"); // Navigate to active view on success
             })
@@ -110,14 +114,14 @@ const Login: React.FC = () => {
                 }
                 setErrorMessage(errorMsg); // Update error message
             });
-        localStorage.setItem("addedToGame", "false");
+        context.setAddedToGame(false);
         signInWithPopup(auth, provider)
         .then((result) => {
             const user = result.user;
             console.log("User: ", user);
             // Set authenticated state to true
-            setIsAuthenticated(true);
-            localStorage.setItem("firebaseUID", user.uid);
+            // setIsAuthenticated(true);
+            context.setFirebaseUID(user.uid);
             setTimeout(() => {}, 1000);
             navigate('/active-view'); // Navigate to the next page
         }).catch((error) => {

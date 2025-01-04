@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { auth } from "../../firebase";
 import {
     signInWithPopup,
+    signInWithRedirect,
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    getRedirectResult,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
@@ -25,21 +27,65 @@ const Login: React.FC = () => {
     const navigate = useNavigate(); // Navigation hook for redirecting
 
     // Handle Google sign-in
-    const handleGoogleSignIn = () => {
-        localStorage.setItem("addedToGame", "false"); // Reset added to game status
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                const user = result.user
-                console.log("user", user)
+    // const handleGoogleSignIn = () => {
+    //     localStorage.setItem("addedToGame", "false"); // Reset added to game status
+    //     signInWithPopup(auth, provider)
+    //         .then((result) => {
+    //             const user = result.user
+    //             console.log("user", user)
 
-                localStorage.setItem("firebaseUID", user.uid); // Store user UID in local storage
-                setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
-                navigate("/active-view"); // Navigate to active view on success
-            })
-            .catch(() => {
-                setErrorMessage("Google sign-in failed. Please try again."); // Set error message
-            });
+    //             localStorage.setItem("firebaseUID", user.uid); // Store user UID in local storage
+    //             setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
+    //             navigate("/active-view"); // Navigate to active view on success
+    //         })
+    //         .catch(() => {
+    //             setErrorMessage("Google sign-in failed. Please try again."); // Set error message
+    //         });
+    // };
+
+    // Handle Google sign-in
+    const handleGoogleSignIn = () => {
+        try {
+            // Safely set local storage
+            try {
+                localStorage.setItem("addedToGame", "false"); // Reset added-to-game status
+            } catch (error) {
+                console.warn("Unable to access localStorage:", error);
+            }
+            // Trigger redirect
+            signInWithRedirect(auth, provider);
+        } catch (error) {
+            console.error("Sign-in redirect failed:", error);
+            setErrorMessage("Google sign-in failed. Please try again.");
+        }
     };
+    
+
+    // Handle redirect result after the app reinitializes
+    // useEffect(() => {
+    //     const handleRedirectResult = async () => {
+    //         try {
+    //             const result = await getRedirectResult(auth); // Fetch redirect result
+    //             if (result && result.user) {
+    //                 const user = result.user;
+    //                 console.log("Signed-in user:", user);
+
+    //                 localStorage.setItem("firebaseUID", user.uid); // Store user UID
+    //                 navigate("/active-view"); // Navigate to the active view
+    //             }
+    //         } catch (error) {
+    //             console.error("Error handling redirect result:", error);
+    //             setErrorMessage("Failed to complete Google sign-in.");
+    //         }
+    //     };
+
+    //     handleRedirectResult();
+    // }, [navigate]);
+
+    // const handleGoogleSignIn = () => {
+    //     localStorage.setItem("addedToGame", "false"); // Reset added to game status
+    //     signInWithRedirect(auth, provider)
+    // }
 
     // Validate email format
     const isValidEmail = (email: string) => {
@@ -116,7 +162,7 @@ const Login: React.FC = () => {
             const user = result.user;
             console.log("User: ", user);
             // Set authenticated state to true
-            setIsAuthenticated(true);
+            // setIsAuthenticated(true);
             localStorage.setItem("firebaseUID", user.uid);
             setTimeout(() => {}, 1000);
             navigate('/active-view'); // Navigate to the next page

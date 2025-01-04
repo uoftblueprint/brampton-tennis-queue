@@ -51,65 +51,70 @@ const Login: React.FC = () => {
     };
 
     // Handle email-based authentication
-    const handleEmailAuth = (e: React.FormEvent) => {
-        e.preventDefault(); 
-        setEmailError(""); 
-        setPasswordError(""); 
-        setErrorMessage("");
+const handleEmailAuth = (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailError(""); 
+    setPasswordError(""); 
+    setErrorMessage("");
 
-        let isValid = true;
+    let isValid = true;
 
-        if (!isValidEmail(email)) {
-            setEmailError("Invalid email format. Please enter a valid email address.");
-            isValid = false;
-        }
+    if (!isValidEmail(email)) {
+        setEmailError("Invalid email format. Please enter a valid email address.");
+        isValid = false;
+    }
 
-        if (!isValidPassword(password)) {
-            setPasswordError("Password must be at least 8 characters long.");
-            isValid = false;
-        }
+    if (!isValidPassword(password)) {
+        setPasswordError("Password must be at least 8 characters long.");
+        isValid = false;
+    }
 
-        if (!isValid) return;
+    if (!isValid) return;
 
-        const authFunction = isSigningUp
-            ? createUserWithEmailAndPassword
-            : signInWithEmailAndPassword;
+    const authFunction = isSigningUp
+        ? createUserWithEmailAndPassword
+        : signInWithEmailAndPassword;
 
-        authFunction(auth, email, password)
-            .then(() => {
-                navigate("/active-view"); // Navigate to active view on success if sign-in or sign-up is successful
-            })
-            // Handle Firebase errors if authentication fails
-            .catch((error) => {
-                let errorMsg = "An unexpected error occurred. Please try again.";
-                switch (error.code) {
-                    case "auth/email-already-in-use":
-                        errorMsg = "This email is already in use. Please try signing in instead.";
-                        break;
-                    case "auth/invalid-email":
-                        errorMsg = "Invalid email address. Please try again.";
-                        break;
-                    case "auth/weak-password":
-                        errorMsg = "Weak password. Choose a stronger one.";
-                        break;
-                    case "auth/wrong-password":
-                        errorMsg = "Incorrect password. Please try again.";
-                        break;
-                    case "auth/user-not-found":
-                        errorMsg = "No account found. Please sign up.";
-                        break;
-                    case "auth/network-request-failed":
-                        errorMsg = "Network error. Check your connection.";
-                        break;
-                    case "auth/invalid-credential":
-                        errorMsg = "Invalid credentials. Try again.";
-                        break;
-                    default:
-                        errorMsg = error.message; // Default error message
-                        break;
-                }
-                setErrorMessage(errorMsg); // Update error message
-            });
+    authFunction(auth, email, password)
+        .then((userCredential) => {
+            localStorage.setItem("addedToGame", "false");
+            const user = userCredential.user; // This is the user object
+            console.log("User UID:", user.uid); // This is the user's UID
+            localStorage.setItem("firebaseUID", user.uid); // Store the UID in localStorage if needed
+            console.log("User:", user);
+            navigate("/active-view"); // Navigate to the next page
+        })
+        // Handle Firebase errors if authentication fails
+        .catch((error) => {
+            let errorMsg = "An unexpected error occurred. Please try again.";
+            switch (error.code) {
+                case "auth/email-already-in-use":
+                    errorMsg = "This email is already in use. Please try signing in instead.";
+                    break;
+                case "auth/invalid-email":
+                    errorMsg = "Invalid email address. Please try again.";
+                    break;
+                case "auth/weak-password":
+                    errorMsg = "Weak password. Choose a stronger one.";
+                    break;
+                case "auth/wrong-password":
+                    errorMsg = "Incorrect password. Please try again.";
+                    break;
+                case "auth/user-not-found":
+                    errorMsg = "No account found. Please sign up.";
+                    break;
+                case "auth/network-request-failed":
+                    errorMsg = "Network error. Check your connection.";
+                    break;
+                case "auth/invalid-credential":
+                    errorMsg = "Invalid credentials. Try again.";
+                    break;
+                default:
+                    errorMsg = error.message; // Default error message
+                    break;
+            }
+            setErrorMessage(errorMsg); // Update error message
+        });
     };
 
     return (

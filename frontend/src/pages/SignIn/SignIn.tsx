@@ -169,7 +169,7 @@ const handleEmailAuth = (e: React.FormEvent) => {
                     {isSigningUp ? "Sign In" : "Sign Up"}
                 </span>
             </p>
-
+            <br></br>
             {/* Google sign-in button */}
             <div className="google-signin-container">
                 <button className="button google-signin-button" onClick={handleGoogleSignIn}>

@@ -1,53 +1,58 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
+const joinGame = require('../utils/joinGame'); // Import the joinGame utility
+const dynamicBuffer = require('../utils/dynamicBuffer'); // Import dynamicBuffer utility
 
-// DUMMY - Join Game Endpoint
-/* ONLY FOR TESTING PURPOSES DO NOT USE! 
-Wrong becase:
-- Only adds to queue
-- Does NOT use modular style
-- Does NOT use transaction
-- Does NOT add to active and set start time and player waiting false for active
-- Does NOT check MAX BOUND of 5 queue size
-*/
 router.post('/joinGame', async (req, res) => {
     try {
-        // Extract location, nickname and firebaseUID from the request body
-        const { location, nickname, firebaseUID } = req.body;
-        if (!location || !firebaseUID || firebaseUID.toLowerCase().startsWith("empty")) {
-            return res.status(400).json({ message: 'Location and Firebase UID are required.' });
+        const { location, firebaseUID, nickname } = req.body;
+
+        if (!location || !firebaseUID || !nickname || firebaseUID.toLowerCase().startsWith('empty')) {
+            return res.status(400).json({ message: 'Location, UID, and nickname are required.' });
         }
 
-        // Get the location document snapshot
-        const locationRef = admin.firestore().collection('locations').doc(location);
-        const locationSnapshot = await locationRef.get();
-        if (!locationSnapshot.exists) {
-            return res.status(404).json({ message: 'Location not found.' });
-        }
+        const db = admin.firestore();
+        const locationRef = db.collection('locations').doc(location);
 
-        // Access relevant arrays
-        const locationData = locationSnapshot.data();
-        const { queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
+        let responseMessage;
+        let success = true;
 
-        // Add player to end of queue
-        queueFirebaseUIDs.push(firebaseUID);
-        queueNicknames.push(nickname);
-        // Add timestamp for join time to queueJoinTimes array of thi format 2024-11-19T12:30:00Z
-        queueJoinTimes.push(new Date());
+        await db.runTransaction(async (transaction) => {
+            const locationSnapshot = await transaction.get(locationRef);
+            if (!locationSnapshot.exists) {
+                throw new Error('Location not found.');
+            }
 
-        // Write new data to Firestore
-        await locationRef.update({
-            queueFirebaseUIDs: queueFirebaseUIDs,
-            queueNicknames: queueNicknames,
-            queueJoinTimes: queueJoinTimes,
+            const locationData = locationSnapshot.data();
+
+            // Call the joinGame utility to process locationData
+            const result = await joinGame(locationData, firebaseUID, nickname);
+            success = result.success;
+            responseMessage = result.message;
+
+            if (!success) return; // Abort transaction if queue is full
+
+            // Write the updated locationData back to Firestore
+            transaction.update(locationRef, {
+                activeFirebaseUIDs: locationData.activeFirebaseUIDs,
+                activeNicknames: locationData.activeNicknames,
+                activeStartTimes: locationData.activeStartTimes,
+                activeWaitingPlayers: locationData.activeWaitingPlayers,
+                queueFirebaseUIDs: locationData.queueFirebaseUIDs,
+                queueNicknames: locationData.queueNicknames,
+            });
         });
-  
-        res.status(200).json({ status: 'queue' });
+
+        if (success) {
+            await dynamicBuffer(location); // Call dynamicBuffer after transaction
+        }
+
+        res.status(200).json({ success, message: responseMessage });
     } catch (error) {
         console.error('Error joining game:', error);
-        res.status(500).json({ error: 'Failed to join game.' });
+        res.status(500).json({ success: false, message: 'Failed to join game.', error: error.message });
     }
 });
-  
+
 module.exports = router;

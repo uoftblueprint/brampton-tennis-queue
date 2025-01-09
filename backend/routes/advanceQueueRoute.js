@@ -26,7 +26,7 @@ router.post('/advanceQueue', async (req, res) => {
 
             // Call advanceQueue function to move queue forward
             const locationData = locationSnapshot.data();
-            const result = await advanceQueue(locationData);
+            const result = await advanceQueue(locationData, location);
             if (result === 204) {
                 responseMessage = "Courts occupied or queue is empty. Aborting /advanceQueue.";
                 return;

@@ -40,13 +40,14 @@ router.post('/joinGame', async (req, res) => {
                 activeStartTimes: locationData.activeStartTimes,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
                 queueFirebaseUIDs: locationData.queueFirebaseUIDs,
+                queueJoinTimes: locationData.queueJoinTimes,
                 queueNicknames: locationData.queueNicknames,
             });
+            
+            if (success) {
+                await dynamicBuffer(locationData); // Call dynamicBuffer after transaction
+            }
         });
-
-        if (success) {
-            await dynamicBuffer(location); // Call dynamicBuffer after transaction
-        }
 
         res.status(200).json({ success, message: responseMessage });
     } catch (error) {

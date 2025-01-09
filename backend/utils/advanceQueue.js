@@ -1,8 +1,9 @@
 const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer
 // const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification
 const createTimestamps = require('./createTimestamps');
+const recordWaitTime = require('./recordWaitTime');
 
-async function advanceQueue(locationData) {
+async function advanceQueue(locationData, location) {
     const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
 
     // Create an array of adjusted timestamps
@@ -22,13 +23,18 @@ async function advanceQueue(locationData) {
             // Get UID and nickname of first player in the current queue
             const firstQueuePlayerUID = queueFirebaseUIDs.shift();
             const firstQueuePlayerNickname = queueNicknames.shift();
-            const firstQueueJoinTimes = queueJoinTimes.shift();
+            const firstQueueJoinTime = queueJoinTimes.shift();
             
             // Update active data to reflect the new player
             activeFirebaseUIDs[i] = firstQueuePlayerUID; 
             activeNicknames[i] = firstQueuePlayerNickname;
             activeStartTimes[i] = timestamps[lastTimestampIdx];
             activeWaitingPlayers[i] = false;  
+
+            // Record metrics once new player has joined court
+            const now = new Date();
+            const date = now.toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" });
+            recordWaitTime(location, date, firstQueueJoinTime, timestamps[lastTimestampIdx]);
 
             lastTimestampIdx += 1;
             queueAdvanced = true;

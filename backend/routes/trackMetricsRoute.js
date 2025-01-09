@@ -21,17 +21,17 @@ router.post('/trackMetrics', async (req, res) => {
         // Access document data
         const locationData = locationSnapshot.data();
         const queueFirebaseUIDs = locationData.queueFirebaseUIDs || [];
-        const numberOfCourts = locationData.numberOfCourts || 0;
+        const numberOfCourts = locationData.numberOfCourts || 1;
         const activeStartTimes = locationData.activeStartTimes || [];
         const queueJoinTimes = locationData.queueJoinTimes || [];
         
-        // keep track of courts currently taken
+        // Keep track of courts currently taken
         const takenCourts = [];
         const activePlayers = locationData.activeFirebaseUIDs;
         activePlayers.forEach((player) => {
-        if (!player.startsWith('Empty')) {
-            takenCourts.push(activePlayers.indexOf(player) + 1);
-        }
+            if (!player.startsWith('Empty')) {
+                takenCourts.push(activePlayers.indexOf(player) + 1);
+            }
         });
 
         // Calculate the metrics
@@ -40,8 +40,8 @@ router.post('/trackMetrics', async (req, res) => {
 
         // Get the current date and time for metrics
         const now = new Date();
-        const dateKey = now.toISOString().split("T")[0]; // 'YYYY-MM-DD' (e.g., '2024-11-19')
-        const timeKey = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }); // 'HH:mm' (e.g., '1:15')
+        const dateKey = now.toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }); // 'YYYY-MM-DD'
+        const timeKey = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }); // 'HH:mm'
 
         // Prepare the metrics data to write
         const metricsRef = admin.firestore()
@@ -54,10 +54,18 @@ router.post('/trackMetrics', async (req, res) => {
             [timeKey]: { 
                 fillRatio, 
                 queueSize,
-            },
-            activeJoinTimes: admin.firestore.FieldValue.arrayUnion(...activeStartTimes),
-            queueJoinTimes: admin.firestore.FieldValue.arrayUnion(...queueJoinTimes)
+            }
         };
+
+        // Add activeJoinTimes only if activeStartTimes has elements
+        if (activeStartTimes.length > 0) {
+            metricsData.activeJoinTimes = admin.firestore.FieldValue.arrayUnion(...activeStartTimes);
+        }
+
+        // Add queueJoinTimes only if queueJoinTimes has elements
+        if (queueJoinTimes.length > 0) {
+            metricsData.queueJoinTimes = admin.firestore.FieldValue.arrayUnion(...queueJoinTimes);
+        }
 
         // Use .set with merge: true to avoid overwriting existing data
         await metricsRef.set(metricsData, { merge: true });

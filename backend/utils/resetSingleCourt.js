@@ -17,6 +17,7 @@ async function resetSingleCourt(locationRef, locationData, transaction) {
         activeWaitingPlayers: activeWaitingPlayers,
         queueFirebaseUIDs: [],
         queueNicknames: [],
+        queueJoinTimes: []
     });
 }
 

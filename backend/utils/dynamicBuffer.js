@@ -2,7 +2,7 @@
 // const scheduleEndSession = require('./scheduleEndSession'); // Import scheduleEndSession 
 
 async function dynamicBuffer(locationData) {
-    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames } = locationData;
+    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
 
     // Count how many active players have someone waiting
     const numberWaitingPlayers = activeWaitingPlayers.filter(value => value === true).length;

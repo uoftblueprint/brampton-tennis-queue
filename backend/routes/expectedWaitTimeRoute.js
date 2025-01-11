@@ -20,11 +20,17 @@ router.post('/expectedWaitTime', async (req, res) => {
 
         // Access document data and compute wait time by estimating 0.5 hour per player
         const locationData = locationSnapshot.data();
+        const queueNicknames = locationData.queueNicknames;
         const queuePlayersCount = locationData.queueFirebaseUIDs.length;
+        const allCourtsFull = locationData.activeFirebaseUIDs.every(uid => !uid.startsWith('Empty'));
         const expectedWaitTime = queuePlayersCount * 0.5;
 
         // Send response back with the expected wait time.
-        res.status(200).json({ expectedWaitTime: expectedWaitTime });
+        res.status(200).json({ 
+            expectedWaitTime: expectedWaitTime, 
+            queueNicknames: queueNicknames, 
+            allCourtsFull: allCourtsFull 
+        });
         
     } catch (error) {
         // If an error occurs, send an error message.

@@ -29,10 +29,6 @@
 }
 
 .action-button {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  margin-top: 5px; /* Position the button right below the rectangle */
   padding: 5px 10px;
   background-color: #007bff;
   color: white;
@@ -46,10 +42,17 @@
   background-color: #0056b3;
 }
 
-.button-container {
+.action-button-container {
   display: flex;
-  gap: 10px; /* Space between buttons */
   position: absolute;
-  top: 100%; /* Position below the rectangle */
-  left: 0;
+  flex-direction: column;
+  top: 100%;
+  right: 0;
+  margin-top: 1px;
+  gap: 10px;
+  z-index: 9999; /* ensure it's always on top */
+  background-color: #F0F0F0;
+  padding: 10px 5px;
+  border: 1px solid black;
+  border-top: none;
 }

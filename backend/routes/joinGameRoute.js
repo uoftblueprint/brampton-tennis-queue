@@ -28,16 +28,19 @@ router.post('/joinGame', async (req, res) => {
 
         // Access relevant arrays
         const locationData = locationSnapshot.data();
-        const { queueFirebaseUIDs, queueNicknames } = locationData;
+        const { queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
 
         // Add player to end of queue
         queueFirebaseUIDs.push(firebaseUID);
         queueNicknames.push(nickname);
+        // Add timestamp for join time to queueJoinTimes array of thi format 2024-11-19T12:30:00Z
+        queueJoinTimes.push(new Date());
 
         // Write new data to Firestore
         await locationRef.update({
             queueFirebaseUIDs: queueFirebaseUIDs,
             queueNicknames: queueNicknames,
+            queueJoinTimes: queueJoinTimes,
         });
   
         res.status(200).json({ status: 'queue' });

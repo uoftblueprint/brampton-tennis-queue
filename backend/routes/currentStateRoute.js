@@ -20,15 +20,32 @@ router.post('/currentState', async (req, res) => {
 
         // Access relevant arrays
         const locationData = locationSnapshot.data();
-        const { queueFirebaseUIDs, queueNicknames, activeFirebaseUIDs, activeNicknames } = locationData;
+        const { queueFirebaseUIDs, queueNicknames, activeFirebaseUIDs, activeNicknames, queueJoinTimes} = locationData;
+
+        // Format join times to a readable format
+        const formattedQueueJoinTimes = queueJoinTimes.map(time => {
+          if (time instanceof admin.firestore.Timestamp) {
+              return time.toDate().toLocaleString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric', 
+                  hour: '2-digit', 
+                  minute: '2-digit', 
+                  hour12: true 
+              });
+          }
+          return time; // Fallback for non-Timestamp values
+        });
 
         // Send response back to client with updated player arrays
         res.status(200).json({
           activeNicknames: activeNicknames,
           queueNicknames: queueNicknames,
           activeFirebaseUIDs: activeFirebaseUIDs,
-          queueFirebaseUIDs: queueFirebaseUIDs
+          queueFirebaseUIDs: queueFirebaseUIDs,
+          queueJoinTimes: formattedQueueJoinTimes
         });
+
 
     } catch (error) {
         console.error('Error in currentState endpoint: ', error);

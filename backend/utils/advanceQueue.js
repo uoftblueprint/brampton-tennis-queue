@@ -3,7 +3,7 @@ const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer
 const createTimestamps = require('./createTimestamps');
 
 async function advanceQueue(locationData) {
-    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames } = locationData;
+    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
 
     // Create an array of adjusted timestamps
     const timestamps = await createTimestamps(activeFirebaseUIDs.length);
@@ -22,6 +22,7 @@ async function advanceQueue(locationData) {
             // Get UID and nickname of first player in the current queue
             const firstQueuePlayerUID = queueFirebaseUIDs.shift();
             const firstQueuePlayerNickname = queueNicknames.shift();
+            const firstQueueJoinTimes = queueJoinTimes.shift();
             
             // Update active data to reflect the new player
             activeFirebaseUIDs[i] = firstQueuePlayerUID; 

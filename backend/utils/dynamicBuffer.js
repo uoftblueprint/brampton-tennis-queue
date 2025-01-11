@@ -64,7 +64,7 @@ async function dynamicBuffer(locationData) {
         
         // Update nickname
         const nickname = activeNicknames[player.index];
-        const spaceIndex = nickname.indexOf(' ');
+        const spaceIndex = nickname.lastIndexOf(' ');
         if (spaceIndex !== -1) {
             activeNicknames[player.index] = nickname.substring(0, spaceIndex);
         }

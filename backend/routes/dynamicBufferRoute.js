@@ -34,7 +34,8 @@ router.post('/dynamicBuffer', async (req, res) => {
                 activeStartTimes: locationData.activeStartTimes,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
                 queueFirebaseUIDs: locationData.queueFirebaseUIDs,
-                queueNicknames: locationData.queueNicknames
+                queueNicknames: locationData.queueNicknames,
+                queueJoinTimes: locationData.queueJoinTimes
             });
         });
 

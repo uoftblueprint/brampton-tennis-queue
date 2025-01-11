@@ -12,36 +12,21 @@ router.post('/joinGame', async (req, res) => {
             return res.status(400).json({ message: 'Location, UID, and nickname are required.' });
         }
 
-        const db = admin.firestore();
-        const locationRef = db.collection('locations').doc(location);
+        // Access relevant arrays
+        const locationData = locationSnapshot.data();
+        const { queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
 
-        let responseMessage;
-        let success = true;
+        // Add player to end of queue
+        queueFirebaseUIDs.push(firebaseUID);
+        queueNicknames.push(nickname);
+        // Add timestamp for join time to queueJoinTimes array of thi format 2024-11-19T12:30:00Z
+        queueJoinTimes.push(new Date());
 
-        await db.runTransaction(async (transaction) => {
-            const locationSnapshot = await transaction.get(locationRef);
-            if (!locationSnapshot.exists) {
-                throw new Error('Location not found.');
-            }
-
-            const locationData = locationSnapshot.data();
-
-            // Call the joinGame utility to process locationData
-            const result = await joinGame(locationData, firebaseUID, nickname);
-            success = result.success;
-            responseMessage = result.message;
-
-            if (!success) return; // Abort transaction if queue is full
-
-            // Write the updated locationData back to Firestore
-            transaction.update(locationRef, {
-                activeFirebaseUIDs: locationData.activeFirebaseUIDs,
-                activeNicknames: locationData.activeNicknames,
-                activeStartTimes: locationData.activeStartTimes,
-                activeWaitingPlayers: locationData.activeWaitingPlayers,
-                queueFirebaseUIDs: locationData.queueFirebaseUIDs,
-                queueNicknames: locationData.queueNicknames,
-            });
+        // Write new data to Firestore
+        await locationRef.update({
+            queueFirebaseUIDs: queueFirebaseUIDs,
+            queueNicknames: queueNicknames,
+            queueJoinTimes: queueJoinTimes,
         });
 
         if (success) {

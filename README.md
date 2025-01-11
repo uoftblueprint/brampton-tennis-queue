@@ -6,6 +6,19 @@ Our objective is to build an online queue system for local tennis courts in the 
 
 Please feel free to read more about the design of this application, [here](https://docs.google.com/document/d/1Ui6mYDrbuQC5Tl4TUFB8XBBM1mwDR22gHWNCKHmXWTc/edit?usp=sharing).
 
+# Contributors (2024-25)
+- [Raunak Madan](https://www.linkedin.com/in/raunak-madan) - Project Lead
+- Christie Ko - Product Manager
+- Steven Lin - Designer
+- Ron Varshavsky - Developer
+- Divyansh Kachchhava - Developer
+- Leandro Brasil - Developer
+- Jamie Han - Developer
+- Alan Su - Developer
+- Stephanie Lu - Developer
+- Riyad Valiyev - Developer
+- Aina Merchant - Developer
+
 # Useful Git Commands / Workflow
 - **`git clone <repo link>`**: Clone the repo to your computer. Click the green "Code" button and copy the link under the "HTTPS" section.  
 - **`git checkout -b <branch name>`**: Create a new branch with the specified name. All of your changes for a specific ticket should be made here! Example name: `add-profile-page`.  
@@ -30,19 +43,6 @@ Please feel free to read more about the design of this application, [here](https
 12. `node index.js`
 13. `cd ../frontend`
 14. `npm run dev`  
-
-# Contributors (2024-25)
-- [Raunak Madan](https://www.linkedin.com/in/raunak-madan) - Project Lead
-- Christie Ko - Product Manager
-- Steven Lin - Designer
-- Ron Varshavsky - Developer
-- Divyansh Kachchhava - Developer
-- Leandro Brasil - Developer
-- Jamie Han - Developer
-- Alan Su - Developer
-- Stephanie Lu - Developer
-- Riyad Valiyev - Developer
-- Aina Merchant - Developer
 
 # License
 [MIT](https://github.com/uoftblueprint/brampton-tennis-queue/blob/main/LICENSE)

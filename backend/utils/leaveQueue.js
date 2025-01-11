@@ -1,5 +1,5 @@
 async function leaveQueue(locationData, firebaseUID) {
-    const { queueFirebaseUIDs, queueNicknames } = locationData;
+    const { queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
 
     // Check whether the player exists
     const playerIndex = queueFirebaseUIDs.indexOf(firebaseUID);
@@ -10,6 +10,7 @@ async function leaveQueue(locationData, firebaseUID) {
     // Update the relevant fields
     queueFirebaseUIDs.splice(playerIndex, 1);
     queueNicknames.splice(playerIndex, 1);
+    queueJoinTimes.splice(playerIndex, 1);
     return 200;
 }
 

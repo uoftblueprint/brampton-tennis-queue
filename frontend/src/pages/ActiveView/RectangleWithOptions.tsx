@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";  // For navigation
-import { leaveQueue, endSession } from "../../utils/api";  // Import utility functions
+import { leaveQueue, endSession, sendWebNotification } from "../../utils/api";  // Import utility functions
 import ConfirmationModal from "./ConfirmationModal";  // Import modal
 import "./RectangleWithOptions.css";
 
@@ -17,8 +17,19 @@ interface RectangleWithOptionsProps {
 const BUTTON_TEXT = {
   OWN_SESSION: "End your session?",
   IN_QUEUE: "Leave the queue?",
-  LEFT_EARLY: "No-show? / Player left early?"
+  LEFT_EARLY: "Report Empty",
+  NOTIFY_PLAYER: "Send Reminder",
+  OUT_OF_TIME: "Time's Up!",
 };
+
+// Actions constants
+const ACTIONS = {
+  LEAVE_QUEUE: "leaveQueue",
+  END_SESSION: "endSession",
+  END_OTHER_SESSION: "endOtherSession",
+  SEND_WEB_REMINDER: "sendWebReminder",
+  
+}
 
 const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   nickname,
@@ -31,16 +42,27 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);  // Track modal visibility
   const [actionToConfirm, setActionToConfirm] = useState("");  // Track the action to confirm
+  const [userOutOftime, setUserOutOfTime] = useState(false);
+
   const buttonRef = useRef(null);
   const rectangleRef = useRef(null);
   const navigate = useNavigate();  // Hook to navigate to other routes
 
   // Determines if the button text should change based on user comparison
-  const determineButtonText = () => {
+  const determineButtonText = (buttonNum: number = 0) => {
     if (userFirebaseUID === firebaseUID) {
       return inQueue ? BUTTON_TEXT.IN_QUEUE : BUTTON_TEXT.OWN_SESSION;
     } else {
-      return BUTTON_TEXT.LEFT_EARLY;
+      switch (buttonNum) {
+        case 1:
+          return BUTTON_TEXT.LEFT_EARLY;
+        case 2:
+          return BUTTON_TEXT.NOTIFY_PLAYER;
+        case 3:
+          return BUTTON_TEXT.OUT_OF_TIME;
+        default:
+          return BUTTON_TEXT.LEFT_EARLY
+      }
     }
   };
 
@@ -66,16 +88,33 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   };
 
   // Handle button click event for leaving the queue or ending session
-  const handleButtonClick = () => {
+  const handleButtonClick = (buttonNumber: number = 0) => {
     if (userFirebaseUID === firebaseUID) {
       if (inQueue) {
-        setActionToConfirm("leaveQueue");
+        setActionToConfirm(ACTIONS.LEAVE_QUEUE);
       } else {
-        setActionToConfirm("endSession");
+        setActionToConfirm(ACTIONS.END_SESSION);
       }
       setShowModal(true);
     } else {
-      setActionToConfirm("endOtherSession");
+      switch (buttonNumber) {
+        case 1: {
+          setActionToConfirm(ACTIONS.END_OTHER_SESSION);
+          break;
+        }
+        case 2: {
+          setActionToConfirm(ACTIONS.SEND_WEB_REMINDER);
+          break;
+        }
+        case 3: {
+          setActionToConfirm(ACTIONS.END_SESSION);
+          break;
+        }
+        default: {
+          setActionToConfirm(ACTIONS.END_OTHER_SESSION);
+          break;
+        }
+      }
       setShowModal(true);
     }
   };
@@ -83,15 +122,18 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   // Handle modal confirmation (Leave Queue or End Session)
   const handleConfirm = async () => {
     try {
-      if (actionToConfirm === "leaveQueue") {
+      if (actionToConfirm === ACTIONS.LEAVE_QUEUE) {
         await leaveQueue(location, firebaseUID);  // User is leaving the queue
         alert("You have left the queue.");
-      } else if (actionToConfirm === "endSession") {
+      } else if (actionToConfirm === ACTIONS.END_SESSION) {
         await endSession(location, firebaseUID);  // User is ending their own session
         alert("Session ended.");
-      } else if (actionToConfirm === "endOtherSession") {
+      } else if (actionToConfirm === ACTIONS.END_OTHER_SESSION) {
         await endSession(location, firebaseUID);  // Force others to end their session
         alert("Player session ended.");
+      } else if (actionToConfirm === ACTIONS.SEND_WEB_REMINDER) {
+        await sendWebNotification(location, firebaseUID, "Time is up! Please end your session.");
+        alert("Sent reminder to player.")
       }
 
       // Close the modal first
@@ -114,6 +156,15 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
     setShowModal(false);  // Close the modal without taking any action
   };
 
+  // Update if the user's nickname shows they are out of time
+  useEffect(() => {
+    if (nickname.includes("[") || nickname.includes("]")) {
+      setUserOutOfTime(true);
+    } else {
+      setUserOutOfTime(false);
+    }
+  }, [nickname]);
+
   // Set up event listener to handle outside clicks
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
@@ -128,7 +179,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
 
       {/* Display dots for toggling the button */}
       {!shouldIgnoreButton() && (
-        <>
+        <div className="right-container">
           <div
             className="dots-container"
             onClick={() => setShowButton((prev) => !prev)}
@@ -138,17 +189,38 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
             <div className="dot"></div>
           </div>
 
-          {/* Conditionally render the button */}
+
+
           {showButton && (
-            <button
-              ref={buttonRef}
-              className="action-button"
-              onClick={handleButtonClick}
-            >
-              {determineButtonText()}
-            </button>
+            <>
+            {/* Conditionally render the button(s) */}
+            <div className="action-button-container">
+            {userOutOftime && (
+              [1, 2, 3].map((buttonNumber: number) => {
+                return (
+                  <button
+                    ref={buttonRef}
+                    className="action-button"
+                    onClick={() => handleButtonClick(buttonNumber)}
+                  >
+                    {determineButtonText(buttonNumber)}
+                  </button>
+                )})
+            )}
+
+            {!userOutOftime && (
+                <button
+                  ref={buttonRef}
+                  className="action-button"
+                  onClick={() => handleButtonClick()}
+                >
+                  {determineButtonText()}
+                </button>
+            )}
+            </div>
+            </>
           )}
-        </>
+        </div>
       )}
 
       {/* Confirmation Modal */}

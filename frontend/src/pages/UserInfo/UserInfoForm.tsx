@@ -104,7 +104,8 @@ const UserInfo: React.FC = () => {
   // Handles user confirmation in the modal and navigates to the next page
   const handleConfirm = () => {
     setShowModal(false); // Close the modal
-    localStorage.setItem('nickname', nickname)
+    const nicknameWithGroup = `${nickname} +${Number(groupSize) - 1}`;
+    localStorage.setItem('nickname', nicknameWithGroup);
     // we are explicitly choosing NOT to save groupSize to local storage
     navigate('/sign-in'); // Navigate to the next page
   };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { auth } from "../../firebase";
 import {
     signInWithPopup,
@@ -10,29 +10,34 @@ import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
 import googleIcon from "../../assets/google-icon.svg";
 
-const Login: React.FC = () => {
-    // Initialize Google authentication provider
-    const provider = new GoogleAuthProvider();
+import { LocalStorageContext } from "../../context/LocalStorageContext";
 
-    // State variables for form inputs
-    const [email, setEmail] = useState(""); // set email
-    const [password, setPassword] = useState(""); // set password
-    const [isSigningUp, setIsSigningUp] = useState(false); // set isSigningUp to false
-    const [errorMessage, setErrorMessage] = useState("");  // Error message state
+const Login: React.FC = () => {
+    const context = useContext(LocalStorageContext);
+
+    const provider = new GoogleAuthProvider(); // Google authentication provider
+
+    // State management for inputs and toggles
+    const [email, setEmail] = useState(""); // Email input
+    const [password, setPassword] = useState(""); // Password input
+    const [isSigningUp, setIsSigningUp] = useState(false); // Toggle for sign-up or sign-in
+    const [errorMessage, setErrorMessage] = useState(""); // Error message display
     const [emailError, setEmailError] = useState(""); // Email-specific error state
     const [passwordError, setPasswordError] = useState(""); // Password-specific error state
-    const navigate = useNavigate(); // Navigate to the next page
+    
+    const navigate = useNavigate(); // Navigation hook for redirecting
 
     // Handle email-based authentication
     const handleGoogleSignIn = () => {
-        localStorage.setItem("addedToGame", "false"); 
+        context.setAddedToGame(false); // Reset added to game status
         signInWithPopup(auth, provider)
             .then((result) => {
-                const user = result.user;
-                console.log("user", user);
-                localStorage.setItem("firebaseUID", user.uid);
-                setTimeout(() => {}, 1000);
-                navigate("/active-view");
+                const user = result.user
+                console.log("user", user)
+
+                context.setFirebaseUID(user.uid); // Store user UID in local storage
+                setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
+                navigate("/active-view"); // Navigate to active view on success
             })
             .catch(() => {
                 setErrorMessage("Google sign-in failed. Please try again.");
@@ -77,10 +82,10 @@ const handleEmailAuth = (e: React.FormEvent) => {
 
     authFunction(auth, email, password)
         .then((userCredential) => {
-            localStorage.setItem("addedToGame", "false");
+            context.setAddedToGame(false);
             const user = userCredential.user; // This is the user object
             console.log("User UID:", user.uid); // This is the user's UID
-            localStorage.setItem("firebaseUID", user.uid); // Store the UID in localStorage if needed
+            context.setFirebaseUID(user.uid); // Store the UID in localStorage if needed
             console.log("User:", user);
             navigate("/active-view"); // Navigate to the next page
         })

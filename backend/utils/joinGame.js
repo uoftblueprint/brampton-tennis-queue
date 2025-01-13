@@ -7,8 +7,8 @@ async function joinGame(locationData, firebaseUID, nickname) {
         activeStartTimes,
         activeWaitingPlayers,
         queueFirebaseUIDs,
-        queueJoinTimes,
         queueNicknames,
+        queueJoinTimes,
         numberOfCourts,
     } = locationData;
 

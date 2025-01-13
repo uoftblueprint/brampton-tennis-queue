@@ -120,6 +120,19 @@ label {
   background-color: #c23321;
 }
 
+.signin-button-container{
+  text-align: center;
+}
+
+/* Twitter Button black shade*/
+.twitter-signin-button {
+  background-color: #000000;
+}
+
+.twitter-signin-button:hover {
+  background-color: #2f3132;
+}
+
 /* Icon Styling */
 .button-icon {
   width: 16px; /* Make the icon smaller */

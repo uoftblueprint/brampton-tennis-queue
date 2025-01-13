@@ -5,15 +5,18 @@ import {
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    TwitterAuthProvider,
+
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
 import googleIcon from "../../assets/google-icon.svg";
+import xIcon from "../../assets/x-icon.png";
 
 const Login: React.FC = () => {
     // Initialize Google authentication provider
     const provider = new GoogleAuthProvider();
-
+    const twitterProvider = new TwitterAuthProvider
     // State variables for form inputs
     const [email, setEmail] = useState(""); // set email
     const [password, setPassword] = useState(""); // set password
@@ -36,6 +39,19 @@ const Login: React.FC = () => {
             })
             .catch(() => {
                 setErrorMessage("Google sign-in failed. Please try again.");
+            });
+    };
+
+    const handleTwitterSignIn = () => {
+        signInWithPopup(auth, twitterProvider)
+            .then((result) => {
+                const user = result.user;
+                console.log("User (Twitter): ", user);
+                localStorage.setItem("firebaseUID", user.uid);
+                setTimeout(() => {}, 1000);
+                navigate("/active-view");
+            }).catch((error) => {
+                console.log("Twitter Sign-in Error: ", error);
             });
     };
 
@@ -170,12 +186,20 @@ const handleEmailAuth = (e: React.FormEvent) => {
                 </span>
             </p>
             <br></br>
-            {/* Google sign-in button */}
-            <div className="google-signin-container">
+           
+            <div className="signin-button-container">
+                 {/* Google sign-in button */}
                 <button className="button google-signin-button" onClick={handleGoogleSignIn}>
                     <img src={googleIcon} alt="Google Icon" className="button-icon" />
                     Sign in with Google
                 </button>
+                    <h4>or</h4>
+                 {/* Twitter sign-in button */}
+                <button className="button twitter-signin-button" onClick={handleTwitterSignIn}>
+                    <img src={xIcon} alt="Twitter Icon" className="button-icon" />
+                        Sign in with X
+                </button>
+                <br></br>
             </div>
         </div>
     );

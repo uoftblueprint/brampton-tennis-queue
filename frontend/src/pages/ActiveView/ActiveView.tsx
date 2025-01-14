@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ActiveView.css';
 import CurrentState from './CurrentState';
@@ -16,7 +16,10 @@ const ActiveView: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const hasInitializedRef = useRef<boolean>(false);
+
   useEffect(() => {
+    console.log("Active view useEffect");
     if (!firebaseUID) {
       setTimeout(() => {}, 1000);  // 1-second timeout for UID to load
     }
@@ -24,7 +27,11 @@ const ActiveView: React.FC = () => {
       navigate('/'); // If firebaseUID is not available, redirect to home
       return;
     }
-    initializeGame();
+    // Prevents initalizeGame from being called again by strict mode
+    if (!hasInitializedRef.current) {
+      initializeGame();
+      hasInitializedRef.current = true;
+    }
   }, []);
 
   const initializeGame = async () => {

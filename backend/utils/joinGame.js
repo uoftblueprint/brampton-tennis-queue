@@ -50,9 +50,8 @@ async function joinGame(locationData, firebaseUID, nickname) {
 
         // Add the player to the queue
         queueFirebaseUIDs.push(firebaseUID);
+        queueJoinTimes.push(admin.firestore.Timestamp.now());
         queueNicknames.push(nickname);
-        const queueJoinTime = admin.firestore.Timestamp.now();
-        queueJoinTimes.push(queueJoinTime);
 
         return {
             success: true,

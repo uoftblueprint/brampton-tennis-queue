@@ -1,29 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
+const joinGame = require('../utils/joinGame'); // Import the joinGame utility
+const dynamicBuffer = require('../utils/dynamicBuffer'); // Import dynamicBuffer utility
 
-// DUMMY - Join Game Endpoint
-/* ONLY FOR TESTING PURPOSES DO NOT USE! 
-Wrong becase:
-- Only adds to queue
-- Does NOT use modular style
-- Does NOT use transaction
-- Does NOT add to active and set start time and player waiting false for active
-- Does NOT check MAX BOUND of 5 queue size
-*/
 router.post('/joinGame', async (req, res) => {
     try {
-        // Extract location, nickname and firebaseUID from the request body
-        const { location, nickname, firebaseUID } = req.body;
-        if (!location || !firebaseUID || firebaseUID.toLowerCase().startsWith("empty")) {
-            return res.status(400).json({ message: 'Location and Firebase UID are required.' });
-        }
+        const { location, firebaseUID, nickname } = req.body;
 
-        // Get the location document snapshot
-        const locationRef = admin.firestore().collection('locations').doc(location);
-        const locationSnapshot = await locationRef.get();
-        if (!locationSnapshot.exists) {
-            return res.status(404).json({ message: 'Location not found.' });
+        if (!location || !firebaseUID || !nickname || firebaseUID.toLowerCase().startsWith('empty')) {
+            return res.status(400).json({ message: 'Location, UID, and nickname are required.' });
         }
 
         // Access relevant arrays
@@ -42,12 +28,16 @@ router.post('/joinGame', async (req, res) => {
             queueNicknames: queueNicknames,
             queueJoinTimes: queueJoinTimes,
         });
-  
-        res.status(200).json({ status: 'queue' });
+
+        if (success) {
+            await dynamicBuffer(location); // Call dynamicBuffer after transaction
+        }
+
+        res.status(200).json({ success, message: responseMessage });
     } catch (error) {
         console.error('Error joining game:', error);
-        res.status(500).json({ error: 'Failed to join game.' });
+        res.status(500).json({ success: false, message: 'Failed to join game.', error: error.message });
     }
 });
-  
+
 module.exports = router;

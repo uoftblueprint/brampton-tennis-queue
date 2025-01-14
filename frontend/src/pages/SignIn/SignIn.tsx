@@ -5,17 +5,21 @@ import {
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    TwitterAuthProvider,
+
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
 import googleIcon from "../../assets/google-icon.svg";
+import xIcon from "../../assets/x-icon.png";
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
 
 const Login: React.FC = () => {
-    const context = useContext(LocalStorageContext);
 
-    const provider = new GoogleAuthProvider(); // Google authentication provider
+    const context = useContext(LocalStorageContext);
+    const twitterProvider = new TwitterAuthProvider() // Twitterv(X) authentication provider
+    const googleProvider = new GoogleAuthProvider(); // Google authentication provider
 
     // State management for inputs and toggles
     const [email, setEmail] = useState(""); // Email input
@@ -27,10 +31,10 @@ const Login: React.FC = () => {
     
     const navigate = useNavigate(); // Navigation hook for redirecting
 
-    // Handle email-based authentication
+    // Handle google-based authentication
     const handleGoogleSignIn = () => {
         context.setAddedToGame(false); // Reset added to game status
-        signInWithPopup(auth, provider)
+        signInWithPopup(auth, googleProvider)
             .then((result) => {
                 const user = result.user
                 console.log("user", user)
@@ -41,6 +45,22 @@ const Login: React.FC = () => {
             })
             .catch(() => {
                 setErrorMessage("Google sign-in failed. Please try again.");
+            });
+    };
+
+    // Handle X-based authentication
+    const handleTwitterSignIn = () => {
+        context.setAddedToGame(false); // Reset added to game status
+        signInWithPopup(auth, twitterProvider)
+            .then((result) => {
+                const user = result.user;
+                console.log("User (X): ", user);
+          
+                context.setFirebaseUID(user.uid); // Store user UID in local storage
+                setTimeout(() => {}, 1000);
+                navigate("/active-view");
+            }).catch((error) => {
+                setErrorMessage("X sign-in failed. Please try again.");
             });
     };
 
@@ -175,12 +195,20 @@ const handleEmailAuth = (e: React.FormEvent) => {
                 </span>
             </p>
             <br></br>
-            {/* Google sign-in button */}
-            <div className="google-signin-container">
+           
+            <div className="signin-button-container">
+                 {/* Google sign-in button */}
                 <button className="button google-signin-button" onClick={handleGoogleSignIn}>
                     <img src={googleIcon} alt="Google Icon" className="button-icon" />
                     Sign in with Google
                 </button>
+                    <h4>or</h4>
+                 {/* Twitter sign-in button */}
+                <button className="button twitter-signin-button" onClick={handleTwitterSignIn}>
+                    <img src={xIcon} alt="Twitter Icon" className="button-icon" />
+                        Sign in with X
+                </button>
+                <br></br>
             </div>
         </div>
     );

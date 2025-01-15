@@ -38,9 +38,11 @@ router.post('/advanceQueue', async (req, res) => {
                 activeNicknames: locationData.activeNicknames,
                 activeStartTimes: locationData.activeStartTimes,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
+                activeTokens: locationData.activeTokens,
                 queueFirebaseUIDs: locationData.queueFirebaseUIDs,
                 queueNicknames: locationData.queueNicknames,
-                queueJoinTimes: locationData.queueJoinTimes
+                queueJoinTimes: locationData.queueJoinTimes,
+                queueTokens: locationData.queueTokens,
             });
         });
 

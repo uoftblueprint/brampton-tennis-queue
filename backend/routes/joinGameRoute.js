@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
-const joinGame = require('../utils/joinGame'); // Import the joinGame utility
-const dynamicBuffer = require('../utils/dynamicBuffer'); // Import dynamicBuffer utility
+const joinGame = require('../utils/joinGame');  // Import the joinGame utility
+const dynamicBuffer = require('../utils/dynamicBuffer');  // Import dynamicBuffer utility
 
 router.post('/joinGame', async (req, res) => {
     try {
-        const { location, firebaseUID, nickname } = req.body;
+        const { location, firebaseUID, nickname, fcmToken } = req.body;
 
         if (!location || !firebaseUID || !nickname || firebaseUID.toLowerCase().startsWith('empty')) {
             return res.status(400).json({ message: 'Location, UID, and nickname are required.' });
@@ -27,7 +27,7 @@ router.post('/joinGame', async (req, res) => {
             const locationData = locationSnapshot.data();
 
             // Call the joinGame utility to process locationData
-            const result = await joinGame(locationData, firebaseUID, nickname);
+            const result = await joinGame(locationData, firebaseUID, nickname, fcmToken);
             success = result.success;
             responseMessage = result.message;
 
@@ -39,9 +39,11 @@ router.post('/joinGame', async (req, res) => {
                 activeNicknames: locationData.activeNicknames,
                 activeStartTimes: locationData.activeStartTimes,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
+                activeTokens: locationData.activeTokens,
                 queueFirebaseUIDs: locationData.queueFirebaseUIDs,
                 queueJoinTimes: locationData.queueJoinTimes,
                 queueNicknames: locationData.queueNicknames,
+                queueTokens: locationData.queueTokens,
             });
             
             if (success) {

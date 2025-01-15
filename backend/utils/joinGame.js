@@ -1,14 +1,16 @@
 const admin = require('firebase-admin');
 
-async function joinGame(locationData, firebaseUID, nickname) {
+async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
     const {
         activeFirebaseUIDs,
         activeNicknames,
         activeStartTimes,
         activeWaitingPlayers,
+        activeTokens,
         queueFirebaseUIDs,
         queueNicknames,
         queueJoinTimes,
+        queueTokens,
         numberOfCourts,
     } = locationData;
 
@@ -17,7 +19,8 @@ async function joinGame(locationData, firebaseUID, nickname) {
         activeFirebaseUIDs.length !== numberOfCourts ||
         activeNicknames.length !== numberOfCourts ||
         activeStartTimes.length !== numberOfCourts ||
-        activeWaitingPlayers.length !== numberOfCourts
+        activeWaitingPlayers.length !== numberOfCourts ||
+        activeTokens.length !== numberOfCourts
     ) {
         throw new Error('Inconsistent Firestore data: Array sizes do not match number of courts.');
     }
@@ -33,6 +36,13 @@ async function joinGame(locationData, firebaseUID, nickname) {
         // Use valid Firestore timestamp
         activeStartTimes[emptyCourtIndex] = admin.firestore.Timestamp.now();
         activeWaitingPlayers[emptyCourtIndex] = false;
+
+        // Assign FCM token
+        if (!fcmToken) {
+            activeTokens[emptyCourtIndex] = "NULL";
+        }else {
+            activeTokens[emptyCourtIndex] = fcmToken;
+        }
 
         return {
             success: true,
@@ -52,6 +62,13 @@ async function joinGame(locationData, firebaseUID, nickname) {
         queueFirebaseUIDs.push(firebaseUID);
         queueJoinTimes.push(admin.firestore.Timestamp.now());
         queueNicknames.push(nickname);
+
+        // Add FCM token for queue player
+        if (!fcmToken) {
+            queueTokens.push("NULL");
+        }else {
+            queueTokens.push(fcmToken);
+        }
 
         return {
             success: true,

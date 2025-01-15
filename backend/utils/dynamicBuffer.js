@@ -66,7 +66,6 @@ async function dynamicBuffer(locationData) {
 
         // Uncomment these once implemented
         // sendWebNotification(player.firebaseUID, bufferTime);
-        // scheduleEndSession(endTime);
     }
 }
 

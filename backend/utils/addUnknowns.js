@@ -1,7 +1,7 @@
 const createTimestamps = require('./createTimestamps');
 
 async function addUnknowns(locationData, occupiedCourts) {
-    const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers, activeStartTimes } = locationData;
+    const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers, activeStartTimes, activeTokens } = locationData;
 
     // Create an array of adjusted timestamps
     const timestamps = await createTimestamps(occupiedCourts.length);
@@ -12,6 +12,9 @@ async function addUnknowns(locationData, occupiedCourts) {
         const courtNumber = i + 1;
         const isPhysicallyOccupied = occupiedCourts.includes(courtNumber);
         const isVirtuallyEmpty = activeFirebaseUIDs[i].startsWith('Empty');
+
+        // Reset FCM token to NULL
+        activeTokens[i] = 'NULL';
 
         // If court is physically occupied but virtually empty
         if (isPhysicallyOccupied && isVirtuallyEmpty) {

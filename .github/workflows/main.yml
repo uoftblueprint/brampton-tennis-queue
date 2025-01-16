@@ -4,12 +4,26 @@ on:
     branches:
       - schedule/github-workflow-cron-job
   schedule:
-    - cron: '50 20 * * *'
+    - cron: '59 20 * * *'
 jobs:
-  build:
+  build-and-run:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Running
-      run: |
-        echo "Running!"
+      - uses: actions/checkout@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install Dependencies
+        run: |
+          cd backend
+          npm install
+      - name: Start Backend Server
+        run: |
+          cd backend
+          node index.js &
+      - name: Test API Endpoint
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"location":"Cassie Campbell"}' \
+          http://localhost:5001/api/trackMetrics

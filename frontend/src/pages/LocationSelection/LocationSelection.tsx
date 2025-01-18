@@ -31,13 +31,15 @@ const LocationSelection: React.FC = () => {
   return (
     <div className="location-selection">
 
-      {/* Page heading */}
-      <h2 className="title"><span>Brampton</span><br/>Tennis Queue</h2>
+      <div className="big-header">
+        {/* Page heading */}
+        <h2 className="big-header-title"><span>Brampton</span><br/>Tennis Queue</h2>
+      </div>
 
       <div className='content'>
         {/* Label for Selecting location */}
         <label htmlFor="locationDropdown" className="label">
-          Select Community Centre
+          Select a community centre to play
         </label>
 
         {/* Select dropdown menu */}

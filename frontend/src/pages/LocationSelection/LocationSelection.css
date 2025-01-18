@@ -1,54 +1,76 @@
 .location-selection {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Full height for better layout */
+    height: 100%; /* Full height for better layout */
     justify-content: space-around;
     align-items: center;
-    padding: 60px; /* Add padding for inner spacing */
+}
+
+/* --- Styling for the header --- */
+.big-header {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw; /* Responsive width for better layout */
+  height: 25vh; /* Responsive height for better layout */
+  background-color: var(--main-color); /* Main color for header */
+  border-bottom-right-radius: 24px;
+  border-bottom-left-radius: 24px;
 }
   
-.title {
-  font-size: var(--logo-font-size); /* Larger logo for emphasis */
+.big-header-title {
+  font-family: var(--font-family);
+  font-size: var(--header1-font-size); /* Larger logo for emphasis */
   font-weight: var(--logo-font-weight);
-  color: var(--main-color);
+  color: #fff; /* White text for contrast */
   text-align: center;
   line-height: 2.2rem; /* Spacing between logo lines */
-  margin-top: 40px; /* More space above the title */
+  margin-top: 60px; /* More space above the title */
 }
 
-.title span {
-  font-size: calc(var(--logo-font-size) * 0.6); /* Calculated based on logo font size */
+.big-header-title span {
+  font-size: calc(var(--header1-font-size) * 0.8); /* Calculated based on logo font size */
 }
+/* ----------------------------- */
 
+/* --- Styling for the content --- */
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 70vw; /* Responsive width for better layout */
+  width: 100vw; /* Responsive width for better layout */
   height: 30vh; /* Responsive height for better layout */
-  margin-bottom: 150px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 120px;
   border-radius: 8px;
 }
 
 .label {
+  font-family: var(--font-family);
   font-size: var(--key-info-font-size);
-  font-weight: var(--key-info-font-weight);
-  color: var(--secondary-text-color); 
-  margin: 20px auto; /* Increased margin for separation */
+  font-weight: var(--header2-font-weight);
+  color: var(--main-text-color);
   text-align: center;
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 375px) {
+  .label {
+    width: 65%; /* Adjusted width for smaller screens */
+  }
 }
 
 .dropdown {
-  width: 80%; /* Wider dropdown for better usability */
-  padding: 15px; /* More padding for bigger input box */
-  margin-bottom: 40px;
+  width: 65%; /* Wider dropdown for better usability */
+  padding: 12px; /* More padding for bigger input box */
+  margin-top: 20px;
+  font-family: var(--font-family);
   font-size: var(--paragraph-font-size); /* Font size remains the same */
   color: var(--secondary-text-color); /* Dark text for readability */
   border: 1px solid #ccc; /* Border remains */
-  border-radius: 6.5px; /* Slightly rounded corners */
+  border-radius: 8px 8px 0 0; /* Slightly rounded corners */
   appearance: none; /* Remove default appearance */
   cursor: pointer;
 }
@@ -61,12 +83,13 @@
 
 
 .next-button {
-  width: 55%;
+  width: 65%;
   text-align: center;
-  padding: 15px 0;
+  font-family: var(--font-family);
+  padding: 12px 0;
   background-color: var(--main-color); /* Primary blue color */
   border: none; /* Remove default border */
-  border-radius: 8px; /* Rounded corners */
+  border-radius: 0 0 8px 8px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
   color: #fff; /* Text color */
   font-size: var(--button-font-size); /* Font size */
@@ -93,5 +116,14 @@
   .title {
     font-size: calc(var(--logo-font-size) * 0.85); /* Smaller logo for smaller screens */
     line-height: 1.9rem; /* Adjusted line height for smaller screens */
+  }
+}
+
+@media screen and (min-width: 481px) {
+  .dropdown {
+    max-width: 360px;
+  }
+  .next-button {
+    max-width: 360px;
   }
 }

@@ -116,57 +116,63 @@ const UserInfo: React.FC = () => {
   };
 
   return (
-    <div className="user-info-form">
-      <h1 className="user-info-title">Choose Your Nickname & Group Size</h1>
-      <form onSubmit={handleSubmit}>
-        
-        {/* Nickname input field */}
-        <label className="user-info-label">Nickname:</label>
-        <input
-          type="text"
-          value={nickname}
-          onChange={handleNicknameChange}
-          className="user-info-input"
-        />
-        {/* Display error message for nickname if validation fails */}
-        {errors.nickname && <p className="user-info-error">{errors.nickname}</p>}
+    <div className="main-container">
+      <div className="header">
+        <h1 className="header-title"><span>Brampton</span><br/>Tennis Queue</h1>
+      </div>
+      <div className="user-info-form">
+        <h1 className="user-info-title">Choose Your Nickname<br/>& Group Size</h1>
+        <form onSubmit={handleSubmit}>
+          
+          {/* Nickname input field */}
+          <label className="user-info-label">Nickname:</label>
+          <input
+            type="text"
+            value={nickname}
+            onChange={handleNicknameChange}
+            className="user-info-input"
+          />
+          {/* Display error message for nickname if validation fails */}
+          {errors.nickname && <p className="user-info-error">{errors.nickname}</p>}
 
-        <datalist id="groupSizes">
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-        </datalist>
+          <datalist id="groupSizes">
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+          </datalist>
 
-        {/* Group Size input field */}
-        <label className="user-info-label">Group size:</label>
-        <input
-          value={groupSize}
-          list="groupSizes"
-          autoComplete="on"
-          onChange={handleGroupSizeChange}
-          className="user-info-input"
-        />
-        {/* Display error message for nickname if validation fails */}
-        {errors.groupSize && <p className="user-info-error">{errors.groupSize}</p>}
+          {/* Group Size input field */}
+          <label id="group-size-label" className="user-info-label">Group size:</label>
+          <input
+            value={groupSize}
+            list="groupSizes"
+            autoComplete="on"
+            onChange={handleGroupSizeChange}
+            id='group-size-input'
+            className="user-info-input"
+          />
+          {/* Display error message for nickname if validation fails */}
+          {errors.groupSize && <p className="user-info-error">{errors.groupSize}</p>}
 
-        {/* Submit button triggers validation and opens the confirmation modal */}
-        <button type="submit" className="user-info-button" disabled={!!errors.nickname && !errors.groupSize}>
-          Next
-        </button>
-      </form>
+          {/* Submit button triggers validation and opens the confirmation modal */}
+          <button type="submit" className="user-info-button" disabled={!!errors.nickname && !errors.groupSize}>
+            Next
+          </button>
+        </form>
 
-      {/* Confirmation modal for nickname approval */}
-      {showModal && (
-        <ConfirmationModal
-          message={`Are you sure you want to use the nickname "${nickname}"?`}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
-      )}
+        {/* Confirmation modal for nickname approval */}
+        {showModal && (
+          <ConfirmationModal
+            message={`Are you sure you want to use the nickname "${nickname}"?`}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+          />
+        )}
+      </div>
     </div>
   );
 };

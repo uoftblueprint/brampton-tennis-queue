@@ -118,12 +118,15 @@ const handleEmailAuth = (e: React.FormEvent) => {
     };
 
     return (
-        <div className="login-container">
-            <h2 className="login-title">{isSigningUp ? "Sign Up" : "Sign In"}</h2>
+        <div className="main-container">
+            <div className="header">
+                <h1 className="header-title"><span>Brampton</span><br/>Tennis Queue</h1>
+            </div>
+            <div className="login-container">
+                <h2 className="login-title">{isSigningUp ? "Sign Up" : "Log In"}</h2>
 
-            {/* Form for email and password */}
-            <form className="login-form" onSubmit={handleEmailAuth}>
-                <div className="form-group">
+                {/* Form for email and password */}
+                <form className="login-form" onSubmit={handleEmailAuth}>
                     <label htmlFor="email">Email:</label>
                     <input
                         type="email"
@@ -134,8 +137,6 @@ const handleEmailAuth = (e: React.FormEvent) => {
                         required
                     />
                     {emailError && <p className="error-message">{emailError}</p>}
-                </div>
-                <div className="form-group">
                     <label htmlFor="password">Password:</label>
                     <input
                         type="password"
@@ -146,36 +147,36 @@ const handleEmailAuth = (e: React.FormEvent) => {
                         required
                     />
                     {passwordError && <p className="error-message">{passwordError}</p>}
-                </div>
-                <button type="submit" className="form-button email-button">
-                    {isSigningUp ? "Sign Up with Email" : "Sign In with Email"}
-                </button>
-            </form>
+                    <button type="submit" className="form-button">
+                        {isSigningUp ? "Sign up with Email" : "Log in with Email"}
+                    </button>
 
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+                    {/* Google sign-in button */}
+                    <div className="google-signin-container">
+                        <button id="google-button" className="form-button" onClick={handleGoogleSignIn}>
+                            <img src={googleIcon} alt="Google Icon" className="button-icon" />
+                            Log in with Google
+                        </button>
+                    </div>
+                </form>
 
-            {/* Toggle between sign-in and sign-up */}
-            <p className="toggle-message">
-                {isSigningUp ? "Already have an account?" : "Don't have an account?"}{" "}
-                <span
-                    className="toggle-link"
-                    onClick={() => {
-                        setIsSigningUp(!isSigningUp);
-                        setErrorMessage("");
-                        setEmailError("");
-                        setPasswordError("");
-                    }}
-                >
-                    {isSigningUp ? "Sign In" : "Sign Up"}
-                </span>
-            </p>
-            <br></br>
-            {/* Google sign-in button */}
-            <div className="google-signin-container">
-                <button className="button google-signin-button" onClick={handleGoogleSignIn}>
-                    <img src={googleIcon} alt="Google Icon" className="button-icon" />
-                    Sign in with Google
-                </button>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+                {/* Toggle between sign-in and sign-up */}
+                <p className="toggle-message">
+                    {isSigningUp ? "Already have an account?" : "Don't have an account?"}{" "}
+                    <span
+                        className="toggle-link"
+                        onClick={() => {
+                            setIsSigningUp(!isSigningUp);
+                            setErrorMessage("");
+                            setEmailError("");
+                            setPasswordError("");
+                        }}
+                    >
+                        {isSigningUp ? "Log In" : "Sign Up"}
+                    </span>
+                </p>
             </div>
         </div>
     );

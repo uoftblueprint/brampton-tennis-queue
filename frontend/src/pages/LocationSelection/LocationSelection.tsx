@@ -33,15 +33,15 @@ const LocationSelection: React.FC = () => {
 
       {/* Page heading */}
       <h2 className="title"><span>Brampton</span><br/>Tennis Queue</h2>
-      {/* Label for Selecting location */}
-      <div id='selection-container'>
+
+      <div className='content'>
+        {/* Label for Selecting location */}
         <label htmlFor="locationDropdown" className="label">
           Select Community Centre
         </label>
 
         {/* Select dropdown menu */}
         <select
-          id="locationDropdown"
           className="dropdown"
           value={selectedLocation}
           onChange={handleLocationChange}
@@ -53,15 +53,15 @@ const LocationSelection: React.FC = () => {
             </option>
           ))}
         </select>
-      </div>
 
-      {/* Simple Next Page Button */}
-      <button 
-        className="next-button" 
-        onClick={handleNextPage}
-      >
-        Next
-      </button>
+        {/* Simple Next Page Button */}
+        <button 
+          className="next-button" 
+          onClick={handleNextPage}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

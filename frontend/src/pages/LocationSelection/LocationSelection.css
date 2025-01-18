@@ -1,75 +1,76 @@
 .location-selection {
     display: flex;
     flex-direction: column;
+    height: 100vh; /* Full height for better layout */
+    justify-content: space-around;
     align-items: center;
-    margin-top: 60px; /* Increased margin for better spacing */
-    padding: 20px; /* Add padding for inner spacing */
+    padding: 60px; /* Add padding for inner spacing */
 }
   
 .title {
   font-size: var(--logo-font-size); /* Larger logo for emphasis */
   font-weight: var(--logo-font-weight);
   color: var(--main-color);
-  line-height: 2.2rem; /* Spacing between logo lines */
-  margin-bottom: 20px; /* More space below the title */
   text-align: center;
+  line-height: 2.2rem; /* Spacing between logo lines */
+  margin-top: 40px; /* More space above the title */
 }
+
 .title span {
   font-size: calc(var(--logo-font-size) * 0.6); /* Calculated based on logo font size */
 }
 
-#selection-container {
+.content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 30vh; /* Full height for container */
-  margin: 30px 0; /* Increased margin for better spacing */
+  width: 70vw; /* Responsive width for better layout */
+  height: 30vh; /* Responsive height for better layout */
+  margin-bottom: 150px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 .label {
   font-size: var(--key-info-font-size);
   font-weight: var(--key-info-font-weight);
   color: var(--secondary-text-color); 
-  margin-bottom: 20px; /* Increased margin for separation */
+  margin: 20px auto; /* Increased margin for separation */
   text-align: center;
 }
 
 .dropdown {
-  width: 75vw; /* Wider dropdown for better usability */
-  padding: 10px; /* More padding for comfort */
+  width: 80%; /* Wider dropdown for better usability */
+  padding: 15px; /* More padding for bigger input box */
+  margin-bottom: 40px;
   font-size: var(--paragraph-font-size); /* Font size remains the same */
   color: var(--secondary-text-color); /* Dark text for readability */
-  border: 3px solid #151515; /* Border remains */
-  border-radius: 10px; /* Slightly rounded corners */
-  background-color: #fff; /* White background for dropdown */
+  border: 1px solid #ccc; /* Border remains */
+  border-radius: 6.5px; /* Slightly rounded corners */
+  appearance: none; /* Remove default appearance */
   cursor: pointer;
-  transition: border 0.3s ease; /* Smooth border transition */
-}
-/* Dropdown focus effect */
-.dropdown:focus {
-  border: 3px solid var(--main-color); /* Blue border on focus */
-  outline: none; /* Remove default outline */
-}
-/* Styling for dropdown options */
-.dropdown option {
-  padding: 10px;
 }
 
+/* Dropdown focus effect */
+.dropdown:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+
 .next-button {
-  width: 20vw;
+  width: 55%;
   text-align: center;
   padding: 15px 0;
   background-color: var(--main-color); /* Primary blue color */
   border: none; /* Remove default border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
-  margin-top: 30px; /* Increased space above the button */
-
   color: #fff; /* Text color */
   font-size: var(--button-font-size); /* Font size */
   font-weight: var(--button-font-weight);
-  
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for background and scale */
   display: inline-block; /* Ensure proper button display */
@@ -87,4 +88,10 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Change shadow on click */
   transform: translateY(1px); /* Slight depression effect on click */
 }
-  
+
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: calc(var(--logo-font-size) * 0.85); /* Smaller logo for smaller screens */
+    line-height: 1.9rem; /* Adjusted line height for smaller screens */
+  }
+}

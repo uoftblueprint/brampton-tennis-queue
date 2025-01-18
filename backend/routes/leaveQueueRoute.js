@@ -36,7 +36,8 @@ router.post('/leaveQueue', async (req, res) => {
             transaction.update(locationRef, {
                 queueFirebaseUIDs: locationData.queueFirebaseUIDs,
                 queueNicknames: locationData.queueNicknames,
-                queueJoinTimes: locationData.queueJoinTimes
+                queueJoinTimes: locationData.queueJoinTimes,
+                queueTokens: locationData.queueTokens,
             });
         });
 

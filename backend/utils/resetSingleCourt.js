@@ -1,5 +1,5 @@
 async function resetSingleCourt(locationRef, locationData, transaction) {
-    const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers } = locationData;
+    const { numberOfCourts, activeFirebaseUIDs, activeNicknames, activeWaitingPlayers, activeTokens } = locationData;
 
     for (let i = 0; i < numberOfCourts; i++) {
         const courtNumber = i + 1;
@@ -8,6 +8,7 @@ async function resetSingleCourt(locationRef, locationData, transaction) {
         activeFirebaseUIDs[i] = newName;
         activeNicknames[i] = newName;
         activeWaitingPlayers[i] = false;
+        activeTokens[i] = "NULL";
     }
 
     // Update the location data within the transaction
@@ -15,9 +16,11 @@ async function resetSingleCourt(locationRef, locationData, transaction) {
         activeFirebaseUIDs: activeFirebaseUIDs,
         activeNicknames: activeNicknames,
         activeWaitingPlayers: activeWaitingPlayers,
+        activeTokens: activeTokens,
         queueFirebaseUIDs: [],
         queueNicknames: [],
-        queueJoinTimes: []
+        queueJoinTimes: [],
+        queueTokens: [],
     });
 }
 

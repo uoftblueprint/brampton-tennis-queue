@@ -33,6 +33,7 @@ router.post('/addUnknowns', async (req, res) => {
                 activeNicknames: locationData.activeNicknames,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
                 activeStartTimes: locationData.activeStartTimes,
+                activeTokens: locationData.activeTokens,
             });
         });
   

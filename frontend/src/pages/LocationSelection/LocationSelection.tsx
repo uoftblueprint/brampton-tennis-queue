@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LocationSelection.css';
+import { LocalStorageContext } from '../../context/LocalStorageContext';
 
 const LocationSelection: React.FC = () => {
+  const context = useContext(LocalStorageContext);
+
   // Sample locations list
   const locations = ["Cassie Campbell"];
 
@@ -16,7 +19,7 @@ const LocationSelection: React.FC = () => {
   // Handle location change
   const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLocation(event.target.value);
-    localStorage.setItem('selectedLocation', event.target.value);
+    context.setSelectedLocation(event.target.value);
   };
 
   // Handle the navigation button click

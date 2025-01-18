@@ -1,77 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
+const trackSingleCourt = require('../utils/trackSingleCourt');  // Import the court tracking utility
 
 // Track Metrics endpoint
 router.post('/trackMetrics', async (req, res) => {
     try {
-        // Get the location from the request body and validate
-        const location = req.body.location;
-        if (!location) {
-            return res.status(400).json({ message: "Location is required" });
-        }
+        // Start a Firestore transaction
+        const db = admin.firestore();
+        const locationsRef = db.collection("locations");
 
-        // Get the location document snapshot from Firestore
-        const locationRef = admin.firestore().collection('locations').doc(location);
-        const locationSnapshot = await locationRef.get();
-        if (!locationSnapshot.exists) {
-            return res.status(404).json({ message: 'Location not found.' });
-        }
+        await db.runTransaction(async (transaction) => {
+            // Extract list of location documents
+            const locationDocs = await locationsRef.listDocuments();
 
-        // Access document data
-        const locationData = locationSnapshot.data();
-        const queueFirebaseUIDs = locationData.queueFirebaseUIDs || [];
-        const numberOfCourts = locationData.numberOfCourts || 1;
-        const activeStartTimes = locationData.activeStartTimes || [];
-        const queueJoinTimes = locationData.queueJoinTimes || [];
-        
-        // Keep track of courts currently taken
-        const takenCourts = [];
-        const activePlayers = locationData.activeFirebaseUIDs;
-        activePlayers.forEach((player) => {
-            if (!player.startsWith('Empty')) {
-                takenCourts.push(activePlayers.indexOf(player) + 1);
+            // Iterate over all locations and track the metrics
+            for (const locationRef of locationDocs) {
+                const locationSnapshot = await transaction.get(locationRef);
+                const locationData = locationSnapshot.data();
+                
+                // Track metrics for specific location in transaction
+                await trackSingleCourt(locationRef, locationData, transaction);
             }
         });
 
-        // Calculate the metrics
-        const queueSize = queueFirebaseUIDs.length;
-        const fillRatio = (takenCourts.length / numberOfCourts) * 100;
-
-        // Get the current date and time for metrics
-        const now = new Date();
-        const dateKey = now.toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }); // 'YYYY-MM-DD'
-        const timeKey = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }); // 'HH:mm'
-
-        // Prepare the metrics data to write
-        const metricsRef = admin.firestore()
-            .collection('metrics')
-            .doc(location) // Use the location name as document ID
-            .collection('locationMetrics') // Subcollection for daily metrics
-            .doc(dateKey); // Use current date as document ID
-
-        const metricsData = {
-            [timeKey]: { 
-                fillRatio, 
-                queueSize,
-            }
-        };
-
-        // Add activeJoinTimes only if activeStartTimes has elements
-        if (activeStartTimes.length > 0) {
-            metricsData.activeJoinTimes = admin.firestore.FieldValue.arrayUnion(...activeStartTimes);
-        }
-
-        // Add queueJoinTimes only if queueJoinTimes has elements
-        if (queueJoinTimes.length > 0) {
-            metricsData.queueJoinTimes = admin.firestore.FieldValue.arrayUnion(...queueJoinTimes);
-        }
-
-        // Use .set with merge: true to avoid overwriting existing data
-        await metricsRef.set(metricsData, { merge: true });
-
         // Send a success response back to the client
-        res.status(200).json({ message: "Metrics tracked successfully." });
+        res.status(200).json({ message: "Metrics tracked for all locations successfully!" });
 
     } catch (error) {
         console.error("Error tracking metrics:", error);

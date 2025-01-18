@@ -34,7 +34,7 @@ router.post('/endSession', async (req, res) => {
             }
 
             // Call advanceQueue to move the queue forward
-            await advanceQueue(locationData);
+            await advanceQueue(locationData, location);
 
             // Write the updated data back to Firestore in the transaction
             transaction.update(locationRef, {
@@ -42,9 +42,11 @@ router.post('/endSession', async (req, res) => {
                 activeNicknames: locationData.activeNicknames,
                 activeStartTimes: locationData.activeStartTimes,
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
+                activeTokens: locationData.activeTokens,
                 queueFirebaseUIDs: locationData.queueFirebaseUIDs,
                 queueNicknames: locationData.queueNicknames,
-                queueJoinTimes: locationData.queueJoinTimes
+                queueJoinTimes: locationData.queueJoinTimes,
+                queueTokens: locationData.queueTokens,
             });
         });
   

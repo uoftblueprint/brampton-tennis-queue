@@ -1,22 +1,25 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';  // Debounce method
 import { fetchCurrentState, subscribeToLocation } from '../../utils/api';
 import PlayerList from './PlayerList';
+import { LocalStorageContext } from '../../context/LocalStorageContext';
 
 //const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
 const CACHE_EXPIRY_THRESHOLD = 10 * 1000;  // For testing!
 
 const CurrentState: React.FC = () => {
-  const location = localStorage.getItem('selectedLocation');
-  const nickname = localStorage.getItem('nickname');
-  const firebaseUID = localStorage.getItem('firebaseUID');
+  const context = useContext(LocalStorageContext);
+
+  const location = context.selectedLocation;
+  const nickname = context.nickname;
+  const firebaseUID = context.firebaseUID;
   
   const [activePlayers, setActivePlayers] = useState<string[]>([]);
   const [queuePlayers, setQueuePlayers] = useState<string[]>([]);
   const [activeFirebaseUIDs, setActiveFirebaseUIDs] = useState<string[]>([]);
   const [queueFirebaseUIDs, setQueueFirebaseUIDs] = useState<string[]>([]);
-  const [inQueue, setInQueue] = useState<boolean>(localStorage.getItem('inQueue') === 'true');
+  const [inQueue, setInQueue] = useState<boolean>(context.inQueue);
 
   const unsubscribeRef = useRef<(() => void) | null>(null);  // Firestore listener cleanup
   const scheduledUpdateRef = useRef<(() => void) | null>(null);  // Cache expiry timer
@@ -25,10 +28,10 @@ const CurrentState: React.FC = () => {
 
   // Function to check cache and load data
   const checkAndLoadCachedData = () => {
-    const cachedPlayers = JSON.parse(localStorage.getItem('playerData') || '{}');
-    const cachedTimestamp = localStorage.getItem('playerDataLastUpdateTime');
+    const cachedPlayers = JSON.parse(context.playerData || '{}');
+    const cachedTimestamp = context.playerDataLastUpdateTime;
     const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
-    const isInQueue = localStorage.getItem('inQueue') === 'true';
+    const isInQueue = context.inQueue === 'true';
     setInQueue(isInQueue);
 
     // Use cached data if available
@@ -75,7 +78,7 @@ const CurrentState: React.FC = () => {
   const updateInQueueStatus = (locationData: any) => {
     const isInQueue = locationData.queueFirebaseUIDs.includes(firebaseUID);
     setInQueue(isInQueue);
-    localStorage.setItem('inQueue', JSON.stringify(isInQueue));
+    context.setInQueue(JSON.stringify(isInQueue));
 
     // If user is no longer in queue, stop updates
     if (!isInQueue) {
@@ -112,13 +115,13 @@ const CurrentState: React.FC = () => {
     setActiveFirebaseUIDs(locationData.activeFirebaseUIDs);
     setQueueFirebaseUIDs(locationData.queueFirebaseUIDs);
 
-    localStorage.setItem('playerData', JSON.stringify({
+    context.setPlayerData(JSON.stringify({
       activeNicknames,
       queueNicknames,
       activeFirebaseUIDs: locationData.activeFirebaseUIDs,
       queueFirebaseUIDs: locationData.queueFirebaseUIDs,
     }));
-    localStorage.setItem('playerDataLastUpdateTime', new Date().toISOString());
+    context.setPlayerDataLastUpdateTime(new Date().toISOString());
   };
 
   // Stop all active update processes (Firestore listener and cache timer)
@@ -160,9 +163,6 @@ const CurrentState: React.FC = () => {
         queuePlayers={queuePlayers}
         activeFirebaseUIDs={activeFirebaseUIDs}
         queueFirebaseUIDs={queueFirebaseUIDs}
-        userFirebaseUID={firebaseUID}
-        userInQueue={inQueue}
-        location={location}
       />
     </div>
   );

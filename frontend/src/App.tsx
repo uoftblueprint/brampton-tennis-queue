@@ -5,10 +5,13 @@ import UserInfo from './pages/UserInfo/UserInfoForm';
 import SignIn from './pages/SignIn/SignIn';
 import ActiveView from './pages/ActiveView/ActiveView';
 
+// Import contexts
+import { LocalStorageProvider } from './context/LocalStorageContext';
+
 function App() {
 
   return (
-    <> 
+    <LocalStorageProvider> 
       {/* Navigation Links */}
       <nav>
       </nav>
@@ -21,7 +24,7 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/active-view" element={<ActiveView />} />
       </Routes>
-    </>
+    </LocalStorageProvider>
   );
 }
 

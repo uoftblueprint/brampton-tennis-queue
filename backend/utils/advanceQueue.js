@@ -1,9 +1,10 @@
 const dynamicBuffer = require('./dynamicBuffer'); // Import dynamicBuffer
 // const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification
 const createTimestamps = require('./createTimestamps');
+const recordWaitTime = require('./recordWaitTime');
 
-async function advanceQueue(locationData) {
-    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
+async function advanceQueue(locationData, location) {
+    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, activeTokens, queueFirebaseUIDs, queueNicknames, queueJoinTimes, queueTokens } = locationData;
 
     // Create an array of adjusted timestamps
     const timestamps = await createTimestamps(activeFirebaseUIDs.length);
@@ -22,13 +23,20 @@ async function advanceQueue(locationData) {
             // Get UID and nickname of first player in the current queue
             const firstQueuePlayerUID = queueFirebaseUIDs.shift();
             const firstQueuePlayerNickname = queueNicknames.shift();
-            const firstQueueJoinTimes = queueJoinTimes.shift();
+            const firstQueueJoinTime = queueJoinTimes.shift();
+            const firstQueueToken = queueTokens.shift();
             
             // Update active data to reflect the new player
             activeFirebaseUIDs[i] = firstQueuePlayerUID; 
             activeNicknames[i] = firstQueuePlayerNickname;
             activeStartTimes[i] = timestamps[lastTimestampIdx];
-            activeWaitingPlayers[i] = false;  
+            activeWaitingPlayers[i] = false;
+            activeTokens[i] = firstQueueToken;
+
+            // Record metrics once new player has joined court
+            const now = new Date();
+            const date = now.toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" });
+            recordWaitTime(location, date, firstQueueJoinTime, timestamps[lastTimestampIdx]);
 
             lastTimestampIdx += 1;
             queueAdvanced = true;

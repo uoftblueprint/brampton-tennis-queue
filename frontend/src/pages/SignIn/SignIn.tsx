@@ -152,7 +152,7 @@ const handleEmailAuth = (e: React.FormEvent) => {
 
                 {/* Form for email and password */}
                 <form className="login-form" onSubmit={handleEmailAuth}>
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email" className="form-label">Email:</label>
                     <input
                         type="email"
                         id="email"
@@ -162,7 +162,7 @@ const handleEmailAuth = (e: React.FormEvent) => {
                         required
                     />
                     {emailError && <p className="error-message">{emailError}</p>}
-                    <label htmlFor="password">Password:</label>
+                    <label htmlFor="password" className="form-label">Password:</label>
                     <input
                         type="password"
                         id="password"

@@ -59,7 +59,7 @@
   margin-bottom: 25px;
 }
 
-.form-group label {
+.form-label {
   font-family: var(--font-family);
   font-size: var(--paragraph-font-size);
   font-weight: var(--key-info-font-weight);
@@ -90,6 +90,7 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;
+  font-family: var(--font-family);
   font-size: var(--button-font-size);
   font-weight: var(--button-font-size);
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -133,6 +134,7 @@
 .toggle-message {
   margin: 20px 0;
   font-size: 0.9rem;
+  font-family: var(--font-family);
   color: var(--secondary-text-color);
   text-align: center;
 }

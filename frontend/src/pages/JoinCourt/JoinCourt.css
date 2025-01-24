@@ -1,0 +1,39 @@
+.court-joiner {
+    margin: 0 auto;
+    text-align: left;
+    display: inline-block;
+}
+
+.title, .subtext {
+    margin: 0;
+}
+
+.wait-time {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+.next-button {
+    float: right;
+}
+
+.bottom-border {
+    border-bottom: 2px solid #D9D9D9;
+    width: 100%;
+    height: 5px;
+}
+
+.next-button:disabled {
+    background-color: darkgray;
+    transition: none;
+}
+
+.next-button:disabled:hover {
+    transform: none;
+}
+
+.players-in-front {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

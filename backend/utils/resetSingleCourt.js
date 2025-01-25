@@ -21,6 +21,7 @@ async function resetSingleCourt(locationRef, locationData, transaction) {
         queueNicknames: [],
         queueJoinTimes: [],
         queueTokens: [],
+        lastUpdateTime: admin.firestore.FieldValue.serverTimestamp(),
     });
 }
 

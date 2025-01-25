@@ -34,6 +34,7 @@ router.post('/addUnknowns', async (req, res) => {
                 activeWaitingPlayers: locationData.activeWaitingPlayers,
                 activeStartTimes: locationData.activeStartTimes,
                 activeTokens: locationData.activeTokens,
+                lastUpdateTime: admin.firestore.FieldValue.serverTimestamp(),
             });
         });
   

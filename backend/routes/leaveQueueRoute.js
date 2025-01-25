@@ -38,6 +38,7 @@ router.post('/leaveQueue', async (req, res) => {
                 queueNicknames: locationData.queueNicknames,
                 queueJoinTimes: locationData.queueJoinTimes,
                 queueTokens: locationData.queueTokens,
+                lastUpdateTime: admin.firestore.FieldValue.serverTimestamp(),
             });
         });
 

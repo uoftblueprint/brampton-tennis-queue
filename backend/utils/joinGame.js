@@ -44,6 +44,8 @@ async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
             activeTokens[emptyCourtIndex] = fcmToken;
         }
 
+        locationData.lastUpdateTime = admin.firestore.Timestamp.now();
+
         return {
             success: true,
             message: 'Added to active list.',
@@ -69,6 +71,8 @@ async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
         }else {
             queueTokens.push(fcmToken);
         }
+
+        locationData.lastUpdateTime = admin.firestore.Timestamp.now();
 
         return {
             success: true,

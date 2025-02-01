@@ -52,6 +52,7 @@ const ActiveView: React.FC = () => {
       setSelectedCourts(takenCourts);
 
       if (updateRequired) {
+        setLoading(false);
         setShowSelection(true);
       } else {
         initializeGame();
@@ -80,6 +81,7 @@ const ActiveView: React.FC = () => {
     setShowSelection(false); // Hide checkboxes
 
     try {
+      setLoading(true);
       await addUnknowns(location, selectedCourts);
     } catch (error) {
       console.error('Error updating unknown courts:', error);

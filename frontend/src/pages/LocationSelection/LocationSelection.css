@@ -1,73 +1,129 @@
 .location-selection {
     display: flex;
     flex-direction: column;
+    height: 100%; /* Full height for better layout */
+    justify-content: space-around;
     align-items: center;
-    margin-top: 40px; /* Increased margin for better spacing */
-    padding: 20px; /* Add padding for inner spacing */
-    border-radius: 10px; /* Rounded corners for the container */
-  }
+}
+
+/* --- Styling for the header --- */
+.big-header {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw; /* Responsive width for better layout */
+  height: 25vh; /* Responsive height for better layout */
+  background-color: var(--main-color); /* Main color for header */
+  border-bottom-right-radius: 24px;
+  border-bottom-left-radius: 24px;
+}
   
-  .title {
-    font-size: 28px; /* Larger title for emphasis */
-    font-weight: bold;
-    color: #333; /* Dark text for good readability */
-    margin-bottom: 15px; /* More space below the title */
-  }
-  
+.big-header-title {
+  font-family: var(--font-family);
+  font-size: var(--header1-font-size); /* Larger logo for emphasis */
+  font-weight: var(--logo-font-weight);
+  color: #fff; /* White text for contrast */
+  text-align: center;
+  line-height: 2.2rem; /* Spacing between logo lines */
+  margin-top: 60px; /* More space above the title */
+}
+
+.big-header-title span {
+  font-size: calc(var(--header1-font-size) * 0.8); /* Calculated based on logo font size */
+}
+/* ----------------------------- */
+
+/* --- Styling for the content --- */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw; /* Responsive width for better layout */
+  height: 30vh; /* Responsive height for better layout */
+  margin-top: 120px;
+  border-radius: 8px;
+}
+
+.label {
+  font-family: var(--font-family);
+  font-size: var(--key-info-font-size);
+  font-weight: var(--header2-font-weight);
+  color: var(--main-text-color);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 375px) {
   .label {
-    font-size: 18px; /* Slightly larger label text */
-    color: #555; /* Softer dark color */
-    margin-bottom: 10px; /* Increased margin for separation */
+    width: 65%; /* Adjusted width for smaller screens */
   }
-  
+}
+
+.dropdown {
+  width: 65%; /* Wider dropdown for better usability */
+  padding: 12px; /* More padding for bigger input box */
+  margin-top: 20px;
+  font-family: var(--font-family);
+  font-size: var(--paragraph-font-size); /* Font size remains the same */
+  color: var(--secondary-text-color); /* Dark text for readability */
+  border: 1px solid #ccc; /* Border remains */
+  border-radius: 8px 8px 0 0; /* Slightly rounded corners */
+  appearance: none; /* Remove default appearance */
+  cursor: pointer;
+}
+
+/* Dropdown focus effect */
+.dropdown:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+
+.next-button {
+  width: 65%;
+  text-align: center;
+  font-family: var(--font-family);
+  padding: 12px 0;
+  background-color: var(--main-color); /* Primary blue color */
+  border: none; /* Remove default border */
+  border-radius: 0 0 8px 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  color: #fff; /* Text color */
+  font-size: var(--button-font-size); /* Font size */
+  font-weight: var(--button-font-weight);
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for background and scale */
+  display: inline-block; /* Ensure proper button display */
+}
+
+/* Hover effect */
+.next-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+/* Active effect */
+.next-button:active {
+  background-color: #004494; /* Even darker blue when active */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Change shadow on click */
+  transform: translateY(1px); /* Slight depression effect on click */
+}
+
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: calc(var(--logo-font-size) * 0.85); /* Smaller logo for smaller screens */
+    line-height: 1.9rem; /* Adjusted line height for smaller screens */
+  }
+}
+
+@media screen and (min-width: 481px) {
   .dropdown {
-    width: 250px; /* Wider dropdown for better usability */
-    padding: 12px; /* More padding for comfort */
-    font-size: 16px; /* Font size remains the same */
-    color: #333; /* Dark text for readability */
-    border: 1px solid #ccc; /* Border remains */
-    border-radius: 5px; /* Slightly rounded corners */
-    background-color: #fff; /* White background for dropdown */
-    cursor: pointer;
-    transition: border 0.3s ease; /* Smooth border transition */
+    max-width: 360px;
   }
-  
-  /* Dropdown focus effect */
-  .dropdown:focus {
-    border: 1px solid #007bff; /* Blue border on focus */
-    outline: none; /* Remove default outline */
-  }
-  
-  /* Styling for dropdown options */
-  .dropdown option {
-    padding: 10px;
-  }
-  
   .next-button {
-    padding: 12px 24px;
-    background-color: #007bff; /* Primary blue color */
-    color: white; /* Text color */
-    border: none; /* Remove default border */
-    border-radius: 8px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 16px; /* Font size */
-    font-weight: bold; /* Make text bold */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Transition for background and scale */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
-    margin-top: 30px; /* Increased space above the button */
-    display: inline-block; /* Ensure proper button display */
+    max-width: 360px;
   }
-  
-  /* Hover effect */
-  .next-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: translateY(-2px); /* Slight lift effect on hover */
-  }
-  
-  /* Active effect */
-  .next-button:active {
-    background-color: #004494; /* Even darker blue when active */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Change shadow on click */
-    transform: translateY(1px); /* Slight depression effect on click */
-  }
-  
+}

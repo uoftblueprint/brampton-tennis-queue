@@ -1,123 +1,101 @@
-.login-container {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: left;
-  font-family: Arial, sans-serif;
-  background-color: #fff;
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* --- Styling for the header --- */
+.header {
+  position: sticky;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 16vh;
+  border-radius: 0 0 24px 24px;
+  background-color: var(--main-color);
+}
+
+.header-title {
+  font-family: var(--font-family);
+  font-weight: var(--header1-font-weight);
+  font-size: calc(var(--header2-font-size) * 0.7);
+  line-height: 1.2rem;
+  margin: 0 40px;
+  color: white;
+}
+
+.header-title span {
+  font-weight: calc(var(--header1-font-weight) * 0.9);
+  font-size: calc(var(--header2-font-size) * 0.6);
+}
+/* ---------------------------- */
+
+.login-container { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  bottom: 0;
+  height: 100%;
+  padding: 10px 12vw 40px 12vw;
+  margin: 20px 0 40px 0;
 }
 
 .login-title {
+  font-family: var(--font-family);
+  font-size: var(--header1-font-size);
+  font-weight: var(--header2-font-weight);
+  color: var(--main-text-color);
   margin-bottom: 20px;
-  font-size: 1.5rem;
-  color: #333;
 }
 
 .login-form {
-  margin-bottom: 20px;
+  padding: 20px 0;
+  margin-bottom: 40px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
 }
 
-label {
-  font-weight: bold;
-  color: #555;
-  margin-bottom: 5px;
+.form-label {
+  font-family: var(--font-family);
+  font-size: var(--paragraph-font-size);
+  font-weight: var(--key-info-font-weight);
+  color: var(--secondary-text-color);
+  margin: 0px 6px;
+  text-align: left;
+  width: 100%; /* Full width for alignment */
 }
 
 .form-input {
-  width: calc(100% - 20px);
-  margin-left: auto;
+  width: 100%; /* Full width for alignment */
   padding: 10px;
+  font-family: var(--font-family);
+  font-size: var(--paragraph-font-size);
+  color: var(--secondary-text-color);
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  margin-top: 4px;
+  background-color: #fff;
+  transition: border 0.3s ease;
 }
 
 .form-button {
-  width: calc(100% - 20px);
-  margin-left: auto;
   padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #007bff;
+  background-color: var(--main-color);
+  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.form-button:hover {
-  background-color: #0056b3;
-}
-
-
-.icon-placeholder {
-  margin-right: 10px;
-  font-size: 1.2rem;
-}
-
-.error-message {
-  margin-top: 10px;
-  color: #ff4d4d;
-  font-size: 0.9rem;
-}
-
-.input-error {
-  border: 2px solid red;
-}
-
-.toggle-message {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  color: #555;
-  text-align: center;
-}
-
-.toggle-link {
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.toggle-link:hover {
-  color: #0056b3;
-}
-
-/* Shared Button Styles */
-.button {
-  width: calc(100% - 20px);
-  margin-left: auto;
-  padding: 8px 12px; /* Smaller padding for compact buttons */
-  display: flex;
-  align-items: center; /* Center the icon and text vertically */
-  justify-content: center; /* Center contents horizontally */
-  font-size: 0.9rem; /* Slightly smaller font size */
-  font-weight: bold;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-/* Google Button */
-.google-signin-button {
-  background-color: #db4437;
-}
-
-.google-signin-button:hover {
-  background-color: #c23321;
+  font-family: var(--font-family);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-size);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  margin: 20px 0 0 0 ;
 }
 
 .signin-button-container{
@@ -139,4 +117,34 @@ label {
   height: 16px; /* Match the height */
   margin-right: 8px; /* Spacing between icon and text */
   vertical-align: middle;
+}
+
+#google-button {
+  background-color: #fff;
+  border: var(--main-color) 2px solid;
+  color: var(--main-color);
+}
+
+.error-message {
+  margin-top: 10px;
+  color: #ff4d4d;
+  font-size: 0.9rem;
+}
+
+.toggle-message {
+  margin: 20px 0;
+  font-size: 0.9rem;
+  font-family: var(--font-family);
+  color: var(--secondary-text-color);
+  text-align: center;
+}
+
+.toggle-link {
+  color: var(--main-color);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.toggle-link:hover {
+  color: #0056b3;
 }

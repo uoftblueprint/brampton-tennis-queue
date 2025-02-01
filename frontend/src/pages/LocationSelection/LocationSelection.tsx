@@ -34,36 +34,39 @@ const LocationSelection: React.FC = () => {
   return (
     <div className="location-selection">
 
-      {/* Page heading */}
-      <h2 className="title">Brampton Tennis Queue</h2>
-      {/* Label for Selecting location */}
-      <label htmlFor="locationDropdown" className="label">
-        Select Community Centre
-      </label>
-      <br></br>
+      <div className="big-header">
+        {/* Page heading */}
+        <h2 className="big-header-title"><span>Brampton</span><br/>Tennis Queue</h2>
+      </div>
 
-      {/* Select dropdown menu */}
-      <select
-        id="locationDropdown"
-        className="dropdown"
-        value={selectedLocation}
-        onChange={handleLocationChange}
-      >
-        <option value="">Select From...</option>
-        {locations.map((location, index) => (
-          <option key={index} value={location}>
-            {location}
-          </option>
-        ))}
-      </select>
+      <div className='content'>
+        {/* Label for Selecting location */}
+        <label htmlFor="locationDropdown" className="label">
+          Select a community centre to play
+        </label>
 
-      {/* Simple Next Page Button */}
-      <button 
-        className="next-button" 
-        onClick={handleNextPage}
-      >
-        Next
-      </button>
+        {/* Select dropdown menu */}
+        <select
+          className="dropdown"
+          value={selectedLocation}
+          onChange={handleLocationChange}
+        >
+          <option value="">Select from...</option>
+          {locations.map((location, index) => (
+            <option key={index} value={location}>
+              {location}
+            </option>
+          ))}
+        </select>
+
+        {/* Simple Next Page Button */}
+        <button 
+          className="next-button" 
+          onClick={handleNextPage}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

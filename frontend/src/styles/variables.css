@@ -1,0 +1,28 @@
+/* Import Karla font from Google */
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+    /* Global color variables */
+    --main-color: #3C45EE;
+    --secondary-color: #EA4335;
+    --main-text-color: #1a1a1a;
+    --secondary-text-color: #4a4a4a;
+    --text-highlight-color: #FF0004;
+    --background-color: #F5F5F5;
+
+    /* Global font variables */
+    --font-family: 'Karla', sans-serif;
+    --logo-font-size: 2.4rem;
+    --logo-font-weight: 700;
+    --header1-font-size: 2.2rem;
+    --header1-font-weight: 500;
+    --header2-font-size: 1.8rem;
+    --header2-font-weight: 300;
+    --key-info-font-size: 1.2rem;
+    --key-info-font-weight: 500;
+    --paragraph-font-size: 1rem;
+    --paragraph-font-weight: 200;
+    --button-font-size: 1rem;
+    --button-font-weight: 500;
+    --header-font-size: 0.7rem;
+}

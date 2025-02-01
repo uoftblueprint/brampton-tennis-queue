@@ -9,6 +9,7 @@ const UserInfoEnum = {
   inQueue: "inQueue",
   playerData: "playerData",
   playerDataLastUpdateTime: "playerDataLastUpdateTime",
+  expectedWaitTime: "expectedWaitTime",
 };
 
 // Context for why this type is set to any: https://stackoverflow.com/a/74967045
@@ -25,6 +26,7 @@ export function LocalStorageProvider( { children } ) {
   const [inQueue, setInQueue] = useState(localStorage.getItem(UserInfoEnum.inQueue) === 'true' ? true : false);
   const [playerData, setPlayerData] = useState(localStorage.getItem(UserInfoEnum.playerData) ? JSON.parse(localStorage.getItem(UserInfoEnum.playerData)!) : '');
   const [playerDataLastUpdateTime, setPlayerDataLastUpdateTime] = useState(localStorage.getItem(UserInfoEnum.playerDataLastUpdateTime) || '');
+  const [expectedWaitTime, setExpectedWaitTime] = useState(localStorage.getItem(UserInfoEnum.expectedWaitTime) ? Number(localStorage.getItem(UserInfoEnum.expectedWaitTime)!) : 0)
 
   // Initialize state from localStorage
   useEffect(() => {
@@ -35,6 +37,7 @@ export function LocalStorageProvider( { children } ) {
     const storedInQueue = localStorage.getItem(UserInfoEnum.inQueue) === 'true';
     const storedPlayerData = localStorage.getItem(UserInfoEnum.playerData);
     const storedPlayerDataLastUpdateTime = localStorage.getItem(UserInfoEnum.playerDataLastUpdateTime);
+    const storedExpectedWaitTime = Number(localStorage.getItem(UserInfoEnum.expectedWaitTime));
 
     if (storedSelectedLocation) setSelectedLocation(storedSelectedLocation);
     if (storedFirebaseUID) setFirebaseUID(storedFirebaseUID);
@@ -43,6 +46,7 @@ export function LocalStorageProvider( { children } ) {
     if (storedInQueue) setInQueue(storedInQueue);
     if (storedPlayerData) setPlayerData(storedPlayerData);
     if (storedPlayerDataLastUpdateTime) setPlayerDataLastUpdateTime(storedPlayerDataLastUpdateTime);
+    if (storedExpectedWaitTime > 0) setExpectedWaitTime(storedExpectedWaitTime);
   }, []);
 
   // Helper functions to update both context and localStorage
@@ -81,6 +85,11 @@ export function LocalStorageProvider( { children } ) {
     localStorage.setItem(UserInfoEnum.playerDataLastUpdateTime, value);
   };
 
+  const updateExpectedWaitTime = (value: number) => {
+    setExpectedWaitTime(value);
+    localStorage.setItem(UserInfoEnum.expectedWaitTime, value.toString());
+  };
+
   const clear = () => {
     setSelectedLocation('');
     setFirebaseUID('');
@@ -89,6 +98,7 @@ export function LocalStorageProvider( { children } ) {
     setInQueue(false);
     setPlayerData({});
     setPlayerDataLastUpdateTime('');
+    setExpectedWaitTime(0);
     localStorage.clear();
   }
 
@@ -109,6 +119,8 @@ export function LocalStorageProvider( { children } ) {
         setPlayerData: updatePlayerData,
         playerDataLastUpdateTime,
         setPlayerDataLastUpdateTime: updatePlayerDataLastUpdateTime,
+        expectedWaitTime,
+        setExpectedWaitTime: updateExpectedWaitTime,
         clear: clear,
       }}
     >

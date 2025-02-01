@@ -25,7 +25,7 @@ const LocationSelection: React.FC = () => {
   // Handle the navigation button click
   const handleNextPage = () => {
     if (selectedLocation) {
-      navigate('/user-info'); // Navigate to the next page
+      navigate('/join-court'); // Navigate to the next page
     } else {
       alert('Please select a location before proceeding.');
     }

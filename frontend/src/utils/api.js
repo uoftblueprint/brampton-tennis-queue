@@ -143,6 +143,56 @@ export const sendWebNotification = async (locationName, firebaseUID, message, re
   }
 };
 
+export const getTaken = async (locationName, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/getTaken`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to retrieve taken courts.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying getTaken (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay)); // Exponential backoff
+      return await getTaken(locationName, retries - 1, delay * 2); // Retry logic
+    }
+    console.error("Error fetching taken courts:", error);
+    return null;
+  }
+};
+
+export const addUnknowns = async (locationName, courts, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/addUnknowns`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+        occupiedCourts: courts,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to add unknowns.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying addUnknowns (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay)); // Exponential backoff
+      return await addUnknowns(locationName, courts, retries - 1, delay * 2); // Retry logic
+    }
+    console.error("Error adding unknowns:", error);
+    return null;
+  }
+};
 
 // ** UTILITY FUNCTION TO CREATE FIRESTORE LISTENER **
 

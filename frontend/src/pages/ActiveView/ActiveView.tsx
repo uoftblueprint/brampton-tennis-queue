@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import './ActiveView.css';
 import CurrentState from './CurrentState';
 import { joinGame } from '../../utils/api';
+import { getTaken } from '../../utils/api';
+import { addUnknowns } from '../../utils/api';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
+import ConfirmationModal from './ConfirmationModal';
 
 const ActiveView: React.FC = () => {
   const context = useContext(LocalStorageContext);
@@ -13,6 +16,12 @@ const ActiveView: React.FC = () => {
   const nickname = context.nickname;
 
   const [loading, setLoading] = useState<boolean>(true);  // Initially set loading to true
+  const [updateRequired, setUpdateRequired] = useState<boolean>(false);
+  const [courtNumbers, setCourtNumbers] = useState<number[]>([]);
+  const [numberOfCourts, setNumberOfCourts] = useState<number>(0);
+  const [selectedCourts, setSelectedCourts] = useState<number[]>([]);
+  const [showSelection, setShowSelection] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -29,10 +38,55 @@ const ActiveView: React.FC = () => {
     }
     // Prevents initalizeGame from being called again by strict mode
     if (!hasInitializedRef.current) {
-      initializeGame();
+      handleGetTaken();
       hasInitializedRef.current = true;
     }
   }, []);
+
+  const handleGetTaken = async () => {
+    try {
+      const { updateRequired, takenCourts, totalCourts } = await getTaken(location);
+      setUpdateRequired(updateRequired);
+      setCourtNumbers(takenCourts);
+      setNumberOfCourts(totalCourts);
+      setSelectedCourts(takenCourts);
+
+      if (updateRequired) {
+        setShowSelection(true);
+      } else {
+        initializeGame();
+      }
+    } catch (error) {
+      console.error('Error fetching taken courts:', error);
+      alert('Could not fetch court data. Proceeding with trying to join the game.')
+      initializeGame();
+    }
+  };
+
+  const handleCheckboxChange = (courtNumber: number) => {
+    setSelectedCourts((prevSelected) =>
+      prevSelected.includes(courtNumber)
+        ? prevSelected.filter((num) => num !== courtNumber)
+        : [...prevSelected, courtNumber]
+    );
+  };
+
+  const handleConfirmSelection = () => {
+    setShowConfirmation(true); // Open confirmation modal
+  };
+
+  const handleConfirm = async () => {
+    setShowConfirmation(false); // Close modal
+    setShowSelection(false); // Hide checkboxes
+
+    try {
+      await addUnknowns(location, selectedCourts);
+    } catch (error) {
+      console.error('Error updating unknown courts:', error);
+    }
+    
+    initializeGame();
+  };
 
   const initializeGame = async () => {
     const addedToGame = context.addedToGame;
@@ -52,7 +106,38 @@ const ActiveView: React.FC = () => {
 
   return (
     <div className="active-view">
-      {loading ? <p>Loading...</p> : <CurrentState />}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <CurrentState />
+      )}
+
+      {/* Show Court Selection */}
+      {showSelection && (
+        <div className="court-selection">
+          <p>Which courts are currently occupied?</p>
+          {[...Array(numberOfCourts)].map((_, index) => (
+            <label key={index}>
+              <input
+                type="checkbox"
+                checked={selectedCourts.includes(index + 1)}
+                onChange={() => handleCheckboxChange(index + 1)}
+              />
+              Court {index + 1}
+            </label>
+          ))}
+          <button onClick={handleConfirmSelection}>Confirm Selection</button>
+        </div>
+      )}
+
+      {/* Show Confirmation Modal */}
+      {showConfirmation && (
+        <ConfirmationModal
+          message="Are you sure you want to update occupied courts?"
+          onConfirm={handleConfirm}
+          onCancel={() => setShowConfirmation(false)}
+        />
+      )}
     </div>
   );
 };

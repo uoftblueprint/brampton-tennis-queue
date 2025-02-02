@@ -15,8 +15,6 @@ Please feel free to read more about the design of this application, [here](https
 - Leandro Brasil - Developer
 - Jamie Han - Developer
 - Alan Su - Developer
-- Stephanie Lu - Developer
-- Riyad Valiyev - Developer
 - Aina Merchant - Developer
 
 # Useful Git Commands / Workflow

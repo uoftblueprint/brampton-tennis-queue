@@ -47,7 +47,7 @@ const JoinCourt: React.FC = () => {
       
       <div className="wait-time">
         <img src={clockIcon} alt="Clock Icon" className="button-icon" />
-        <p>Current queue time - {context.expectedWaitTime * 30} minutes</p>
+        <p>Current queue time - {context.expectedWaitTime * 60} minutes</p>
       </div>
       <div className="bottom-border"></div>
 

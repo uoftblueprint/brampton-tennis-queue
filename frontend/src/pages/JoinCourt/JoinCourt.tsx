@@ -55,8 +55,8 @@ const JoinCourt: React.FC = () => {
         <h3 className="subtext">Players in front of you</h3>
 
         <ol>
-          {queueNicknames.map((nickname) => {
-            return <li>{nickname}</li>
+          {queueNicknames.map((nickname, index) => {
+            return <li key={index}>{nickname}</li>
           })}
         </ol>
       </div>

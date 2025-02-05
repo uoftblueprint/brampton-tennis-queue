@@ -36,7 +36,13 @@ const JoinCourt: React.FC = () => {
   }, []);
 
   return (
-    <div className="court-joiner">
+    <>
+    <div className="big-header">
+        {/* Page heading */}
+        <h2 className="big-header-title"><span>Brampton</span><br/>Tennis Queue</h2>
+      </div>
+
+    <div className="court-joiner" style={{margin: "0 auto", display: "table"}}>
 
       {/* Page heading */}
       <div className="heading">
@@ -81,6 +87,7 @@ const JoinCourt: React.FC = () => {
       {/* Button for if courts are not full */}
       
     </div>
+    </>
   );
 };
 

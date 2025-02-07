@@ -4,51 +4,61 @@ import './ActiveView.css';
 import CurrentState from './CurrentState';
 import { joinGame } from '../../utils/api';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
+import { AuthContext } from '../../context/AuthContext';
 
 const ActiveView: React.FC = () => {
-  const context = useContext(LocalStorageContext);
-
-  const location = context.selectedLocation;
-  const firebaseUID = context.firebaseUID;
-  const nickname = context.nickname;
-
-  const [loading, setLoading] = useState<boolean>(true);  // Initially set loading to true
-
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
   const hasInitializedRef = useRef<boolean>(false);
+  
+  const context = useContext(LocalStorageContext);
+  const currentUser = useContext(AuthContext);
+
+  const location = context?.selectedLocation || '';
+  const nickname = context?.nickname || '';
+  const firebaseUID = context?.firebaseUID || '';
 
   useEffect(() => {
-    console.log("Active view useEffect");
-    if (!firebaseUID) {
-      setTimeout(() => {}, 1000);  // 1-second timeout for UID to load
-    }
-    if (!firebaseUID) {
-      navigate('/'); // If firebaseUID is not available, redirect to home
+    if (!currentUser || !context) {
+      navigate('/');
       return;
     }
-    // Prevents initalizeGame from being called again by strict mode
+
     if (!hasInitializedRef.current) {
       initializeGame();
       hasInitializedRef.current = true;
     }
-  }, []);
+  }, [currentUser, context, navigate]);
 
   const initializeGame = async () => {
-    const addedToGame = context.addedToGame;
+    const addedToGame = context?.addedToGame;
     if (!addedToGame) {
       setLoading(true);
       try {
-        const { status } = await joinGame(location, nickname, firebaseUID); // Call to backend
-        context.setAddedToGame(true);
-        context.setInQueue(status === 'queue' ? true : false);
+        // Add these debug logs
+        console.log("Attempting to join game with:", {
+          location,
+          nickname,
+          firebaseUID,
+          context: context?.firebaseUID
+        });
+
+        const { status } = await joinGame(location, nickname, firebaseUID);
+        console.log("Join game response:", status);  // Add this too
+        
+        context?.setAddedToGame(true);
+        context?.setInQueue(status === 'queue' ? true : false);
       } catch (error) {
         console.error('Error joining queue:', error);
         alert('Failed to join the queue. Please try again.');
       }
     }
     setLoading(false);
-  };
+};
+
+  if (!context || !currentUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="active-view">

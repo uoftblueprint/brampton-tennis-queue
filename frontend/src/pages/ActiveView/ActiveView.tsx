@@ -11,6 +11,7 @@ const ActiveView: React.FC = () => {
   const location = context.selectedLocation;
   const firebaseUID = context.firebaseUID;
   const nickname = context.nickname;
+  const token = context.token;
 
   const [loading, setLoading] = useState<boolean>(true);  // Initially set loading to true
 
@@ -19,7 +20,6 @@ const ActiveView: React.FC = () => {
   const hasInitializedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    console.log("Active view useEffect");
     if (!firebaseUID) {
       setTimeout(() => {}, 1000);  // 1-second timeout for UID to load
     }
@@ -39,7 +39,7 @@ const ActiveView: React.FC = () => {
     if (!addedToGame) {
       setLoading(true);
       try {
-        const { status } = await joinGame(location, nickname, firebaseUID); // Call to backend
+        const { status } = await joinGame(location, nickname, firebaseUID, token); // Call to backend
         context.setAddedToGame(true);
         context.setInQueue(status === 'queue' ? true : false);
       } catch (error) {

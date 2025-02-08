@@ -28,7 +28,9 @@ const CurrentState: React.FC = () => {
 
   // Function to check cache and load data
   const checkAndLoadCachedData = () => {
-    const cachedPlayers = JSON.parse(context.playerData || '{}');
+    const cachedPlayers = typeof context.playerData === 'string' && context.playerData.trim() !== ''
+    ? JSON.parse(context.playerData)
+    : {};
     const cachedTimestamp = context.playerDataLastUpdateTime;
     const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
     const isInQueue = context.inQueue === 'true';

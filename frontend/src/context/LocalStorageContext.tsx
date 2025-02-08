@@ -5,6 +5,7 @@ const UserInfoEnum = {
   selectedLocation: "selectedLocation",
   firebaseUID: "firebaseUID",
   nickname: "nickname",
+  token: "token",
   addedToGame: "addedToGame",
   inQueue: "inQueue",
   playerData: "playerData",
@@ -22,6 +23,7 @@ export function LocalStorageProvider( { children } ) {
   const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(UserInfoEnum.selectedLocation) || '');
   const [firebaseUID, setFirebaseUID] = useState(localStorage.getItem(UserInfoEnum.firebaseUID) || '');
   const [nickname, setNickname] = useState(localStorage.getItem(UserInfoEnum.nickname) || '');
+  const [token, setToken] = useState(localStorage.getItem(UserInfoEnum.token) || 'NULL');
   const [addedToGame, setAddedToGame] = useState(localStorage.getItem(UserInfoEnum.addedToGame) === 'true' ? true : false);
   const [inQueue, setInQueue] = useState(localStorage.getItem(UserInfoEnum.inQueue) === 'true' ? true : false);
   const [playerData, setPlayerData] = useState(localStorage.getItem(UserInfoEnum.playerData) ? JSON.parse(localStorage.getItem(UserInfoEnum.playerData)!) : '');
@@ -33,6 +35,7 @@ export function LocalStorageProvider( { children } ) {
     const storedSelectedLocation = localStorage.getItem(UserInfoEnum.selectedLocation);
     const storedFirebaseUID = localStorage.getItem(UserInfoEnum.firebaseUID);
     const storedNickname = localStorage.getItem(UserInfoEnum.nickname);
+    const storedToken = localStorage.getItem(UserInfoEnum.token);
     const storedAddedToGame = localStorage.getItem(UserInfoEnum.addedToGame) === 'true';
     const storedInQueue = localStorage.getItem(UserInfoEnum.inQueue) === 'true';
     const storedPlayerData = localStorage.getItem(UserInfoEnum.playerData);
@@ -42,6 +45,7 @@ export function LocalStorageProvider( { children } ) {
     if (storedSelectedLocation) setSelectedLocation(storedSelectedLocation);
     if (storedFirebaseUID) setFirebaseUID(storedFirebaseUID);
     if (storedNickname) setNickname(storedNickname);
+    if (storedToken) setToken(storedToken);
     if (storedAddedToGame) setAddedToGame(storedAddedToGame);
     if (storedInQueue) setInQueue(storedInQueue);
     if (storedPlayerData) setPlayerData(storedPlayerData);
@@ -63,6 +67,11 @@ export function LocalStorageProvider( { children } ) {
   const updateNickname = (value: string) => {
     setNickname(value);
     localStorage.setItem(UserInfoEnum.nickname, value);
+  };
+
+  const updateToken = (value: string) => {
+    setToken(value);
+    localStorage.setItem(UserInfoEnum.token, value);
   };
 
   const updateAddedToGame = (value: boolean) => {
@@ -94,6 +103,7 @@ export function LocalStorageProvider( { children } ) {
     setSelectedLocation('');
     setFirebaseUID('');
     setNickname('');
+    setToken('NULL');
     setAddedToGame(false);
     setInQueue(false);
     setPlayerData({});
@@ -111,6 +121,8 @@ export function LocalStorageProvider( { children } ) {
         setFirebaseUID: updateFirebaseUID,
         nickname,
         setNickname: updateNickname,
+        token,
+        setToken: updateToken,
         addedToGame,
         setAddedToGame: updateAddedToGame,
         inQueue,

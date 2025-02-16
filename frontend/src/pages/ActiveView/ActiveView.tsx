@@ -108,14 +108,20 @@ const ActiveView: React.FC = () => {
 
   return (
     <div className="active-view">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <CurrentState />
+      {/* Show Loading Spinner */}
+      {loading && <p>Loading...</p>}
+  
+      {/* Show Confirmation Modal (if applicable) */}
+      {!loading && showConfirmation && (
+        <ConfirmationModal
+          message="Are you sure you want to update occupied courts?"
+          onConfirm={handleConfirm}
+          onCancel={() => setShowConfirmation(false)}
+        />
       )}
-
-      {/* Show Court Selection */}
-      {showSelection && (
+  
+      {/* Show Court Selection (if applicable) */}
+      {!loading && !showConfirmation && showSelection && (
         <div className="court-selection">
           <p>Which courts are currently occupied?</p>
           {[...Array(numberOfCourts)].map((_, index) => (
@@ -128,20 +134,16 @@ const ActiveView: React.FC = () => {
               Court {index + 1}
             </label>
           ))}
-          <button onClick={handleConfirmSelection}>Confirm Selection</button>
+          <div className="button-container">
+            <button onClick={handleConfirmSelection}>Confirm Selection</button>
+          </div>
         </div>
       )}
-
-      {/* Show Confirmation Modal */}
-      {showConfirmation && (
-        <ConfirmationModal
-          message="Are you sure you want to update occupied courts?"
-          onConfirm={handleConfirm}
-          onCancel={() => setShowConfirmation(false)}
-        />
-      )}
+  
+      {/* Show Current State if no other prompts */}
+      {!loading && !showConfirmation && !showSelection && <CurrentState />}
     </div>
-  );
+  );  
 };
 
 export default ActiveView;

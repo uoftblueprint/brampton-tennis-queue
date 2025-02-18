@@ -9,8 +9,7 @@ import JoinCourt from './pages/JoinCourt/JoinCourt';
 // Import contexts
 import { LocalStorageProvider } from './context/LocalStorageContext';
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-
+import ProtectedRoute from './components/ProtectedRoute.tsx';
 
 function App() {
 

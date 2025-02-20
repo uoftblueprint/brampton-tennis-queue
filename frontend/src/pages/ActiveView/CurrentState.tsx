@@ -33,7 +33,7 @@ const CurrentState: React.FC = () => {
     : {};
     const cachedTimestamp = context.playerDataLastUpdateTime;
     const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
-    const isInQueue = context.inQueue === 'true';
+    const isInQueue = context.inQueue;  // Just use the boolean directly
     setInQueue(isInQueue);
 
     // Use cached data if available
@@ -80,13 +80,13 @@ const CurrentState: React.FC = () => {
   const updateInQueueStatus = (locationData: any) => {
     const isInQueue = locationData.queueFirebaseUIDs.includes(firebaseUID);
     setInQueue(isInQueue);
-    context.setInQueue(JSON.stringify(isInQueue));
-
-    // If user is no longer in queue, stop updates
+    context.setInQueue(isInQueue);  // Remove JSON.stringify
+    
     if (!isInQueue) {
       stopUpdating();
     }
-  };
+};
+
 
   // Update player names to include '(you)'
   const updatePlayerNames = (locationData: any) => {

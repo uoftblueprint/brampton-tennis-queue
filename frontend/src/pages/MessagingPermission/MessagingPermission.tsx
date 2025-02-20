@@ -25,7 +25,7 @@ const MessagingPermission: React.FC = () => {
             const vapidKey = 'BIn7HfgGhmz1NJ7T0SOYcxQC1MkNjRlwT4awKTSJp9yvruJFZxzShp4reOdk1kpeKO6CRI2d68F0X_Dr1zrhfSI';
             const token = await getToken(messaging, { vapidKey });
     
-            if (token) {
+            if (token && context) {
                 context.setToken(token);
                 setErrorMessage('');
                 navigate("/active-view");

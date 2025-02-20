@@ -8,24 +8,34 @@ import JoinCourt from './pages/JoinCourt/JoinCourt';
 
 // Import contexts
 import { LocalStorageProvider } from './context/LocalStorageContext';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute.tsx';
 
 function App() {
 
   return (
     <LocalStorageProvider> 
-      {/* Navigation Links */}
-      <nav>
-      </nav>
+      <AuthProvider>
+        {/* Navigation Links */}
+        <nav>
+        </nav>
 
-      {/* Define Routes */}
-      <Routes>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<LocationSelection />} />
-        <Route path="/user-info" element={<UserInfo />} />
-        <Route path="/join-court" element={<JoinCourt />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/active-view" element={<ActiveView />} />
-      </Routes>
+        {/* Define Routes */}
+        <Routes>
+          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<LocationSelection />} />
+          <Route path="/user-info" element={<UserInfo />} />
+          <Route path="/join-court" element={<JoinCourt />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route 
+            path="/active-view" 
+            element={
+              <ProtectedRoute>
+                <ActiveView />
+              </ProtectedRoute>
+            } 
+          />        </Routes>
+      </AuthProvider>
     </LocalStorageProvider>
   );
 }

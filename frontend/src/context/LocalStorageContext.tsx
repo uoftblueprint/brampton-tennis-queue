@@ -12,12 +12,36 @@ const UserInfoEnum = {
   expectedWaitTime: "expectedWaitTime",
 };
 
-// Context for why this type is set to any: https://stackoverflow.com/a/74967045
-export const LocalStorageContext = createContext<any>({
-  
-});
+// Add interface for children props
+interface LocalStorageProviderProps {
+  children: React.ReactNode;
+}
 
-export function LocalStorageProvider( { children } ) {
+// Add interface for the context value type
+interface LocalStorageContextType {
+  selectedLocation: string;
+  setSelectedLocation: (value: string) => void;
+  firebaseUID: string;
+  setFirebaseUID: (value: string) => void;
+  nickname: string;
+  setNickname: (value: string) => void;
+  addedToGame: boolean;
+  setAddedToGame: (value: boolean) => void;
+  inQueue: boolean;
+  setInQueue: (value: boolean) => void;
+  playerData: any; // or define a more specific type if possible
+  setPlayerData: (value: any) => void;
+  playerDataLastUpdateTime: string;
+  setPlayerDataLastUpdateTime: (value: string) => void;
+  expectedWaitTime: number;
+  setExpectedWaitTime: (value: number) => void;
+  clear: () => void;
+}
+
+// Update context creation with the type
+export const LocalStorageContext = createContext<LocalStorageContextType | null>(null);
+
+export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ children }) => {
   //  Pull default context from local storage to persist on page reload
   const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(UserInfoEnum.selectedLocation) || '');
   const [firebaseUID, setFirebaseUID] = useState(localStorage.getItem(UserInfoEnum.firebaseUID) || '');

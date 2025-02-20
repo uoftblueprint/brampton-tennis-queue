@@ -3,6 +3,7 @@ import NotFound from './pages/NotFound';
 import LocationSelection from './pages/LocationSelection/LocationSelection'
 import UserInfo from './pages/UserInfo/UserInfoForm';
 import SignIn from './pages/SignIn/SignIn';
+import MessagingPermission from './pages/MessagingPermission/MessagingPermission';
 import ActiveView from './pages/ActiveView/ActiveView';
 import JoinCourt from './pages/JoinCourt/JoinCourt';
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/user-info" element={<UserInfo />} />
           <Route path="/join-court" element={<JoinCourt />} />
           <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/messaging-permission" element={<MessagingPermission />} />
           <Route 
             path="/active-view" 
             element={

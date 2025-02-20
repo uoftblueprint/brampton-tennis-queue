@@ -41,7 +41,7 @@ const Login: React.FC = () => {
 
                 context.setFirebaseUID(user.uid); // Store user UID in local storage
                 setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
-                navigate("/active-view"); // Navigate to active view on success
+                navigate("/messaging-permission"); // Navigate to active view on success
             })
             .catch(() => {
                 setErrorMessage("Google sign-in failed. Please try again.");
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
           
                 context.setFirebaseUID(user.uid); // Store user UID in local storage
                 setTimeout(() => {}, 1000);
-                navigate("/active-view");
+                navigate("/messaging-permission");
             }).catch((error) => {
                 setErrorMessage("X sign-in failed. Please try again.");
             });
@@ -107,7 +107,7 @@ const handleEmailAuth = (e: React.FormEvent) => {
             console.log("User UID:", user.uid); // This is the user's UID
             context.setFirebaseUID(user.uid); // Store the UID in localStorage if needed
             console.log("User:", user);
-            navigate("/active-view"); // Navigate to the next page
+            navigate("/messaging-permission"); // Navigate to the next page
         })
         // Handle Firebase errors if authentication fails
         .catch((error) => {

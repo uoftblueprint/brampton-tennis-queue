@@ -60,7 +60,7 @@ export const endSession = async (locationName, firebaseUID, retries = 3, delay =
 };
 
 // Add player to game with /joinGame endpoint
-export const joinGame = async (locationName, nickname, firebaseUID, retries = 3, delay = 500) => {
+export const joinGame = async (locationName, nickname, firebaseUID, token, retries = 3, delay = 500) => {
   try {
     const response = await fetch(`${BACKEND_API}/api/joinGame`, {
       method: 'POST',
@@ -71,6 +71,7 @@ export const joinGame = async (locationName, nickname, firebaseUID, retries = 3,
         location: locationName,
         nickname: nickname,
         firebaseUID: firebaseUID,
+        fcmToken: token,
       }),
     });
     if (!response.ok) throw new Error('Failed to join game.');

@@ -19,6 +19,7 @@ const ActiveView: React.FC = () => {
   const { 
     selectedLocation: location,
     nickname,
+    token,
     firebaseUID,
     addedToGame,
     setAddedToGame,
@@ -52,7 +53,7 @@ const ActiveView: React.FC = () => {
           firebaseUID
         });
 
-        const response = await joinGame(location, nickname, firebaseUID);
+        const response = await joinGame(location, nickname, firebaseUID, token);
         console.log("Join game response:", response);
         
         if (response) {

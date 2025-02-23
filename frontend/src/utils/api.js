@@ -156,6 +156,7 @@ export const getTaken = async (locationName, retries = 3, delay = 500) => {
     });
     if (!response.ok) throw new Error('Failed to retrieve taken courts.');
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     if (retries > 0) {

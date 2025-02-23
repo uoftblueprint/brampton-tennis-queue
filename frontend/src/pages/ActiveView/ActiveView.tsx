@@ -10,6 +10,13 @@ import ConfirmationModal from './ConfirmationModal';
 
 const ActiveView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [updateRequired, setUpdateRequired] = useState<boolean>(false);
+  const [courtNumbers, setCourtNumbers] = useState<number[]>([]);
+  const [numberOfCourts, setNumberOfCourts] = useState<number>(0);
+  const [selectedCourts, setSelectedCourts] = useState<number[]>([]);
+  const [showSelection, setShowSelection] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const hasInitializedRef = useRef<boolean>(false);
   
@@ -34,10 +41,9 @@ const ActiveView: React.FC = () => {
       navigate('/');
       return;
     }
-
     // Only initialize if we haven't been added to a game yet
     if (!hasInitializedRef.current && !addedToGame) {
-      initializeGame();
+      handleGetTaken();
       hasInitializedRef.current = true;
     } else {
       // If we're already added to game, just set loading to false
@@ -47,10 +53,10 @@ const ActiveView: React.FC = () => {
 
   const handleGetTaken = async () => {
     try {
-      const { updateRequired, takenCourts, totalCourts } = await getTaken(location);
+      const { updateRequired, takenCourts, numberOfCourts } = await getTaken(location);
       setUpdateRequired(updateRequired);
       setCourtNumbers(takenCourts);
-      setNumberOfCourts(totalCourts);
+      setNumberOfCourts(numberOfCourts);
       setSelectedCourts(takenCourts);
 
       if (updateRequired) {
@@ -121,43 +127,43 @@ const ActiveView: React.FC = () => {
     setLoading(false);
 };
 
-  return (
-    <div className="active-view">
-      {/* Show Loading Spinner */}
-      {loading && <p>Loading...</p>}
-  
-      {/* Show Confirmation Modal (if applicable) */}
-      {!loading && showConfirmation && (
-        <ConfirmationModal
-          message="Are you sure you want to update occupied courts?"
-          onConfirm={handleConfirm}
-          onCancel={() => setShowConfirmation(false)}
-        />
-      )}
-  
-      {/* Show Court Selection (if applicable) */}
-      {!loading && !showConfirmation && showSelection && (
-        <div className="court-selection">
-          <p>Which courts are currently occupied?</p>
-          {[...Array(numberOfCourts)].map((_, index) => (
-            <label key={index}>
-              <input
-                type="checkbox"
-                checked={selectedCourts.includes(index + 1)}
-                onChange={() => handleCheckboxChange(index + 1)}
-              />
-              Court {index + 1}
-            </label>
-          ))}
-          <div className="button-container">
-            <button onClick={handleConfirmSelection}>Confirm Selection</button>
-          </div>
+return (
+  <div className="active-view">
+    {/* Show Loading Spinner */}
+    {loading && <p>Loading...</p>}
+
+    {/* Show Confirmation Modal (if applicable) */}
+    {!loading && showConfirmation && (
+      <ConfirmationModal
+        message="Are you sure you want to update occupied courts?"
+        onConfirm={handleConfirm}
+        onCancel={() => setShowConfirmation(false)}
+      />
+    )}
+
+    {/* Show Court Selection (if applicable) */}
+    {!loading && !showConfirmation && showSelection && (
+      <div className="court-selection">
+        <p>Which courts are currently occupied?</p>
+        {[...Array(numberOfCourts)].map((_, index) => (
+          <label key={index}>
+            <input
+              type="checkbox"
+              checked={selectedCourts.includes(index + 1)}
+              onChange={() => handleCheckboxChange(index + 1)}
+            />
+            Court {index + 1}
+          </label>
+        ))}
+        <div className="button-container">
+          <button onClick={handleConfirmSelection}>Confirm Selection</button>
         </div>
-      )}
-  
-      {/* Show Current State if no other prompts */}
-      {!loading && !showConfirmation && !showSelection && <CurrentState />}
-    </div>
-  );  
+      </div>
+    )}
+
+    {/* Show Current State if no other prompts */}
+    {!loading && !showConfirmation && !showSelection && <CurrentState />}
+  </div>
+);  
 };
 export default ActiveView;

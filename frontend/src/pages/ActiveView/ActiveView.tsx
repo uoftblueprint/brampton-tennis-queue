@@ -143,20 +143,23 @@ return (
 
     {/* Show Court Selection (if applicable) */}
     {!loading && !showConfirmation && showSelection && (
-      <div className="court-selection">
-        <p>Which courts are currently occupied?</p>
-        {[...Array(numberOfCourts)].map((_, index) => (
-          <label key={index}>
-            <input
-              type="checkbox"
-              checked={selectedCourts.includes(index + 1)}
-              onChange={() => handleCheckboxChange(index + 1)}
-            />
-            Court {index + 1}
-          </label>
-        ))}
-        <div className="button-container">
-          <button onClick={handleConfirmSelection}>Confirm Selection</button>
+      <div className="court-selection-overlay">
+        <div className="court-selection">
+        <h2>Confirm Action</h2>
+          <p>Which courts are currently occupied?</p>
+          {[...Array(numberOfCourts)].map((_, index) => (
+            <label key={index}>
+              <input
+                type="checkbox"
+                checked={selectedCourts.includes(index + 1)}
+                onChange={() => handleCheckboxChange(index + 1)}
+              />
+              Court {index + 1}
+            </label>
+          ))}
+          <div className="court-selection-buttons">
+            <button onClick={handleConfirmSelection} className="court-confirm-button">Confirm Selection</button>
+          </div>
         </div>
       </div>
     )}
@@ -164,6 +167,6 @@ return (
     {/* Show Current State if no other prompts */}
     {!loading && !showConfirmation && !showSelection && <CurrentState />}
   </div>
-);  
+);
 };
 export default ActiveView;

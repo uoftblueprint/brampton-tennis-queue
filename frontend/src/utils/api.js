@@ -222,3 +222,29 @@ export const subscribeToLocation = (location, updateState) => {
   // Return the unsubscribe function
   return unsubscribe;
 };
+
+// Get the expected wait time for a location
+export const expectedWaitTime = async (locationName, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/api/expectedWaitTime`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: locationName,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to leave queue.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying expectedWaitTime (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
+      return await expectedWaitTime(locationName, retries - 1, delay * 2);  // Up to 3 retries
+    }
+    console.error(`Error getting expected wait time for location ${locationName}: ${error}`);
+    return null;
+  }
+};

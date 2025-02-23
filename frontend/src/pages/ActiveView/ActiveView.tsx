@@ -9,39 +9,41 @@ import { LocalStorageContext } from '../../context/LocalStorageContext';
 import ConfirmationModal from './ConfirmationModal';
 
 const ActiveView: React.FC = () => {
-  const context = useContext(LocalStorageContext);
-
-  const location = context.selectedLocation;
-  const firebaseUID = context.firebaseUID;
-  const nickname = context.nickname;
-
-  const [loading, setLoading] = useState<boolean>(true);  // Initially set loading to true
-  const [updateRequired, setUpdateRequired] = useState<boolean>(false);
-  const [courtNumbers, setCourtNumbers] = useState<number[]>([]);
-  const [numberOfCourts, setNumberOfCourts] = useState<number>(0);
-  const [selectedCourts, setSelectedCourts] = useState<number[]>([]);
-  const [showSelection, setShowSelection] = useState<boolean>(false);
-  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
   const hasInitializedRef = useRef<boolean>(false);
+  
+  const context = useContext(LocalStorageContext);
+  
+  if (!context) {
+    return <div>Loading...</div>;
+  }
+
+  const { 
+    selectedLocation: location,
+    nickname,
+    firebaseUID,
+    addedToGame,
+    setAddedToGame,
+    setInQueue 
+  } = context;
 
   useEffect(() => {
-    console.log("Active view useEffect");
-    if (!firebaseUID) {
-      setTimeout(() => {}, 1000);  // 1-second timeout for UID to load
-    }
-    if (!firebaseUID) {
-      navigate('/'); // If firebaseUID is not available, redirect to home
+    // Check if we have the required data
+    if (!firebaseUID || !location || !nickname) {
+      navigate('/');
       return;
     }
-    // Prevents initalizeGame from being called again by strict mode
-    if (!hasInitializedRef.current) {
-      handleGetTaken();
+
+    // Only initialize if we haven't been added to a game yet
+    if (!hasInitializedRef.current && !addedToGame) {
+      initializeGame();
       hasInitializedRef.current = true;
+    } else {
+      // If we're already added to game, just set loading to false
+      setLoading(false);
     }
-  }, []);
+  }, [firebaseUID, location, nickname, navigate, addedToGame]);
 
   const handleGetTaken = async () => {
     try {
@@ -91,20 +93,33 @@ const ActiveView: React.FC = () => {
   };
 
   const initializeGame = async () => {
-    const addedToGame = context.addedToGame;
     if (!addedToGame) {
       setLoading(true);
       try {
-        const { status } = await joinGame(location, nickname, firebaseUID); // Call to backend
-        context.setAddedToGame(true);
-        context.setInQueue(status === 'queue' ? true : false);
+        console.log("Attempting to join game with:", {
+          location,
+          nickname,
+          firebaseUID
+        });
+
+        const response = await joinGame(location, nickname, firebaseUID);
+        console.log("Join game response:", response);
+        
+        if (response) {
+          context?.setAddedToGame(true);
+          context?.setInQueue(true);
+        } else {
+          throw new Error('Failed to join game');
+        }
       } catch (error) {
         console.error('Error joining queue:', error);
         alert('Failed to join the queue. Please try again.');
+        // Add this redirect
+        navigate('/');
       }
     }
     setLoading(false);
-  };
+};
 
   return (
     <div className="active-view">
@@ -145,5 +160,4 @@ const ActiveView: React.FC = () => {
     </div>
   );  
 };
-
 export default ActiveView;

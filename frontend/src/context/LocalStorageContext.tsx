@@ -5,6 +5,7 @@ const UserInfoEnum = {
   selectedLocation: "selectedLocation",
   firebaseUID: "firebaseUID",
   nickname: "nickname",
+  token: "token",
   addedToGame: "addedToGame",
   inQueue: "inQueue",
   playerData: "playerData",
@@ -25,6 +26,8 @@ interface LocalStorageContextType {
   setFirebaseUID: (value: string) => void;
   nickname: string;
   setNickname: (value: string) => void;
+  token: string;
+  setToken: (value: string) => void;
   addedToGame: boolean;
   setAddedToGame: (value: boolean) => void;
   inQueue: boolean;
@@ -46,6 +49,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
   const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(UserInfoEnum.selectedLocation) || '');
   const [firebaseUID, setFirebaseUID] = useState(localStorage.getItem(UserInfoEnum.firebaseUID) || '');
   const [nickname, setNickname] = useState(localStorage.getItem(UserInfoEnum.nickname) || '');
+  const [token, setToken] = useState(localStorage.getItem(UserInfoEnum.token) || 'NULL');
   const [addedToGame, setAddedToGame] = useState(localStorage.getItem(UserInfoEnum.addedToGame) === 'true' ? true : false);
   const [inQueue, setInQueue] = useState(localStorage.getItem(UserInfoEnum.inQueue) === 'true' ? true : false);
   const [playerData, setPlayerData] = useState(localStorage.getItem(UserInfoEnum.playerData) ? JSON.parse(localStorage.getItem(UserInfoEnum.playerData)!) : '');
@@ -57,6 +61,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     const storedSelectedLocation = localStorage.getItem(UserInfoEnum.selectedLocation);
     const storedFirebaseUID = localStorage.getItem(UserInfoEnum.firebaseUID);
     const storedNickname = localStorage.getItem(UserInfoEnum.nickname);
+    const storedToken = localStorage.getItem(UserInfoEnum.token);
     const storedAddedToGame = localStorage.getItem(UserInfoEnum.addedToGame) === 'true';
     const storedInQueue = localStorage.getItem(UserInfoEnum.inQueue) === 'true';
     const storedPlayerData = localStorage.getItem(UserInfoEnum.playerData);
@@ -66,6 +71,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     if (storedSelectedLocation) setSelectedLocation(storedSelectedLocation);
     if (storedFirebaseUID) setFirebaseUID(storedFirebaseUID);
     if (storedNickname) setNickname(storedNickname);
+    if (storedToken) setToken(storedToken);
     if (storedAddedToGame) setAddedToGame(storedAddedToGame);
     if (storedInQueue) setInQueue(storedInQueue);
     if (storedPlayerData) setPlayerData(storedPlayerData);
@@ -87,6 +93,11 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
   const updateNickname = (value: string) => {
     setNickname(value);
     localStorage.setItem(UserInfoEnum.nickname, value);
+  };
+
+  const updateToken = (value: string) => {
+    setToken(value);
+    localStorage.setItem(UserInfoEnum.token, value);
   };
 
   const updateAddedToGame = (value: boolean) => {
@@ -118,6 +129,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     setSelectedLocation('');
     setFirebaseUID('');
     setNickname('');
+    setToken('NULL');
     setAddedToGame(false);
     setInQueue(false);
     setPlayerData({});
@@ -135,6 +147,8 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
         setFirebaseUID: updateFirebaseUID,
         nickname,
         setNickname: updateNickname,
+        token,
+        setToken: updateToken,
         addedToGame,
         setAddedToGame: updateAddedToGame,
         inQueue,

@@ -12,6 +12,29 @@ import { LocalStorageProvider } from './context/LocalStorageContext';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 
+// src/main.ts or App.tsx or wherever your root is:
+if ('serviceWorker' in navigator) {
+  // 1) Register the Service Worker
+  navigator.serviceWorker
+    .register('/firebase-messaging-sw.js') // Adjust the path if necessary
+    .then((registration) => {
+      console.log('Service Worker registered:', registration.scope);
+    })
+    .catch((err) => {
+      console.error('SW registration failed:', err);
+    });
+  
+  // 2) Listen for messages from the Service Worker
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'SHOW_ALERT') {
+      const { title, body } = event.data.data;
+      // Show a blocking alert (or a custom UI)
+      alert(`[${title}] ${body}`);
+      console.log(`[${title}] ${body}`);
+    }
+  });
+}
+
 function App() {
 
   return (

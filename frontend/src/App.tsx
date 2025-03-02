@@ -1,50 +1,59 @@
+// src/App.tsx
+import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+
 import NotFound from './pages/NotFound';
-import LocationSelection from './pages/LocationSelection/LocationSelection'
+import LocationSelection from './pages/LocationSelection/LocationSelection';
 import UserInfo from './pages/UserInfo/UserInfoForm';
 import SignIn from './pages/SignIn/SignIn';
 import MessagingPermission from './pages/MessagingPermission/MessagingPermission';
 import ActiveView from './pages/ActiveView/ActiveView';
 import JoinCourt from './pages/JoinCourt/JoinCourt';
 
-// Import contexts
 import { LocalStorageProvider } from './context/LocalStorageContext';
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute.tsx';
-
-// src/main.ts or App.tsx or wherever your root is:
-if ('serviceWorker' in navigator) {
-  // 1) Register the Service Worker
-  navigator.serviceWorker
-    .register('/firebase-messaging-sw.js') // Adjust the path if necessary
-    .then((registration) => {
-      console.log('Service Worker registered:', registration.scope);
-    })
-    .catch((err) => {
-      console.error('SW registration failed:', err);
-    });
-  
-  // 2) Listen for messages from the Service Worker
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data?.type === 'SHOW_ALERT') {
-      const { title, body } = event.data.data;
-      // Show a blocking alert (or a custom UI)
-      alert(`[${title}] ${body}`);
-      console.log(`[${title}] ${body}`);
-    }
-  });
-}
+import ProtectedRoute from './components/ProtectedRoute';
+import MyCustomAlert from './MyCustomAlert';
 
 function App() {
+  // State to hold the alert data
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertData, setAlertData] = useState({ title: '', body: '' });
+
+  useEffect(() => {
+    // 1) Register the SW if not done elsewhere
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/firebase-messaging-sw.js') 
+        .then((registration) => {
+          console.log('Service Worker registered:', registration.scope);
+        })
+        .catch((err) => {
+          console.error('SW registration failed:', err);
+        });
+      
+      // 2) Listen for messages from the SW
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data?.type === 'SHOW_ALERT') {
+          const { title, body } = event.data.data;
+          // Instead of alert(`[${title}] ${body}`);
+          // We store in state and show a custom modal
+          setAlertData({ title, body });
+          setAlertVisible(true);
+
+          // Optionally log to console, too
+          console.log(`[Background Message] ${title}: ${body}`);
+        }
+      });
+    }
+  }, []);
 
   return (
-    <LocalStorageProvider> 
+    <LocalStorageProvider>
       <AuthProvider>
-        {/* Navigation Links */}
         <nav>
+          {/* your nav links or nothing */}
         </nav>
-
-        {/* Define Routes */}
         <Routes>
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={<LocationSelection />} />
@@ -58,8 +67,17 @@ function App() {
               <ProtectedRoute>
                 <ActiveView />
               </ProtectedRoute>
-            } 
-          />        </Routes>
+            }
+          />
+        </Routes>
+
+        {/* Render our custom alert at the very bottom, so it's on top */}
+        <MyCustomAlert
+          show={alertVisible}
+          title={alertData.title}
+          body={alertData.body}
+          onClose={() => setAlertVisible(false)}
+        />
       </AuthProvider>
     </LocalStorageProvider>
   );

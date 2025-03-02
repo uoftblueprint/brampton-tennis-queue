@@ -20,14 +20,19 @@ firebase.initializeApp({
 // 2) Get messaging instance for the SW
 const messaging = firebase.messaging();
 
-// 3) Background message handler
+// 3) Background message handler: This fires in the service worker
+//    when a push message arrives and the page is not in focus or closed.
 messaging.onBackgroundMessage(async (payload) => {
+  // 1) Log the incoming payload for debugging/inspection
   console.log('[SW] Background message:', payload);
 
-  // If you only want to send a message to an *open* page (if any)
+  // 2) Retrieve all open client pages/tabs for this origin.
+  //    "includeUncontrolled: true" means it will match pages
+  //    not yet fully controlled by the service worker as well.
   const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-  
-  // Post a message to each open client
+
+  // 3) For each open page, send a postMessage event containing the payload data.
+  //    The page can then listen for this event and show a custom alert or UI.
   allClients.forEach((client) => {
     client.postMessage({
       type: 'SHOW_ALERT',
@@ -38,4 +43,3 @@ messaging.onBackgroundMessage(async (payload) => {
     });
   });
 });
-

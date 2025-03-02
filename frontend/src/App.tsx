@@ -13,7 +13,7 @@ import JoinCourt from './pages/JoinCourt/JoinCourt';
 import { LocalStorageProvider } from './context/LocalStorageContext';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import MyCustomAlert from './MyCustomAlert';
+import MyCustomAlert from './components/Notifications/NotificationAlert';
 
 function App() {
   // State to hold the alert data

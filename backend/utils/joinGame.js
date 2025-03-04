@@ -25,6 +25,14 @@ async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
         throw new Error('Inconsistent Firestore data: Array sizes do not match number of courts.');
     }
 
+    // Check whether the provided firebaseUID exists in the queue or active list
+    if (queueFirebaseUIDs.includes(firebaseUID) || activeFirebaseUIDs.includes(firebaseUID)) {
+        return {
+            success: false,
+            message: 'Already in queue or active list.',
+        };
+    }
+
     // Check for an empty court
     const emptyCourtIndex = activeFirebaseUIDs.findIndex((uid) => uid.toLowerCase().startsWith('empty'));
 

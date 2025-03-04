@@ -1,0 +1,53 @@
+/* Full-screen overlay that dims the background */
+.alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; 
+  }
+  
+  /* The alert "card" itself */
+  .alert-box {
+    background: #fff;
+    color: #333;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  
+  /* Title styling */
+  .alert-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  /* Body text styling */
+  .alert-body {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+  }
+  
+  /* Close button styling */
+  .alert-close {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .alert-close:hover {
+    opacity: 0.9;
+  }
+  

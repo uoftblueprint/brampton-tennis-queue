@@ -145,6 +145,17 @@ const CurrentState: React.FC = () => {
   }, 300);
 
   useEffect(() => {
+    // Only run if the player was added to the game to avoid the bug
+    // where the component initially mounts for a split second before being hidden
+    // inside of the active view component
+    try {
+      if (!context.addedToGame) {
+        return;
+      }
+    } catch {
+      return;
+    }
+
     // On page load, check and load cached data
     checkAndLoadCachedData();
 

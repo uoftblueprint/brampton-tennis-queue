@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import {
     signInWithPopup,
@@ -14,10 +14,12 @@ import googleIcon from "../../assets/google-icon.svg";
 import xIcon from "../../assets/x-icon.png";
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login: React.FC = () => {
 
     const context = useContext(LocalStorageContext);
+    const authContext = useContext(AuthContext);
     const twitterProvider = new TwitterAuthProvider() // Twitterv(X) authentication provider
     const googleProvider = new GoogleAuthProvider(); // Google authentication provider
 
@@ -30,6 +32,14 @@ const Login: React.FC = () => {
     const [passwordError, setPasswordError] = useState(""); // Password-specific error state
     
     const navigate = useNavigate(); // Navigation hook for redirecting
+
+    // Redirect if user is already authenticated
+    useEffect(() => {
+        if (authContext?.currentUser) {
+            context.setAddedToGame(false);  // Reset added to game status
+            navigate("/messaging-permission");
+        }
+    }, [authContext, navigate]);
 
     // Handle google-based authentication
     const handleGoogleSignIn = () => {

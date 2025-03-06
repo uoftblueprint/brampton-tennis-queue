@@ -113,6 +113,7 @@ const ActiveView: React.FC = () => {
         console.log("Join game response:", response);
         
         if (response) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));  // Sleep to ensure database propogates first
           context?.setAddedToGame(true);
           context?.setInQueue(true);
         } else {

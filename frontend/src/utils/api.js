@@ -212,6 +212,15 @@ export const subscribeToLocation = (location, updateState) => {
         return;
       }
 
+      // Check if the data is from the cache as this snapshot will be out of
+      // date and will trigger a premature shutdown of the listener causing
+      // the bug on load after joining the game
+      if (docSnapshot.metadata.fromCache) {
+        // Skip the update since the data is from the cache
+        console.log('Data is from cache, waiting for real-time data');
+        return;
+      }
+
       // Get document data and update the state
       const locationData = docSnapshot.data();
       updateState(locationData);

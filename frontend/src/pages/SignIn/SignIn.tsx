@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import {
     signInWithPopup,
@@ -6,6 +6,8 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     TwitterAuthProvider,
+    User,
+    sendEmailVerification,
 
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +16,7 @@ import googleIcon from "../../assets/google-icon.svg";
 import xIcon from "../../assets/x-icon.png";
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
+import { AuthProvider, useAuth } from "../../context/AuthContext";
 
 const Login: React.FC = () => {
 
@@ -75,6 +78,14 @@ const Login: React.FC = () => {
         return password.length >= 8;
     };
 
+    const sendVerificationEmail = (user: User) => {
+        if (!user.emailVerified) {
+            // resend verification email
+            sendEmailVerification(user).then(() => { console.log("finished sending email verification") });
+        }
+    }
+
+
     // Handle email-based authentication
 const handleEmailAuth = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +118,8 @@ const handleEmailAuth = (e: React.FormEvent) => {
             console.log("User UID:", user.uid); // This is the user's UID
             context.setFirebaseUID(user.uid); // Store the UID in localStorage if needed
             console.log("User:", user);
+
+            sendVerificationEmail(user);
             navigate("/messaging-permission"); // Navigate to the next page
         })
         // Handle Firebase errors if authentication fails

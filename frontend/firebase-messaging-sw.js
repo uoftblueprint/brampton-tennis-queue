@@ -23,8 +23,6 @@ const messaging = firebase.messaging();
 // 3) Background message handler: This fires in the service worker
 //    when a push message arrives and the page is not in focus or closed.
 messaging.onBackgroundMessage(async (payload) => {
-  // 1) Log the incoming payload for debugging/inspection
-  console.log('[SW] Background message:', payload);
 
   // 2) Retrieve all open client pages/tabs for this origin.
   //    "includeUncontrolled: true" means it will match pages

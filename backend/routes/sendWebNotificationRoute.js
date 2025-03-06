@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
+const sendWebNotification = require('../utils/sendNotification');  // Import the add unknowns utility
 
 /**
  * POST /sendWebNotification
@@ -64,9 +65,6 @@ router.post('/sendWebNotification', async (req, res) => {
       });
     }
 
-    // 10) Log the token for debugging/tracking
-    console.log(`Sending notification to token [${userSource}]: ${fcmToken}`);
-
     // 11) Build the notification payload
     const payload = {
       notification: {
@@ -83,9 +81,6 @@ router.post('/sendWebNotification', async (req, res) => {
 
     // 12) Send the notification using the Firebase Admin SDK
     const response = await admin.messaging().send(payload);
-
-    // 13) Log the response (includes message ID from FCM)
-    console.log("Notification Response:", response);
 
     // 14) Respond to the client that everything worked
     res.status(200).json({

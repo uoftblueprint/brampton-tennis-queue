@@ -1,5 +1,5 @@
 import React from 'react';
-import './MyCustomAlert.css'; // We'll define styles below
+import './NotificationAlert.css'; // We'll define styles below
 
 interface MyCustomAlertProps {
   show: boolean;

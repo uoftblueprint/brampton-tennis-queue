@@ -6,6 +6,7 @@ import { joinGame } from '../../utils/api';
 import { getTaken } from '../../utils/api';
 import { addUnknowns } from '../../utils/api';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
+import { AuthContext } from '../../context/AuthContext';
 import ConfirmationModal from './ConfirmationModal';
 
 const ActiveView: React.FC = () => {
@@ -16,15 +17,19 @@ const ActiveView: React.FC = () => {
   const [selectedCourts, setSelectedCourts] = useState<number[]>([]);
   const [showSelection, setShowSelection] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+  const [showEmailAlert, setShowEmailAlert] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const hasInitializedRef = useRef<boolean>(false);
   
-  const context = useContext(LocalStorageContext);
+  const authContext = useContext(AuthContext);
+  const localContext = useContext(LocalStorageContext);
   
-  if (!context) {
+  if (!localContext || !authContext) {
     return <div>Loading...</div>;
   }
+
+  const { currentUser } = authContext;
 
   const { 
     selectedLocation: location,
@@ -34,9 +39,15 @@ const ActiveView: React.FC = () => {
     addedToGame,
     setAddedToGame,
     setInQueue 
-  } = context;
+  } = localContext;
 
   useEffect(() => {
+    // Check if the email is verified
+    if (currentUser && !currentUser.emailVerified) {
+      setLoading(false);
+      setShowEmailAlert(true);
+      return;
+    }
     // Check if we have the required data
     if (!firebaseUID || !location || !nickname) {
       navigate('/');
@@ -71,6 +82,12 @@ const ActiveView: React.FC = () => {
       alert('Could not fetch court data. Proceeding with trying to join the game.')
       initializeGame();
     }
+  };
+
+  const handleConfirmEmailAlert = () => {
+    setShowEmailAlert(false);
+    setLoading(true);
+    navigate('/sign-in');
   };
 
   const handleCheckboxChange = (courtNumber: number) => {
@@ -114,8 +131,10 @@ const ActiveView: React.FC = () => {
         
         if (response) {
           await new Promise((resolve) => setTimeout(resolve, 2000));  // Sleep to ensure database propogates first
-          context?.setAddedToGame(true);
-          context?.setInQueue(true);
+          localContext?.setAddedToGame(true);
+          localContext?.setInQueue(true);
+          localContext?.setAddedToGame(true);
+          localContext?.setInQueue(true);
         } else {
           throw new Error('Failed to join game');
         }
@@ -131,6 +150,15 @@ const ActiveView: React.FC = () => {
 
 return (
   <div className="active-view">
+    {/* Show Email Verification Alert */}
+    {showEmailAlert && (
+        <ConfirmationModal
+          message="You must verify your email before joining the game."
+          onConfirm={handleConfirmEmailAlert}
+          onCancel={handleConfirmEmailAlert}
+        />
+      )}
+
     {/* Show Loading Spinner */}
     {loading && <p>Loading...</p>}
 
@@ -167,7 +195,7 @@ return (
     )}
 
     {/* Show Current State if no other prompts */}
-    {!loading && !showConfirmation && !showSelection && <CurrentState />}
+    {!loading && !showConfirmation && !showSelection && !showEmailAlert && <CurrentState />}
   </div>
 );
 };

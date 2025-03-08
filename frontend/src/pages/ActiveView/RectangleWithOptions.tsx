@@ -175,7 +175,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
 
   return (
     <div ref={rectangleRef} className="rectangle-container">
-      <span>{nickname}</span>
+      <p>{nickname}</p>
 
       {/* Display dots for toggling the button */}
       {!shouldIgnoreButton() && (
@@ -193,31 +193,38 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
 
           {showButton && (
             <>
-            {/* Conditionally render the button(s) */}
-            <div className="action-button-container">
-            {userOutOftime && (
-              [1, 2, 3].map((buttonNumber: number) => {
-                return (
-                  <button
-                    ref={buttonRef}
-                    className="action-button"
-                    onClick={() => handleButtonClick(buttonNumber)}
-                  >
-                    {determineButtonText(buttonNumber)}
-                  </button>
-                )})
-            )}
+              {/* Conditionally render the button(s) */}
+              <div 
+                className="action-button-container"
+                style={{
+                  position: "absolute",
+                  top: rectangleRef.current?.getBoundingClientRect().bottom + window.scrollY - 16 || 0,
+                  left: rectangleRef.current?.getBoundingClientRect().left || 0,
+                }}
+              >
+                {userOutOftime && (
+                  [1, 2, 3].map((buttonNumber: number) => {
+                    return (
+                      <button
+                        ref={buttonRef}
+                        className="action-button"
+                        onClick={() => handleButtonClick(buttonNumber)}
+                      >
+                        {determineButtonText(buttonNumber)}
+                      </button>
+                    )})
+                )}
 
-            {!userOutOftime && (
-                <button
-                  ref={buttonRef}
-                  className="action-button"
-                  onClick={() => handleButtonClick()}
-                >
-                  {determineButtonText()}
-                </button>
-            )}
-            </div>
+                {!userOutOftime && (
+                    <button
+                      ref={buttonRef}
+                      className="action-button"
+                      onClick={() => handleButtonClick()}
+                    >
+                      {determineButtonText()}
+                    </button>
+                )}
+              </div>
             </>
           )}
         </div>

@@ -25,34 +25,48 @@ const PlayerList: React.FC<PlayerListProps> = ({
   };
 
   return (
-    <div className="player-list">
-      <div className="active-players">
-        <h2>Active Players</h2>
-        <div className="courts">
-          {activePlayers.map((nickname, index) => (
-            <RectangleWithOptions
-              key={index}
-              nickname={formatNickname(nickname)}
-              firebaseUID={activeFirebaseUIDs[index]}
-              inQueue={false}
-            />
-          ))}
-        </div>
+    <div className="players-list-container">
+      {/* Page heading */}
+      <div className="header">
+        <h2 className="header-title"><span>Brampton</span><br/>Tennis Queue</h2>
       </div>
-      <div className="queue-players">
-        <h2>Queue Players</h2>
-        <div className="queue-list">
-          {queuePlayers.length > 0 ? (
-            queuePlayers.map((nickname, index) => (
+      
+        {/* Active Players list */}
+      <div className="players-section" id="active-players">
+        <h2 className="players-list-title">Active Players</h2>
+
+        <div className="players-list">
+          {activePlayers.map((nickname, index) => (
+            <div key={index} className="player-card">
               <RectangleWithOptions
                 key={index}
                 nickname={formatNickname(nickname)}
-                firebaseUID={queueFirebaseUIDs[index]}
-                inQueue={true}
+                firebaseUID={activeFirebaseUIDs[index]}
+                inQueue={false}
               />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Queue Players list */}
+      <div className="players-section" id="queue-players">
+        <h2 className="players-list-title">Queue Players</h2>
+
+        <div className="players-list">
+          {queuePlayers.length > 0 ? (
+            queuePlayers.map((nickname, index) => (
+              <div key={index} className="player-card">
+                <RectangleWithOptions
+                  key={index}
+                  nickname={formatNickname(nickname)}
+                  firebaseUID={queueFirebaseUIDs[index]}
+                  inQueue={true}
+                />
+              </div>
             ))
           ) : (
-            <p>No players in the queue.</p>
+            <p className="empty-queue-message">No players in the queue.</p>
           )}
         </div>
       </div>

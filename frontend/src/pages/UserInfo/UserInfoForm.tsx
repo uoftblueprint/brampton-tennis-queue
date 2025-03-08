@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './UserInfoForm.css';
 import ConfirmationModal from './ConfirmationModal';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
+import Header from '../../components/Header'; 
 
 const UserInfo: React.FC = () => {
   const context = useContext(LocalStorageContext);
@@ -120,9 +121,7 @@ const UserInfo: React.FC = () => {
 
   return (
     <div className="main-container">
-      <div className="header">
-        <h1 className="header-title"><span>Brampton</span><br/>Tennis Queue</h1>
-      </div>
+      <Header />
       <div className="user-info-form">
         <h1 className="user-info-title">Choose Your Nickname<br/>& Group Size</h1>
         <form onSubmit={handleSubmit}>

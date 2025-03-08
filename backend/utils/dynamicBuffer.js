@@ -1,9 +1,7 @@
-// const sendWebNotification = require('./sendWebNotification'); // Import sendWebNotification
-// const scheduleEndSession = require('./scheduleEndSession'); // Import scheduleEndSession
+const sendWebNotification = require('./sendNotification'); // Import sendWebNotification
 
-async function dynamicBuffer(locationData) {
-
-    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes} = locationData;
+async function dynamicBuffer(locationData, location) {
+    const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes } = locationData;
 
     // Count how many active players have someone waiting
     const numberWaitingPlayers = activeWaitingPlayers.filter(value => value === true).length;
@@ -64,8 +62,11 @@ async function dynamicBuffer(locationData) {
         }
         activeNicknames[player.index] += ` [${formattedTime}]`;
 
-        // Uncomment these once implemented
-        // sendWebNotification(player.firebaseUID, bufferTime);
+        // 📢 Immediately notify the player about their remaining time
+        await sendWebNotification(location, player.firebaseUID, {
+            title: "Time Update",
+            body: `You have ${bufferTime} minutes left on court ${player.index + 1}.`
+        });
     }
 }
 

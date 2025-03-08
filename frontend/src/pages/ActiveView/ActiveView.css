@@ -6,8 +6,8 @@
 }
 
 .active-view p {
-    font-size: var(--key-info-font-size);
-    font-weight: var(--header2-font-weight);
+    font-size: var(--paragraph-info-font-size);
+    font-weight: var(--paragraph-font-weight);
     color: var(--main-text-color);
 }
 

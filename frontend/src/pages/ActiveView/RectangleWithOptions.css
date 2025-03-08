@@ -1,15 +1,15 @@
 .rectangle-container {
+  justify-content: space-between;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  position: relative;
-  flex: 1 1 20%; /* Each rectangle will take up 20% of the available width */
+  background: #f9f9f9; /* Light background */
+  border-radius: 10px;
+  padding: 6px 16px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 14px 0;
   box-sizing: border-box; /* Ensure padding is included in the width calculation */
+  flex: 1 1 20%; /* Each rectangle will take up 20% of the available width */
+
 }
 
 .dots-container {
@@ -24,18 +24,20 @@
 .dot {
   width: 4px;
   height: 4px;
-  background-color: #333;
+  background-color: #000;
   border-radius: 50%;
 }
 
 .action-button {
-  padding: 5px 10px;
+  padding: 6px 12px;
   background-color: var(--main-color);
   color: white;
   border: none;
   border-radius: 3px;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-size: var(--paragraph-font-size);
+  font-weight: var(--paragraph-font-weight);
 }
 
 .action-button:hover {
@@ -48,15 +50,11 @@
 
 .action-button-container {
   display: flex;
-  position: absolute;
   flex-direction: column;
-  top: 100%;
-  right: 0;
-  margin-top: 1px;
   gap: 10px;
-  z-index: 9999; /* ensure it's always on top */
-  background-color: #F0F0F0;
-  padding: 10px 5px;
-  border: 1px solid black;
-  border-top: none;
+  z-index: 900; /* Ensure it's always on top */
+  background-color: #f9f9f9;
+  padding: 16px 12px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 0px rgba(0, 0, 0, 0.1);
 }

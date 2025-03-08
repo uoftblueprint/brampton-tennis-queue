@@ -30,7 +30,7 @@
 
 .action-button {
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: var(--main-color);
   color: white;
   border: none;
   border-radius: 3px;
@@ -39,7 +39,11 @@
 }
 
 .action-button:hover {
-  background-color: #0056b3;
+  background-color: #fff; /* Darker on hover */
+  border: var(--main-color) 3px solid; /* Border on hover */
+  color: var(--main-color);
+  transition: 0.35s;
+  transform: translateY(-2px); /* Slight lift effect on hover */
 }
 
 .action-button-container {

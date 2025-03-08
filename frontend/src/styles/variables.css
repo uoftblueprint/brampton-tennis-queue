@@ -21,8 +21,11 @@
     --key-info-font-size: 1.2rem;
     --key-info-font-weight: 500;
     --paragraph-font-size: 1rem;
-    --paragraph-font-weight: 200;
+    --paragraph-font-weight: 300;
     --button-font-size: 1rem;
     --button-font-weight: 500;
     --header-font-size: 0.7rem;
+
+    /* Define global font family */
+    font-family: var(--font-family);
 }

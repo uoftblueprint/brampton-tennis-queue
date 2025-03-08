@@ -40,7 +40,7 @@
 }
   
 .court-selection p {
-    font-size: 16px;
+    font-size: var(--paragraph-font-size);
     color: #555;
     margin-bottom: 20px;
 }
@@ -49,15 +49,37 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
+    font-size: var(--paragraph-font-size);
     color: #333;
     margin-bottom: 10px;
     cursor: pointer;
 }
-  
+
 .court-selection input[type="checkbox"] {
-    transform: scale(1.2);
+    appearance: none; /* Hide the default checkbox */
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--main-color);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.court-selection input[type="checkbox"]:checked {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+.court-selection input[type="checkbox"]:checked::after {
+    content: '✔'; /* Unicode checkmark */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    color: white;
 }
   
 .court-selection-buttons {
@@ -66,16 +88,21 @@
 }
   
 .court-confirm-button {
+    margin-top: 16px;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: var(--main-color);
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: var(--button-font-weight);
     transition: background-color 0.3s ease;
 }
   
 .court-confirm-button:hover {
-    background-color: #0056b3;
+    background-color: #fff; /* Darker on hover */
+    border: var(--main-color) 3px solid; /* Border on hover */
+    color: var(--main-color);
+    transition: 0.35s;
+    transform: translateY(-2px); /* Slight lift effect on hover */
 }

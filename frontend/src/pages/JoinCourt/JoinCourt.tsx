@@ -14,6 +14,7 @@ const JoinCourt: React.FC = () => {
   // State for whether all of the courts are full or not
   const [allCourtsFull, setAllCourtsFull] = useState(true);
   const [queueNicknames, setQueueNicknames] = useState([]);
+  // const [activeNicknames, setActiveNicknames] = useState([]); Can be implemented later when there's enough information about each court
 
   // Hook for navigating to the next page
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const JoinCourt: React.FC = () => {
         
         setAllCourtsFull(locationWaitData.allCourtsFull);
         setQueueNicknames(locationWaitData.queueNicknames);
+        // setActiveNicknames(locationWaitData.activeNicknames); Can be implemented later when there's enough information about each court
         context.setExpectedWaitTime(locationWaitData.expectedWaitTime);
     }
 
@@ -36,58 +38,81 @@ const JoinCourt: React.FC = () => {
   }, []);
 
   return (
-    <>
-    <div className="big-header">
+    <div className="main-container">
+      <div className="header">
         {/* Page heading */}
-        <h2 className="big-header-title"><span>Brampton</span><br/>Tennis Queue</h2>
+        <h2 className="header-title"><span>Brampton</span><br/>Tennis Queue</h2>
       </div>
 
-    <div className="court-joiner" style={{margin: "0 auto", display: "table"}}>
+      <div className="joiner-container">
 
-      {/* Page heading */}
-      <div className="heading">
-        <h2 className="title">{selectedLocation}</h2>
-        <h3 className="subtext">Tennis Courts</h3>
-      </div>
-      {/* Label for Selecting location */}
-      
-      <div className="wait-time">
-        <img src={clockIcon} alt="Clock Icon" className="button-icon" />
-        <p>Current queue time - {context.expectedWaitTime * 60} minutes</p>
-      </div>
-      <div className="bottom-border"></div>
+        {/* Page heading */}
+        <h1 className="joiner-header-title">{selectedLocation}</h1>
+        
+        {/* Wait time */}
+        <div className="wait-time">
+          <img src={clockIcon} alt="Clock Icon" className="button-icon" />
+          <p>Current queue time - {context.expectedWaitTime * 60} minutes</p>
+        </div>
 
-      <div className="players-in-front">
-        <h3 className="subtext">Players in front of you</h3>
+        {/* Active courts: can be implemented later when there's enough information about each court */}
+        {/* <div className="courts-carrousel">
+          {activeNicknames.map((nickname, index) => {
+            const [name, numPlaying] = (String(nickname)).split(' +'); // Splitting at " +"
 
-        <ol>
-          {queueNicknames.map((nickname, index) => {
-            return <li key={index}>{nickname}</li>
+            return (
+              <div key={index} className="court-card">
+                <h3>{name}</h3>
+                <p>{numPlaying ? `Playing with ${numPlaying} others` : "Solo player"}</p>
+              </div>
+            );
           })}
-        </ol>
+        </div> */}
+
+        <div className="players-in-front">
+          <h3 className="joiner-subtext">Players in front of you</h3>
+          {queueNicknames.length > 0 ? (
+            <div className="queue-list">
+              {queueNicknames.map((nickname, index) => {
+                const [name, numPlaying] = (String(nickname)).split(' +'); // Extract name & number
+
+                return (
+                  <div key={index} className="queue-item">
+                    <span className="queue-position">{index + 1}</span>
+                    <div className="queue-info">
+                      <h4>{name}</h4>
+                      {numPlaying && <p>+{numPlaying} others</p>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="empty-queue-list">
+              <p className="empty-queue-message">The queue is empty.</p>
+            </div>
+          )}
+        </div>
+
+        {queueNicknames.length >= 5 ?
+          <button
+            disabled
+            className="joiner-button"
+          >
+            Queue full
+          </button>
+        :
+          <button 
+              className="joiner-button" 
+              onClick={handleNextPage}
+          >
+            {allCourtsFull ? "Join Queue" : "Start Playing"}
+          </button>
+        }
+
+        {/* Button for if courts are not full */}
       </div>
-
-      <div className="bottom-border"></div>
-
-    {queueNicknames.length >= 5 ?
-      <button
-        disabled
-        className="next-button">
-        Queue full
-      </button>
-     :
-      <button 
-          className="next-button" 
-          onClick={handleNextPage}
-        >
-        {allCourtsFull ? "Join Queue" : "Start Playing"}
-      </button>
-    }
-
-      {/* Button for if courts are not full */}
-      
     </div>
-    </>
   );
 };
 

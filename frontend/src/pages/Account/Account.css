@@ -1,4 +1,4 @@
-.main-container {
+.account-main-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -47,7 +47,7 @@
     justify-content: center;
     bottom: 0;
     height: 100%;
-    min-width: fit-content;
+    width: fit-content;
     padding: 10px 12vw 40px 12vw;
     margin: 20px 0 40px 0;
 }

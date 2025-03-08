@@ -85,7 +85,7 @@ const Account: React.FC = () => {
     }
 
     return (
-        <div className="main-container">
+        <div className="account-main-container">
             <Header />
             <div className="account-container">
                 <h2 className="account-title">Account</h2>

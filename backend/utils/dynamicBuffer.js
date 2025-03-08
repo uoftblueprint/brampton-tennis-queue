@@ -62,16 +62,11 @@ async function dynamicBuffer(locationData, location) {
         }
         activeNicknames[player.index] += ` [${formattedTime}]`;
 
-        // Schedule a notification 5 minutes before time is up
-        const timeUntilNotification = (bufferTime - 5) * 60 * 1000; // Convert to milliseconds
-        if (timeUntilNotification > 0) {
-            setTimeout(async () => {
-                await sendWebNotification(location, player.firebaseUID, {
-                    title: "Time Almost Up!",
-                    body: `You have 5 minutes left on court ${player.index + 1}.`
-                });
-            }, timeUntilNotification);
-        }
+        // 📢 Immediately notify the player about their remaining time
+        await sendWebNotification(location, player.firebaseUID, {
+            title: "Time Update",
+            body: `You have ${bufferTime} minutes left on court ${player.index + 1}.`
+        });
     }
 }
 

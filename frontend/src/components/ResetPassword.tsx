@@ -5,6 +5,7 @@ import './ResetPassword.css';
 
 interface ResetPasswordProps {
   initialEmail?: string;
+  onAccountPage?: boolean;
   onClose?: () => void;
 }
 
@@ -13,7 +14,7 @@ interface ResetPasswordProps {
  * Provides a user-friendly interface for password reset
  */
 const ResetPassword: React.FC<ResetPasswordProps> = ({
-  initialEmail = '',
+  initialEmail = '', onAccountPage = false,
   onClose,
 }) => {
   const {
@@ -57,9 +58,15 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({
     </div>
   );
 
+  const AccountButton: React.FC = () => (
+    <button type="button" className="account-form-button hollow-button" onClick={openResetModal}>
+      Reset Password
+    </button>
+  );
+
   // If modal isn't open, just show the button
   if (!isResetModalOpen) {
-    return <ResetButton />;
+    return !onAccountPage ? <ResetButton /> : <AccountButton />;
   }
 
   return (

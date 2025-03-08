@@ -3,6 +3,8 @@ import { getAuth, deleteUser, sendPasswordResetEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { fetchCurrentState } from '../../utils/api';
 import Header from '../../components/Header'; 
+import ResetPassword from "../../components/ResetPassword";
+
 import "./Account.css";
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
@@ -10,6 +12,8 @@ import { LocalStorageContext } from "../../context/LocalStorageContext";
 const Account: React.FC = () => {
 
     const context = useContext(LocalStorageContext);
+    const auth = getAuth();
+    const user = auth.currentUser;
 
     const navigate = useNavigate(); // Navigation hook for redirecting
     //const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
@@ -97,10 +101,8 @@ const Account: React.FC = () => {
                     <span className="account-form-label">Selected Location</span>
                     <span className="account-form-value">{context?.selectedLocation} </span>
                 </div>
-
-                <button type="button" className="account-form-button hollow-button" onClick={resetPassword}>
-                    Reset Password
-                </button>
+                <ResetPassword initialEmail={user && user.email ? user.email : ''} onAccountPage={true}/>
+                
                 <button type="button" className="account-form-button delete-button" onClick={deleteAccount}>
                     Delete Account
                 </button>

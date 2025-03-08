@@ -8,6 +8,7 @@ import { addUnknowns } from '../../utils/api';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
 import { AuthContext } from '../../context/AuthContext';
 import ConfirmationModal from './ConfirmationModal';
+import AlertModal from './AlertModal';
 
 const ActiveView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -86,7 +87,6 @@ const ActiveView: React.FC = () => {
 
   const handleConfirmEmailAlert = () => {
     setShowEmailAlert(false);
-    setLoading(true);
     navigate('/sign-in');
   };
 
@@ -152,10 +152,9 @@ return (
   <div className="active-view">
     {/* Show Email Verification Alert */}
     {showEmailAlert && (
-        <ConfirmationModal
+        <AlertModal
           message="You must verify your email before joining the game."
-          onConfirm={handleConfirmEmailAlert}
-          onCancel={handleConfirmEmailAlert}
+          onClose={handleConfirmEmailAlert}
         />
       )}
 

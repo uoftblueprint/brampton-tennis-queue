@@ -36,7 +36,7 @@ const Login: React.FC = () => {
 
     // Redirect if user is already authenticated
     useEffect(() => {
-        if (authContext?.currentUser) {
+        if (authContext?.currentUser && authContext?.currentUser.emailVerified) {
             context.setAddedToGame(false);  // Reset added to game status
             navigate("/messaging-permission");
         }

@@ -8,14 +8,14 @@ Please feel free to read more about the design of this application, [here](https
 
 # Contributors (2024-25)
 - [Raunak Madan](https://www.linkedin.com/in/raunak-madan) - Project Lead
-- Christie Ko - Product Manager
-- Steven Lin - Designer
-- Ron Varshavsky - Developer
-- Divyansh Kachchhava - Developer
-- Leandro Brasil - Developer
-- Jamie Han - Developer
+- [Christie Ko](https://www.linkedin.com/in/christieko/) - Product Manager
+- [Steven Lin](https://www.linkedin.com/in/yuchenguoft/) - Designer
+- [Ron Varshavsky](https://www.linkedin.com/in/ronvarshavsky/) - Developer
+- [Divyansh Kachchhava](https://www.linkedin.com/in/divyansh-kachchhava-09b265228/) - Developer
+- [Leandro Brasil](https://www.linkedin.com/in/leandrohamaguchi/) - Developer
+- [Jamie Han](https://www.linkedin.com/in/jameshan27/) - Developer
 - Alan Su - Developer
-- Aina Merchant - Developer
+- [Aina Merchant](https://www.linkedin.com/in/aina-fatema-merchant-a12295221/) - Developer
 
 # Useful Git Commands / Workflow
 - **`git clone <repo link>`**: Clone the repo to your computer. Click the green "Code" button and copy the link under the "HTTPS" section.  

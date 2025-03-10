@@ -132,9 +132,14 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
         await endSession(location, firebaseUID);  // Force others to end their session
         alert("Player session ended.");
       } else if (actionToConfirm === ACTIONS.SEND_WEB_REMINDER) {
-        await sendWebNotification(location, firebaseUID, "Time is up! Please end your session.");
-        alert("Sent reminder to player.")
-      }
+        // ✅ Corrected API Call to Send Reminder
+        await sendWebNotification(location, firebaseUID, {
+            title: "Reminder: Time’s Up!",
+            body: "Your court time has ended. Please make way for the next player."
+        });
+
+        alert("Reminder sent to player.");
+    }
 
       // Close the modal first
       setShowModal(false);  

@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { getMessaging, getToken } from 'firebase/messaging';
 import { useNavigate } from "react-router-dom";
+import Header from '../../components/Header'; 
+
 import "./MessagingPermission.css";
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
@@ -39,9 +41,7 @@ const MessagingPermission: React.FC = () => {
 
     return (
         <div className="messaging-permission-main-container">
-            <div className="header">
-                <h1 className="header-title"><span>Brampton</span><br />Tennis Queue</h1>
-            </div>
+            <Header />
             <div className="messaging-permission-container">
                 <h2 className="messaging-permission-title">Turn on notifications</h2>
                 <p className="messaging-permission-form-label">Enable notifications so you don't miss your court time.</p>

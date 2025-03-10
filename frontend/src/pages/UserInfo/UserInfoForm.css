@@ -22,12 +22,22 @@
   line-height: 1.2rem;
   margin: 0 40px;
   color: white;
+  cursor: pointer;
 }
 
 .header-title span {
   font-weight: calc(var(--header1-font-weight) * 0.9);
   font-size: calc(var(--header2-font-size) * 0.6);
 }
+
+.account-button {
+  color: white;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
 /* ---------------------------- */
 
 /* Container styling for the form */

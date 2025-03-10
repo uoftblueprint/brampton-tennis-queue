@@ -9,6 +9,7 @@ import SignIn from './pages/SignIn/SignIn';
 import MessagingPermission from './pages/MessagingPermission/MessagingPermission';
 import ActiveView from './pages/ActiveView/ActiveView';
 import JoinCourt from './pages/JoinCourt/JoinCourt';
+import Account from './pages/Account/Account';
 
 import { LocalStorageProvider } from './context/LocalStorageContext';
 import { AuthProvider } from './context/AuthContext';
@@ -61,6 +62,7 @@ function App() {
           <Route path="/join-court" element={<JoinCourt />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/messaging-permission" element={<MessagingPermission />} />
+          <Route path="/account" element={<Account />} />
           <Route 
             path="/active-view" 
             element={

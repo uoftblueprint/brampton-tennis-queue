@@ -11,6 +11,7 @@ const UserInfoEnum = {
   playerData: "playerData",
   playerDataLastUpdateTime: "playerDataLastUpdateTime",
   expectedWaitTime: "expectedWaitTime",
+  recentLoginRequired: "recentLoginRequired"
 };
 
 // Add interface for children props
@@ -38,6 +39,8 @@ interface LocalStorageContextType {
   setPlayerDataLastUpdateTime: (value: string) => void;
   expectedWaitTime: number;
   setExpectedWaitTime: (value: number) => void;
+  recentLoginRequired: boolean;
+  setRecentLoginRequired: (value: boolean) => void;
   clear: () => void;
 }
 
@@ -55,6 +58,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
   const [playerData, setPlayerData] = useState(localStorage.getItem(UserInfoEnum.playerData) ? JSON.parse(localStorage.getItem(UserInfoEnum.playerData)!) : '');
   const [playerDataLastUpdateTime, setPlayerDataLastUpdateTime] = useState(localStorage.getItem(UserInfoEnum.playerDataLastUpdateTime) || '');
   const [expectedWaitTime, setExpectedWaitTime] = useState(localStorage.getItem(UserInfoEnum.expectedWaitTime) ? Number(localStorage.getItem(UserInfoEnum.expectedWaitTime)!) : 0)
+  const [recentLoginRequired, setRecentLoginRequired] = useState(localStorage.getItem(UserInfoEnum.recentLoginRequired) === 'true' ? true : false);
 
   // Initialize state from localStorage
   useEffect(() => {
@@ -67,6 +71,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     const storedPlayerData = localStorage.getItem(UserInfoEnum.playerData);
     const storedPlayerDataLastUpdateTime = localStorage.getItem(UserInfoEnum.playerDataLastUpdateTime);
     const storedExpectedWaitTime = Number(localStorage.getItem(UserInfoEnum.expectedWaitTime));
+    const storedRecentLoginRequired = localStorage.getItem(UserInfoEnum.recentLoginRequired) === 'true';
 
     if (storedSelectedLocation) setSelectedLocation(storedSelectedLocation);
     if (storedFirebaseUID) setFirebaseUID(storedFirebaseUID);
@@ -77,6 +82,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     if (storedPlayerData) setPlayerData(storedPlayerData);
     if (storedPlayerDataLastUpdateTime) setPlayerDataLastUpdateTime(storedPlayerDataLastUpdateTime);
     if (storedExpectedWaitTime > 0) setExpectedWaitTime(storedExpectedWaitTime);
+    if (storedRecentLoginRequired) setRecentLoginRequired(storedRecentLoginRequired);
   }, []);
 
   // Helper functions to update both context and localStorage
@@ -125,6 +131,11 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     localStorage.setItem(UserInfoEnum.expectedWaitTime, value.toString());
   };
 
+  const updateRecentLoginRequired = (value: boolean) => {
+    setRecentLoginRequired(value);
+    localStorage.setItem(UserInfoEnum.recentLoginRequired, value.toString());
+  };
+
   const clear = () => {
     setSelectedLocation('');
     setFirebaseUID('');
@@ -135,6 +146,7 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
     setPlayerData({});
     setPlayerDataLastUpdateTime('');
     setExpectedWaitTime(0);
+    setRecentLoginRequired(false);
     localStorage.clear();
   }
 
@@ -159,6 +171,8 @@ export const LocalStorageProvider: React.FC<LocalStorageProviderProps> = ({ chil
         setPlayerDataLastUpdateTime: updatePlayerDataLastUpdateTime,
         expectedWaitTime,
         setExpectedWaitTime: updateExpectedWaitTime,
+        recentLoginRequired,
+        setRecentLoginRequired: updateRecentLoginRequired,
         clear: clear,
       }}
     >

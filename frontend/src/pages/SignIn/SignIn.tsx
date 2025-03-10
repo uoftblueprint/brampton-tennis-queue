@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
 import googleIcon from "../../assets/google-icon.svg";
 import xIcon from "../../assets/x-icon.png";
+import Header from '../../components/Header'; 
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
 import { AuthProvider, AuthContext } from "../../context/AuthContext";
@@ -36,8 +37,9 @@ const Login: React.FC = () => {
 
     // Redirect if user is already authenticated
     useEffect(() => {
-        if (authContext?.currentUser && authContext?.currentUser.emailVerified) {
+        if (authContext?.currentUser && !context.recentLoginRequired && authContext?.currentUser.emailVerified) {
             context.setAddedToGame(false);  // Reset added to game status
+            context.setRecentLoginRequired(false);
             navigate("/messaging-permission");
         }
     }, [authContext, navigate]);
@@ -164,9 +166,7 @@ const Login: React.FC = () => {
 
     return (
         <div className="main-container">
-            <div className="header">
-                <h1 className="header-title"><span>Brampton</span><br/>Tennis Queue</h1>
-            </div>
+            <Header />
             <div className="login-container">
                 <h2 className="login-title">{isSigningUp ? "Sign Up" : "Log In"}</h2>
 

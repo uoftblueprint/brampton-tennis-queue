@@ -27,6 +27,7 @@ const currentStateRoute = require('./routes/currentStateRoute');
 const joinGameRoute = require('./routes/joinGameRoute');
 const advanceQueueRoute = require('./routes/advanceQueueRoute');
 const trackMetricsRoute = require('./routes/trackMetricsRoute');
+const sendWebNotificationRoute = require('./routes/sendWebNotificationRoute');
 
 // Use imported routes
 app.use('/api', resetCourtsRoute);  // resetCourts endpoint
@@ -40,6 +41,7 @@ app.use('/api', currentStateRoute); // currentState endpoint
 app.use('/api', joinGameRoute); // DUMMY joinGame endpoint - REPLACE WITH ACTUAL CODE IN ROUTE FILE!
 app.use('/api', advanceQueueRoute);  // advanceQueue endpoint
 app.use('/api', trackMetricsRoute);  // trackMetrics endpoint
+app.use('/api', sendWebNotificationRoute);  // sendWebNotification endpoint
 
 // Default route
 app.get('/', (req, res) => {

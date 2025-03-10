@@ -1,8 +1,7 @@
 import { db } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
-const BACKEND_API = 'http://localhost:5001';
-
+const BACKEND_API = 'http://localhost:5001'; // <-- Update if needed
 
 // ** UTILITY FUNCTIONS TO CALL BACKEND ENDPOINTS **
 
@@ -14,9 +13,7 @@ export const fetchCurrentState = async (locationName, retries = 3, delay = 500) 
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        location: locationName,
-      }),
+      body: JSON.stringify({ location: locationName }),
     });
     if (!response.ok) throw new Error('Failed to retrieve current state.');
     const data = await response.json();
@@ -24,10 +21,10 @@ export const fetchCurrentState = async (locationName, retries = 3, delay = 500) 
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying fetchCurrentState (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await fetchCurrentState(locationName, retries - 1, delay * 2);  // Up to 3 retries
+      await new Promise(res => setTimeout(res, delay));
+      return await fetchCurrentState(locationName, retries - 1, delay * 2);
     }
-    console.error("Error fetching current state:", error);
+    console.error('Error fetching current state:', error);
     return null;
   }
 };
@@ -40,10 +37,7 @@ export const endSession = async (locationName, firebaseUID, retries = 3, delay =
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        location: locationName,
-        firebaseUID: firebaseUID,
-      }),
+      body: JSON.stringify({ location: locationName, firebaseUID: firebaseUID }),
     });
     if (!response.ok) throw new Error('Failed to end session.');
     const data = await response.json();
@@ -51,10 +45,10 @@ export const endSession = async (locationName, firebaseUID, retries = 3, delay =
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying endSession (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await endSession(locationName, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+      await new Promise(res => setTimeout(res, delay));
+      return await endSession(locationName, firebaseUID, retries - 1, delay * 2);
     }
-    console.error("Error ending session:", error);
+    console.error('Error ending session:', error);
     return null;
   }
 };
@@ -79,11 +73,11 @@ export const joinGame = async (locationName, nickname, firebaseUID, token, retri
     return data;
   } catch (error) {
     if (retries > 0) {
-      console.log(`Retrying join game (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await joinGame(locationName, nickname, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+      console.log(`Retrying joinGame (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));
+      return await joinGame(locationName, nickname, firebaseUID, retries - 1, delay * 2);
     }
-    console.error("Error joining game:", error);
+    console.error('Error joining game:', error);
     return null;
   }
 };
@@ -96,10 +90,7 @@ export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay =
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        location: locationName,
-        firebaseUID: firebaseUID,
-      }),
+      body: JSON.stringify({ location: locationName, firebaseUID: firebaseUID }),
     });
     if (!response.ok) throw new Error('Failed to leave queue.');
     const data = await response.json();
@@ -107,17 +98,19 @@ export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay =
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying leaveQueue (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await leaveQueue(locationName, firebaseUID, retries - 1, delay * 2);  // Up to 3 retries
+      await new Promise(res => setTimeout(res, delay));
+      return await leaveQueue(locationName, firebaseUID, retries - 1, delay * 2);
     }
-    console.error("Error leaving queue:", error);
+    console.error('Error leaving queue:', error);
     return null;
   }
 };
 
-
-// Send a reminder to an active player with the /sendWebNotification  endpoint
-export const sendWebNotification = async (locationName, firebaseUID, message, retries = 3, delay = 500) => {
+// ** New: Send a reminder/notification to a user with /sendWebNotification endpoint **
+export const sendWebNotification = async (locationName, uid, message, retries = 3, delay = 500) => {
+  console.log("locationName", locationName);
+  console.log("uid", uid);
+  console.log("message", message);
   try {
     const response = await fetch(`${BACKEND_API}/api/sendWebNotification`, {
       method: 'POST',
@@ -126,24 +119,26 @@ export const sendWebNotification = async (locationName, firebaseUID, message, re
       },
       body: JSON.stringify({
         location: locationName,
-        firebaseUID: firebaseUID,
-        message: message,
+        uid,
+        message, // message should be an object: { title: '...', body: '...' }
       }),
     });
+
     if (!response.ok) throw new Error('Failed to send web notification.');
     const data = await response.json();
     return data;
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying sendWebNotification (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await sendWebNotification(locationName, firebaseUID, message, retries - 1, delay * 2);  // Up to 3 retries
+      await new Promise(res => setTimeout(res, delay));
+      return await sendWebNotification(locationName, uid, message, retries - 1, delay * 2);
     }
-    console.error("Error sending web notification:", error);
+    console.error('Error sending web notification:', error);
     return null;
   }
 };
 
+// Retrieve taken courts info with /getTaken endpoint
 export const getTaken = async (locationName, retries = 3, delay = 500) => {
   try {
     const response = await fetch(`${BACKEND_API}/api/getTaken`, {
@@ -151,9 +146,7 @@ export const getTaken = async (locationName, retries = 3, delay = 500) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        location: locationName,
-      }),
+      body: JSON.stringify({ location: locationName }),
     });
     if (!response.ok) throw new Error('Failed to retrieve taken courts.');
     const data = await response.json();
@@ -162,14 +155,15 @@ export const getTaken = async (locationName, retries = 3, delay = 500) => {
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying getTaken (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay)); // Exponential backoff
-      return await getTaken(locationName, retries - 1, delay * 2); // Retry logic
+      await new Promise(res => setTimeout(res, delay));
+      return await getTaken(locationName, retries - 1, delay * 2);
     }
-    console.error("Error fetching taken courts:", error);
+    console.error('Error fetching taken courts:', error);
     return null;
   }
 };
 
+// Add unknown players to the location with /addUnknowns endpoint
 export const addUnknowns = async (locationName, courts, retries = 3, delay = 500) => {
   try {
     const response = await fetch(`${BACKEND_API}/api/addUnknowns`, {
@@ -188,17 +182,15 @@ export const addUnknowns = async (locationName, courts, retries = 3, delay = 500
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying addUnknowns (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay)); // Exponential backoff
-      return await addUnknowns(locationName, courts, retries - 1, delay * 2); // Retry logic
+      await new Promise(res => setTimeout(res, delay));
+      return await addUnknowns(locationName, courts, retries - 1, delay * 2);
     }
-    console.error("Error adding unknowns:", error);
+    console.error('Error adding unknowns:', error);
     return null;
   }
 };
 
 // ** UTILITY FUNCTION TO CREATE FIRESTORE LISTENER **
-
-// Subscribe to Firestore snapshot for a specific location document
 export const subscribeToLocation = (location, updateState) => {
   // Create reference to location document
   const locationRef = doc(db, 'locations', location);
@@ -242,18 +234,16 @@ export const expectedWaitTime = async (locationName, retries = 3, delay = 500) =
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        location: locationName,
-      }),
+      body: JSON.stringify({ location: locationName }),
     });
-    if (!response.ok) throw new Error('Failed to leave queue.');
+    if (!response.ok) throw new Error('Failed to fetch expected wait time.');
     const data = await response.json();
     return data;
   } catch (error) {
     if (retries > 0) {
       console.log(`Retrying expectedWaitTime (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));  // Exponential backoff
-      return await expectedWaitTime(locationName, retries - 1, delay * 2);  // Up to 3 retries
+      await new Promise(res => setTimeout(res, delay));
+      return await expectedWaitTime(locationName, retries - 1, delay * 2);
     }
     console.error(`Error getting expected wait time for location ${locationName}: ${error}`);
     return null;

@@ -1,5 +1,5 @@
 async function endSession(locationData, firebaseUID) {
-    const { activeFirebaseUIDs, activeNicknames, activeWaitingPlayers } = locationData;
+    const { activeFirebaseUIDs, activeNicknames, activeWaitingPlayers, activeTokens } = locationData;
 
     // Check whether the player exists
     const playerIndex = activeFirebaseUIDs.indexOf(firebaseUID);
@@ -12,6 +12,7 @@ async function endSession(locationData, firebaseUID) {
     activeFirebaseUIDs[playerIndex] = newName;
     activeNicknames[playerIndex] = newName;
     activeWaitingPlayers[playerIndex] = false;
+    activeTokens[playerIndex] = 'NULL';
     return 200;
 }
 

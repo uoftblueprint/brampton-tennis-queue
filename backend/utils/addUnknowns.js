@@ -13,9 +13,6 @@ async function addUnknowns(locationData, occupiedCourts) {
         const isPhysicallyOccupied = occupiedCourts.includes(courtNumber);
         const isVirtuallyEmpty = activeFirebaseUIDs[i].startsWith('Empty');
 
-        // Reset FCM token to NULL
-        activeTokens[i] = 'NULL';
-
         // If court is physically occupied but virtually empty
         if (isPhysicallyOccupied && isVirtuallyEmpty) {
             const newName = `Unknown${courtNumber}`;
@@ -26,6 +23,7 @@ async function addUnknowns(locationData, occupiedCourts) {
             activeFirebaseUIDs[i] = newName;
             activeNicknames[i] = newName;
             activeStartTimes[i] = timestamp;
+            activeTokens[i] = 'NULL';
 
         // If court is physically empty but virtually occupied
         } else if (!isPhysicallyOccupied && !isVirtuallyEmpty) {
@@ -34,6 +32,7 @@ async function addUnknowns(locationData, occupiedCourts) {
             activeWaitingPlayers[i] = false;
             activeFirebaseUIDs[i] = newName;
             activeNicknames[i] = newName;
+            activeTokens[i] = 'NULL';
         }
     }
 }

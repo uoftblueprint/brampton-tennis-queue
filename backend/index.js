@@ -38,7 +38,7 @@ app.use('/api', endSessionRoute);  // endSession endpoint
 app.use('/api', dynamicBufferRoute);  // dynamicBuffer endpoint
 app.use('/api', getTakenRoute); // getTaken endpoint
 app.use('/api', currentStateRoute); // currentState endpoint
-app.use('/api', joinGameRoute); // DUMMY joinGame endpoint - REPLACE WITH ACTUAL CODE IN ROUTE FILE!
+app.use('/api', joinGameRoute); // joinGame endpoint
 app.use('/api', advanceQueueRoute);  // advanceQueue endpoint
 app.use('/api', trackMetricsRoute);  // trackMetrics endpoint
 app.use('/api', sendWebNotificationRoute);  // sendWebNotification endpoint

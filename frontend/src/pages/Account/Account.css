@@ -1,4 +1,4 @@
-.messaging-permission-main-container {
+.account-main-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -41,23 +41,23 @@
 
 /* ---------------------------- */
 
-.messaging-permission-container {
+.account-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     bottom: 0;
     height: 100%;
-    max-width: fit-content;
+    width: fit-content;
     padding: 10px 12vw 40px 12vw;
     margin: 20px 0 40px 0;
 }
 
-.messaging-permission-title {
+.account-title {
     font-family: var(--font-family);
     font-size: var(--header1-font-size);
     font-weight: var(--header2-font-weight);
     color: var(--main-text-color);
-    text-align: center;
+    text-align: left;
     margin-bottom: 10px;
 }
 
@@ -67,18 +67,27 @@
     margin-bottom: 25px;
 }
 
-.messaging-permission-form-label {
+.account-form-text {
     font-family: var(--font-family);
     font-size: var(--paragraph-font-size);
     font-weight: var(--key-info-font-weight);
     color: var(--secondary-text-color);
-    margin: 10px 6px;
-    text-align: center;
-    width: 100%;
-    /* Full width for alignment */
+    margin: 10px 0px;
 }
 
-.messaging-permission-form-button {
+.account-form-label {
+    font-weight: bold;
+    text-align: left;
+    float: left;
+    margin-right: 50px;
+}
+
+.account-form-value {
+    text-align: right;
+    float: right;
+}
+
+.account-form-button {
     padding: 10px;
     background-color: var(--main-color);
     color: white;
@@ -89,10 +98,14 @@
     font-size: var(--button-font-size);
     font-weight: var(--button-font-size);
     transition: background-color 0.3s ease, transform 0.2s ease;
-    /* width: calc(50% - 10px); */
     width: 100%;
     margin: 5px 0 0 0;
     border: var(--main-color) 2px solid;
+}
+
+.delete-button {
+    background-color: var(--secondary-color);
+    border: var(--secondary-color) 2px solid;
 }
 
 .hollow-button {

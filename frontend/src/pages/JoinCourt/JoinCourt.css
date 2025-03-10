@@ -1,39 +1,149 @@
-.court-joiner {
-    margin: 0 auto;
-    text-align: left;
-    display: inline-block;
+.joiner-container {
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    height: 100%;
+    padding: 10px 9vw 40px 9vw;
+    margin: 40px 0 40px 0;
 }
 
-.title, .subtext {
-    margin: 0;
+.joiner-header-title {
+    font-family: var(--font-family);
+    font-size: var(--header2-font-size);
+    font-weight: var(--header1-font-weight);
+    color: var(--main-text-color);
+    line-height: 1.55rem;
 }
 
 .wait-time {
-    margin-top: 30px;
     display: flex;
     flex-direction: row;
+    border-bottom: 2px solid #d3d3d3;
+    align-items: center;
 }
 
-.next-button {
-    float: right;
+.wait-time img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
 }
 
-.bottom-border {
-    border-bottom: 2px solid #D9D9D9;
-    width: 100%;
-    height: 5px;
-}
-
-.next-button:disabled {
-    background-color: darkgray;
-    transition: none;
-}
-
-.next-button:disabled:hover {
-    transform: none;
+.wait-time p {
+    font-size: var(--paragraph-font-size);
+    font-weight: var(--paragraph-font-weight);
+    color: var(--main-text-color);
 }
 
 .players-in-front {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.joiner-subtext {
+    font-size: var(--key-info-font-size);
+    font-weight: var(--key-info-font-weight);
+    color: var(--main-text-color);
+    margin-bottom: 20px;
+}
+
+.queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-top: 10px;
-    margin-bottom: 10px;
+}
+
+.queue-item {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9; /* Light background */
+    border-radius: 10px;
+    padding: 10px 15px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.queue-item:hover {
+    transform: scale(1.03);
+}
+
+.queue-position {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: var(--main-color); /* Blue color for position */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.queue-info h4 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.queue-info p {
+    font-size: 14px;
+    color: #777;
+    margin: 0;
+}
+
+.empty-queue-list {
+    padding: 20px 0 20px 0;
+    border-radius: 10px;
+    padding: 10px 15px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    background: #f9f9f9; /* Light background */
+}
+
+.empty-queue-message {
+    text-align: center;
+    font-size: var(--paragraph-font-size);
+    color: #2f2f2f;
+    font-weight: var(--paragraph-font-weight);
+    font-style: italic;
+    margin: 12px 0 10px 0;
+}
+
+
+.joiner-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 20px;
+    margin: 40px auto; /* Center the button */
+    background-color: var(--main-color); /* Primary color */
+    color: white;
+    font-size: var(--button-font-size);
+    font-weight: var(--button-font-weight);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.joiner-button:hover {
+    background-color: #fff; /* Lighter color on hover */
+    border: var(--main-color) 3px solid; /* Border on hover */
+    color: var(--main-color);
+    transition: 0.35s;
+    transform: scale(1.05);
+}
+
+.joiner-button:disabled {
+    background-color: #d3d3d3; /* Grey for disabled state */
+    color: #888;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }

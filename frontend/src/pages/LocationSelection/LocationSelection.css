@@ -87,8 +87,8 @@
   text-align: center;
   font-family: var(--font-family);
   padding: 12px 0;
-  background-color: var(--main-color); /* Primary blue color */
-  border: none; /* Remove default border */
+  background-color: var(--main-color); /* Primary color */
+  border: none;
   border-radius: 0 0 8px 8px; /* Rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
   color: #fff; /* Text color */
@@ -101,15 +101,11 @@
 
 /* Hover effect */
 .next-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #fff; /* Darker on hover */
+  border: var(--main-color) 3px solid; /* Border on hover */
+  color: var(--main-color);
+  transition: 0.35s;
   transform: translateY(-2px); /* Slight lift effect on hover */
-}
-
-/* Active effect */
-.next-button:active {
-  background-color: #004494; /* Even darker blue when active */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Change shadow on click */
-  transform: translateY(1px); /* Slight depression effect on click */
 }
 
 @media screen and (max-width: 480px) {

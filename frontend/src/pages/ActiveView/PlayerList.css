@@ -1,50 +1,44 @@
-@media (max-width: 768px) {
-  .courts {
-    flex-direction: column; /* Stack players vertically on small screens */
-  }
+.active-view, .current-state {
+  all: revert; /* Reset all CSS properties from active-view and current-state components */
+}
 
-  h2 {
-    font-size: 1.2em; /* Slightly smaller headings for compact screens */
-  }
+.players-list-container {
+  overflow-y: auto; /* Horizontal scrolling */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section titles */
+.players-list-title {
+  font-size: calc(var(--header2-font-size) * 0.9);
+  font-weight: var(--header1-font-weight);
+  color: var(--main-text-color);
+  margin-bottom: 15px;
+}
+
+/* Queue Players Section */
+.players-section {
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+#queue-players {
+  margin-bottom: 40px;
+}
+
+#active-players {
+  margin-top: 10px;
 }
 
 .player-list {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-h2 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.active-players,
-.queue-players {
-  margin-bottom: 20px;
-}
-
-.courts {
   display: flex;
-  flex-wrap: wrap; /* Allow items to wrap into the next line */
-  gap: 10px; /* Space between rectangles */
-  background-color: #f8f9fa; /* Light background for the active players section */
-  padding: 10px;
-  border-radius: 8px;
+  flex-direction: column;
 }
 
-.queue-list {
-  display: flex;
-  flex-direction: column; /* Stack players vertically */
-  gap: 10px; /* Space between rectangles */
-  background-color: #f8f9fa; /* Light background for the queue players section */
-  padding: 10px;
-  border-radius: 8px;
-}
-
-p {
-  margin: 0;
-  font-size: 1em;
-  color: #666;
+/* Empty queue message */
+.empty-queue-message {
   text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  padding: 10px;
 }

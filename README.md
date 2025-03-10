@@ -14,7 +14,7 @@ Please feel free to read more about the design of this application, [here](https
 - [Divyansh Kachchhava](https://www.linkedin.com/in/divyansh-kachchhava-09b265228/) - Developer
 - [Leandro Brasil](https://www.linkedin.com/in/leandrohamaguchi/) - Developer
 - [Jamie Han](https://www.linkedin.com/in/jameshan27/) - Developer
-- Alan Su - Developer
+- [Alan Su](https://www.linkedin.com/in/alan-su-144b58171/) - Developer
 - [Aina Merchant](https://www.linkedin.com/in/aina-fatema-merchant-a12295221/) - Developer
 
 # Useful Git Commands / Workflow

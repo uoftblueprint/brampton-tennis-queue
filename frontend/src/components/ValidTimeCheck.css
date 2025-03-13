@@ -1,0 +1,25 @@
+/* Parent container to vertically and horizontally center */
+.time-warning-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+}
+
+/* Styling for the warning message */
+.time-warning {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+    margin: 15px auto;
+    max-width: 80%;
+}
+
+/* Styling for screens with max-width of 480px */
+@media (max-width: 480px) {
+    .time-warning {
+        font-size: 18px;
+        max-width: 90%;
+    }
+}

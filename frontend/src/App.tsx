@@ -14,6 +14,7 @@ import Account from './pages/Account/Account';
 import { LocalStorageProvider } from './context/LocalStorageContext';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ValidTimeCheck from './components/ValidTimeCheck';
 import MyCustomAlert from './components/Notifications/NotificationAlert';
 
 function App() {
@@ -50,38 +51,40 @@ function App() {
   }, []);
 
   return (
-    <LocalStorageProvider>
-      <AuthProvider>
-        <nav>
-          {/* your nav links or nothing */}
-        </nav>
-        <Routes>
-          <Route path="*" element={<NotFound />} />
-          <Route path="/" element={<LocationSelection />} />
-          <Route path="/user-info" element={<UserInfo />} />
-          <Route path="/join-court" element={<JoinCourt />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/messaging-permission" element={<MessagingPermission />} />
-          <Route path="/account" element={<Account />} />
-          <Route 
-            path="/active-view" 
-            element={
-              <ProtectedRoute>
-                <ActiveView />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+    <ValidTimeCheck>
+      <LocalStorageProvider>
+        <AuthProvider>
+          <nav>
+            {/* your nav links or nothing */}
+          </nav>
+          <Routes>
+            <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<LocationSelection />} />
+            <Route path="/user-info" element={<UserInfo />} />
+            <Route path="/join-court" element={<JoinCourt />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/messaging-permission" element={<MessagingPermission />} />
+            <Route path="/account" element={<Account />} />
+            <Route 
+              path="/active-view" 
+              element={
+                <ProtectedRoute>
+                  <ActiveView />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
 
-        {/* Render our custom alert at the very bottom, so it's on top */}
-        <MyCustomAlert
-          show={alertVisible}
-          title={alertData.title}
-          body={alertData.body}
-          onClose={() => setAlertVisible(false)}
-        />
-      </AuthProvider>
-    </LocalStorageProvider>
+          {/* Render our custom alert at the very bottom, so it's on top */}
+          <MyCustomAlert
+            show={alertVisible}
+            title={alertData.title}
+            body={alertData.body}
+            onClose={() => setAlertVisible(false)}
+          />
+        </AuthProvider>
+      </LocalStorageProvider>
+    </ValidTimeCheck>
   );
 }
 

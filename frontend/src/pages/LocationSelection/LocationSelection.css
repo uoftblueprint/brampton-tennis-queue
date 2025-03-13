@@ -113,11 +113,6 @@
     font-size: calc(var(--logo-font-size) * 0.85); /* Smaller logo for smaller screens */
     line-height: 1.9rem; /* Adjusted line height for smaller screens */
   }
-  .time-warning {
-    font-size: calc(var(--paragraph-font-size) * 0.9);
-    max-width: 90%;
-    text-align: center;
-  }
 }
 
 @media screen and (min-width: 481px) {
@@ -127,15 +122,4 @@
   .next-button {
     max-width: 360px;
   }
-}
-
-/* Styling for time restriction warning message */
-.time-warning {
-  margin-top: 15px;
-  font-size: var(--paragraph-font-size);
-  color: red;
-  text-align: center;
-  font-weight: bold;
-  max-width: 80%;
-  word-wrap: break-word;
 }

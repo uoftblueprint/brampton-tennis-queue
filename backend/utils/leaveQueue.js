@@ -1,6 +1,13 @@
 async function leaveQueue(locationData, firebaseUID) {
-    const { queueFirebaseUIDs, queueNicknames, queueJoinTimes, queueTokens } = locationData;
-
+    const { 
+        queueFirebaseUIDs, 
+        queueNicknames, 
+        queueJoinTimes, 
+        queueTokens,
+        activeStartTimes,
+        activeWaitingPlayers,
+        activeNicknames} = locationData;
+    
     // Check whether the player exists
     const playerIndex = queueFirebaseUIDs.indexOf(firebaseUID);
     if (playerIndex === -1) {
@@ -12,6 +19,39 @@ async function leaveQueue(locationData, firebaseUID) {
     queueNicknames.splice(playerIndex, 1);
     queueJoinTimes.splice(playerIndex, 1);
     queueTokens.splice(playerIndex, 1);
+
+    // Merge activeStartTimes and activeWaitingPlayers as a tuple array
+    const dynamicPlayers = activeStartTimes.map((time, index) => [time, index, activeNicknames[index]]);
+
+    // Remove all elements where the nickname contains a bracket
+    dynamicPlayers.sort((a, b) => a[0] - b[0]);
+    for (let i = 0; i < dynamicPlayers.length; i++) {
+        const [time, index, name] = dynamicPlayers[i];
+
+        if (!name.includes('[')) {
+            dynamicPlayers.splice(i, 1);
+            i--;
+        }
+    }
+
+    // Assert to ensure the length of dynamicPlayers matches the count of true values in activeWaitingPlayers
+    console.assert(dynamicPlayers.length === activeWaitingPlayers.filter(Boolean).length, "Mismatch between dynamicPlayers length and true count in activeWaitingPlayers");
+
+    let remainingQueueLength = queueFirebaseUIDs.length;
+
+    if (remainingQueueLength == dynamicPlayers.length) {
+        return 200;
+    } else {
+        const [time, index, name] = dynamicPlayers[dynamicPlayers.length - 1];
+        activeWaitingPlayers[index] = false;
+        if (activeNicknames[index]) {
+            let bracketIndex = activeNicknames[index].indexOf('[');
+            if (bracketIndex != -1) {
+                activeNicknames[index] = activeNicknames[index].substring(0, bracketIndex);
+            }
+        }
+    }
+    
     return 200;
 }
 

@@ -38,6 +38,8 @@ router.post('/leaveQueue', async (req, res) => {
                 queueNicknames: locationData.queueNicknames,
                 queueJoinTimes: locationData.queueJoinTimes,
                 queueTokens: locationData.queueTokens,
+                activeNicknames: locationData.activeNicknames,
+                activeWaitingPlayers: locationData.activeWaitingPlayers
             });
         });
 

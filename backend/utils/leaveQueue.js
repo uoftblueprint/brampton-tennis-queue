@@ -29,36 +29,28 @@ async function leaveQueue(locationData, firebaseUID) {
         const [time, index, name] = dynamicPlayers[i];
 
         if (!name.includes('[')) {
-console.log(name)
-console.log(name)
-            console.log(name)
             dynamicPlayers.splice(i, 1);
             i--;
         }
     }
 
     // Assert to ensure the length of dynamicPlayers matches the count of true values in activeWaitingPlayers
-    // console.assert(dynamicPlayers.length === activeWaitingPlayers.filter(Boolean).length, "Mismatch between dynamicPlayers length and true count in activeWaitingPlayers");
+    console.assert(dynamicPlayers.length === activeWaitingPlayers.filter(Boolean).length, "Mismatch between dynamicPlayers length and true count in activeWaitingPlayers");
 
     let remainingQueueLength = queueFirebaseUIDs.length;
 
-    console.log(remainingQueueLength == dynamicPlayers.length);
     if (remainingQueueLength == dynamicPlayers.length) {
         return 200;
     } else {
-        console.log(["here", dynamicPlayers])
         const [time, index, name] = dynamicPlayers[dynamicPlayers.length - 1];
         activeWaitingPlayers[index] = false;
-        console.log(activeNicknames[index]);
         if (activeNicknames[index]) {
             let bracketIndex = activeNicknames[index].indexOf('[');
-            console.log(bracketIndex);
             if (bracketIndex != -1) {
                 activeNicknames[index] = activeNicknames[index].substring(0, bracketIndex);
             }
         }
     }
-    console.log(activeNicknames)
     
     return 200;
 }

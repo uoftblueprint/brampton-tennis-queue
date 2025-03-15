@@ -1,5 +1,3 @@
-import dynamicBuffer from "./dynamicBuffer";
-
 async function leaveQueue(locationData, firebaseUID) {
     const { 
         queueFirebaseUIDs, 
@@ -23,32 +21,44 @@ async function leaveQueue(locationData, firebaseUID) {
     queueTokens.splice(playerIndex, 1);
 
     // Merge activeStartTimes and activeWaitingPlayers as a tuple array
-    const activePlayers = activeStartTimes.map((time, index) => [time, index]);
+    const dynamicPlayers = activeStartTimes.map((time, index) => [time, index, activeNicknames[index]]);
 
     // Remove all elements where the nickname contains a bracket
-    activePlayers.sort((a, b) => a[0] - b[0]);
-    for (let i = 0; i < activePlayers.length; i++) {
-        const [time, index] = activePlayers[i];
-        if (activeNicknames[index].search('[') != -1) {
-            activeNicknames.splice(i, 1);
+    dynamicPlayers.sort((a, b) => a[0] - b[0]);
+    for (let i = 0; i < dynamicPlayers.length; i++) {
+        const [time, index, name] = dynamicPlayers[i];
+
+        if (!name.includes('[')) {
+console.log(name)
+console.log(name)
+            console.log(name)
+            dynamicPlayers.splice(i, 1);
+            i--;
         }
     }
 
-    // Assert to ensure the length of activePlayers matches the count of true values in activeWaitingPlayers
-    console.assert(activePlayers.length === activeWaitingPlayers.filter(Boolean).length, "Mismatch between activePlayers length and true count in activeWaitingPlayers");
+    // Assert to ensure the length of dynamicPlayers matches the count of true values in activeWaitingPlayers
+    // console.assert(dynamicPlayers.length === activeWaitingPlayers.filter(Boolean).length, "Mismatch between dynamicPlayers length and true count in activeWaitingPlayers");
 
-    let remainingQueueLength = queueNicknames.length;
+    let remainingQueueLength = queueFirebaseUIDs.length;
 
-    if (remainingQueueLength == activePlayers.length) {
+    console.log(remainingQueueLength == dynamicPlayers.length);
+    if (remainingQueueLength == dynamicPlayers.length) {
         return 200;
     } else {
-        const [time, index] = activePlayers[activePlayers.length - 1];
+        console.log(["here", dynamicPlayers])
+        const [time, index, name] = dynamicPlayers[dynamicPlayers.length - 1];
         activeWaitingPlayers[index] = false;
-        let bracketIndex = activeNicknames[index].indexOf('[');
-        if (bracketIndex != -1) {
-            activeNicknames[index] = activeNicknames[index].substring(0, bracketIndex);
+        console.log(activeNicknames[index]);
+        if (activeNicknames[index]) {
+            let bracketIndex = activeNicknames[index].indexOf('[');
+            console.log(bracketIndex);
+            if (bracketIndex != -1) {
+                activeNicknames[index] = activeNicknames[index].substring(0, bracketIndex);
+            }
         }
     }
+    console.log(activeNicknames)
     
     return 200;
 }

@@ -1,9 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const admin = require('firebase-admin');
+const { onRequest } = require("firebase-functions/v2/https");
 const sendWebNotification = require('../utils/sendNotification');  
 
-router.post('/sendWebNotification', async (req, res) => {
+const sendWebNotificationRoute = onRequest(async (req, res) => {
   try {
     // Simply extract fields, no need to re-check them here
     const { location, uid, message } = req.body;
@@ -28,4 +26,4 @@ router.post('/sendWebNotification', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = sendWebNotificationRoute;

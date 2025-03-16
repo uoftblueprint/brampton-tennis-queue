@@ -1,0 +1,16 @@
+name: Reset Courts Every Day at 5 AM
+
+on:
+  schedule:
+    - cron: "0 5 * * *" # Runs once daily at 5 AM
+
+jobs:
+  call-endpoint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Make HTTP request to reset courts
+        run: |
+          curl -X POST https://us-central1-brampton-tennis-queue.cloudfunctions.net/resetCourts \
+            -H "Content-Type: application/json" \
+            -d '{"password": "XYZ"}'

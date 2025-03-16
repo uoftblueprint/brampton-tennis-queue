@@ -1,9 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const advanceQueue = require('../utils/advanceQueue');  // Import the advance queue utility
 
-router.post('/advanceQueue', async (req, res) => {
+const advanceQueueRoute = onRequest(async (req, res) => {
     try {
         // Get location from request body and validate
         const location = req.body.location;
@@ -54,4 +53,4 @@ router.post('/advanceQueue', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = advanceQueueRoute;

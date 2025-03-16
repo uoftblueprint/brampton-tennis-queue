@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const addUnknowns = require('../utils/addUnknowns');  // Import the add unknowns utility
 
 // Add Unknowns Endpoint
-router.post('/addUnknowns', async (req, res) => {
+const addUnknownsRoute = onRequest(async (req, res) => {
     try {
         // Extract location and occupied courts from the request body
         const { location, occupiedCourts } = req.body;
@@ -44,4 +43,4 @@ router.post('/addUnknowns', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = addUnknownsRoute;

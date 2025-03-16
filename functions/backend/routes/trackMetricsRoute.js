@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const trackSingleCourt = require('../utils/trackSingleCourt');  // Import the court tracking utility
 
 // Track Metrics endpoint
-router.post('/trackMetrics', async (req, res) => {
+const trackMetricsRoute = onRequest(async (req, res) => {
     try {
         // Start a Firestore transaction
         const db = admin.firestore();
@@ -33,4 +32,4 @@ router.post('/trackMetrics', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = trackMetricsRoute;

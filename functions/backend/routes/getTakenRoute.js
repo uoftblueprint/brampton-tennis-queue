@@ -1,9 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 
 // Get Taken Courts Endpoint
-router.post('/getTaken', async (req, res) => {
+const getTakenRoute = onRequest(async (req, res) => {
   try {
     // Get the location from the request body and validate
     const location = req.body.location;
@@ -54,4 +53,4 @@ router.post('/getTaken', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = getTakenRoute;

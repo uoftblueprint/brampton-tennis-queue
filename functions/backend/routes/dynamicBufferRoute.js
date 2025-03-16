@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const dynamicBuffer = require('../utils/dynamicBuffer');  // Import the dynamic buffer utility
 
 // Dynamic Buffer Endpoint
-router.post('/dynamicBuffer', async (req, res) => {
+const dynamicBufferRoute = onRequest(async (req, res) => {
     try {
         // Extract location from the request body
         const { location } = req.body;
@@ -46,4 +45,4 @@ router.post('/dynamicBuffer', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = dynamicBufferRoute;

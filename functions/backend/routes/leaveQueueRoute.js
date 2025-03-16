@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const leaveQueue = require('../utils/leaveQueue');  // Import the leave queue utility
 
 // Leave Queue Endpoint
-router.post('/leaveQueue', async (req, res) => {
+const leaveQueueRoute = onRequest(async (req, res) => {
     try {
         // Extract location and firebaseUID from the request body
         const { location, firebaseUID } = req.body;
@@ -50,4 +49,4 @@ router.post('/leaveQueue', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = leaveQueueRoute;

@@ -3,6 +3,7 @@ frontend/src/firebase.js
 frontend/src/firebase.ts
 # Ignore backend service account key
 backend/firebase-admin.json
+functions/backend/firebase-admin.json
 
 # DS Store Files
 .DS_Store

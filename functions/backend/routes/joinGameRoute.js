@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const joinGame = require('../utils/joinGame');  // Import the joinGame utility
 const dynamicBuffer = require('../utils/dynamicBuffer');  // Import dynamicBuffer utility
 
-router.post('/joinGame', async (req, res) => {
+const joinGameRoute = onRequest(async (req, res) => {
     try {
         const { location, firebaseUID, nickname, fcmToken } = req.body;
 
@@ -58,4 +57,4 @@ router.post('/joinGame', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = joinGameRoute;

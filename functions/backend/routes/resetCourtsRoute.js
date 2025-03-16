@@ -1,11 +1,10 @@
-const express = require("express");
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const bcryptCompare = require('../utils/passwordValidation');  // Import the password compare utility
+//const bcryptCompare = require('../utils/passwordValidation');  // Import the password compare utility
 const resetSingleCourt = require('../utils/resetSingleCourt');  // Import the court reset utility
 
 // Reset Courts Endpoint
-router.post("/resetCourts", async (req, res) => {
+const resetCourtsRoute = onRequest(async (req, res) => {
     try {
         // Extract password from request body
         const requestPassword = req.body.password;
@@ -48,4 +47,4 @@ router.post("/resetCourts", async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = resetCourtsRoute;

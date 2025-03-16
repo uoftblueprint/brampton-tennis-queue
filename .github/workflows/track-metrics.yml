@@ -1,0 +1,14 @@
+name: Track Metrics Every 20 Minutes from 8 AM to 11 PM
+
+on:
+  schedule:
+    - cron: "*/20 8-23 * * *" # Every 20 minutes from 8 AM to 11 PM
+
+jobs:
+  call-endpoint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Make HTTP request to track metrics
+        run: |
+          curl -X POST https://us-central1-brampton-tennis-queue.cloudfunctions.net/trackMetrics

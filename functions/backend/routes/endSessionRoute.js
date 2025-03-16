@@ -1,11 +1,10 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const endSession = require('../utils/endSession');  // Import the end session utility
 const advanceQueue = require('../utils/advanceQueue');  // Import the advance queue utility
 
 // End Session Endpoint
-router.post('/endSession', async (req, res) => {
+const endSessionRoute = onRequest(async (req, res) => {
     try {
         // Extract location and firebaseUID from the request body
         const { location, firebaseUID } = req.body;
@@ -57,4 +56,4 @@ router.post('/endSession', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = endSessionRoute;

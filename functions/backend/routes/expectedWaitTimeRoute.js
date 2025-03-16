@@ -1,9 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 
 // Expected wait time endpoint
-router.post('/expectedWaitTime', async (req, res) => {
+const expectedWaitTimeRoute = onRequest(async (req, res) => {
     try {
         // Get the location from the request body and validate
         const location = req.body.location;
@@ -39,4 +38,4 @@ router.post('/expectedWaitTime', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = expectedWaitTimeRoute;

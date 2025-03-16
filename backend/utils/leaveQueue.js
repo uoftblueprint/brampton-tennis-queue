@@ -20,19 +20,12 @@ async function leaveQueue(locationData, firebaseUID) {
     queueJoinTimes.splice(playerIndex, 1);
     queueTokens.splice(playerIndex, 1);
 
-    // Merge activeStartTimes and activeWaitingPlayers as a tuple array
-    const dynamicPlayers = activeStartTimes.map((time, index) => [time, index, activeNicknames[index]]);
+    // Merge activeStartTimes and activeNicknames as a tuple array
+    let dynamicPlayers = activeStartTimes.map((time, index) => [time, index, activeNicknames[index]]);
 
-    // Remove all elements where the nickname contains a bracket
+    // Sort the active players by timestamps and filter out names without expiry bracket '[]'
+    dynamicPlayers = dynamicPlayers.filter(([time, index, name]) => name.includes('['));
     dynamicPlayers.sort((a, b) => a[0] - b[0]);
-    for (let i = 0; i < dynamicPlayers.length; i++) {
-        const [time, index, name] = dynamicPlayers[i];
-
-        if (!name.includes('[')) {
-            dynamicPlayers.splice(i, 1);
-            i--;
-        }
-    }
 
     // Assert to ensure the length of dynamicPlayers matches the count of true values in activeWaitingPlayers
     console.assert(dynamicPlayers.length === activeWaitingPlayers.filter(Boolean).length, "Mismatch between dynamicPlayers length and true count in activeWaitingPlayers");

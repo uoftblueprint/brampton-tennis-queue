@@ -2,7 +2,6 @@ const sendWebNotification = require('./sendNotification'); // Import sendWebNoti
 
 async function dynamicBuffer(locationData, location) {
     const { activeFirebaseUIDs, activeNicknames, activeStartTimes, activeWaitingPlayers, queueFirebaseUIDs, queueNicknames, queueJoinTimes } = locationData;
-
     // Count how many active players have someone waiting
     const numberWaitingPlayers = activeWaitingPlayers.filter(value => value === true).length;
 
@@ -56,10 +55,8 @@ async function dynamicBuffer(locationData, location) {
         
         // Update nickname
         const nickname = activeNicknames[player.index];
-        const spaceIndex = nickname.lastIndexOf(' ');
-        if (spaceIndex !== -1) {
-            activeNicknames[player.index] = nickname.substring(0, spaceIndex);
-        }
+
+        // Appends the expiry time to the end of the player nickname
         activeNicknames[player.index] += ` [${formattedTime}]`;
 
         // 📢 Immediately notify the player about their remaining time

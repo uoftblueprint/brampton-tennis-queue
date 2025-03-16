@@ -40,7 +40,7 @@ async function leaveQueue(locationData, firebaseUID) {
         if (activeNicknames[index]) {
             let bracketIndex = activeNicknames[index].indexOf('[');
             if (bracketIndex != -1) {
-                activeNicknames[index] = activeNicknames[index].substring(0, bracketIndex);
+                activeNicknames[index] = activeNicknames[index].substring(0, bracketIndex - 1);
             }
         }
     }

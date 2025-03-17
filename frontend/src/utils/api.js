@@ -1,14 +1,14 @@
 import { db } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
-const BACKEND_API = 'http://localhost:5001'; // <-- Update if needed
+const BACKEND_API = 'https://us-central1-brampton-tennis-queue.cloudfunctions.net/'; // <-- Update if needed
 
 // ** UTILITY FUNCTIONS TO CALL BACKEND ENDPOINTS **
 
 // Fetch data from /currentState endpoint
 export const fetchCurrentState = async (locationName, retries = 3, delay = 500) => {
   try {
-    const response = await fetch(`${BACKEND_API}/api/currentState`, {
+    const response = await fetch(`${BACKEND_API}/currentState`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export const fetchCurrentState = async (locationName, retries = 3, delay = 500) 
 // End a player's session using the /endSession endpoint
 export const endSession = async (locationName, firebaseUID, retries = 3, delay = 500) => {
   try {
-    const response = await fetch(`${BACKEND_API}/api/endSession`, {
+    const response = await fetch(`${BACKEND_API}/endSession`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const endSession = async (locationName, firebaseUID, retries = 3, delay =
 // Add player to game with /joinGame endpoint
 export const joinGame = async (locationName, nickname, firebaseUID, token, retries = 3, delay = 500) => {
   try {
-    const response = await fetch(`${BACKEND_API}/api/joinGame`, {
+    const response = await fetch(`${BACKEND_API}/joinGame`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const joinGame = async (locationName, nickname, firebaseUID, token, retri
 // Remove player from queue with /leaveQueue endpoint
 export const leaveQueue = async (locationName, firebaseUID, retries = 3, delay = 500) => {
   try {
-    const response = await fetch(`${BACKEND_API}/api/leaveQueue`, {
+    const response = await fetch(`${BACKEND_API}/leaveQueue`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export const sendWebNotification = async (locationName, uid, message, retries = 
   console.log("uid", uid);
   console.log("message", message);
   try {
-    const response = await fetch(`${BACKEND_API}/api/sendWebNotification`, {
+    const response = await fetch(`${BACKEND_API}/sendWebNotification`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export const sendWebNotification = async (locationName, uid, message, retries = 
 // Retrieve taken courts info with /getTaken endpoint
 export const getTaken = async (locationName, retries = 3, delay = 500) => {
   try {
-    const response = await fetch(`${BACKEND_API}/api/getTaken`, {
+    const response = await fetch(`${BACKEND_API}/getTaken`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export const getTaken = async (locationName, retries = 3, delay = 500) => {
 // Add unknown players to the location with /addUnknowns endpoint
 export const addUnknowns = async (locationName, courts, retries = 3, delay = 500) => {
   try {
-    const response = await fetch(`${BACKEND_API}/api/addUnknowns`, {
+    const response = await fetch(`${BACKEND_API}/addUnknowns`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -186,6 +186,30 @@ export const addUnknowns = async (locationName, courts, retries = 3, delay = 500
       return await addUnknowns(locationName, courts, retries - 1, delay * 2);
     }
     console.error('Error adding unknowns:', error);
+    return null;
+  }
+};
+
+// Get the expected wait time for a location
+export const expectedWaitTime = async (locationName, retries = 3, delay = 500) => {
+  try {
+    const response = await fetch(`${BACKEND_API}/expectedWaitTime`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ location: locationName }),
+    });
+    if (!response.ok) throw new Error('Failed to fetch expected wait time.');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying expectedWaitTime (${retries} retries left)...`);
+      await new Promise(res => setTimeout(res, delay));
+      return await expectedWaitTime(locationName, retries - 1, delay * 2);
+    }
+    console.error(`Error getting expected wait time for location ${locationName}: ${error}`);
     return null;
   }
 };
@@ -224,28 +248,4 @@ export const subscribeToLocation = (location, updateState) => {
 
   // Return the unsubscribe function
   return unsubscribe;
-};
-
-// Get the expected wait time for a location
-export const expectedWaitTime = async (locationName, retries = 3, delay = 500) => {
-  try {
-    const response = await fetch(`${BACKEND_API}/api/expectedWaitTime`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ location: locationName }),
-    });
-    if (!response.ok) throw new Error('Failed to fetch expected wait time.');
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    if (retries > 0) {
-      console.log(`Retrying expectedWaitTime (${retries} retries left)...`);
-      await new Promise(res => setTimeout(res, delay));
-      return await expectedWaitTime(locationName, retries - 1, delay * 2);
-    }
-    console.error(`Error getting expected wait time for location ${locationName}: ${error}`);
-    return null;
-  }
 };

@@ -75,7 +75,7 @@ export const joinGame = async (locationName, nickname, firebaseUID, token, retri
     if (retries > 0) {
       console.log(`Retrying joinGame (${retries} retries left)...`);
       await new Promise(res => setTimeout(res, delay));
-      return await joinGame(locationName, nickname, firebaseUID, retries - 1, delay * 2);
+      return await joinGame(locationName, nickname, firebaseUID, token, retries - 1, delay * 2);
     }
     console.error('Error joining game:', error);
     return null;

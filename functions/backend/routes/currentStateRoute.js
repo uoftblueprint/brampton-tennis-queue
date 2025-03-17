@@ -1,8 +1,10 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
 
 // Current State Endpoint
 const currentStateRoute = onRequest(async (req, res) => {
+  cors(req, res, async () => {
     try {
         // Extract location from the request body
         const { location } = req.body;
@@ -34,6 +36,7 @@ const currentStateRoute = onRequest(async (req, res) => {
         console.error('Error in currentState endpoint: ', error);
         res.status(500).send({ error: 'Failed to retrieve current state.' });
     }
+  });
 });
 
 module.exports = currentStateRoute;

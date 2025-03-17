@@ -63,7 +63,7 @@ const Login: React.FC = () => {
                     setErrorMessage("Google sign-in failed. Please try again.");
                 }
             });
-    }, [context, navigate]);
+    });
 
     // Sign in with Google using redirect
     const handleGoogleSignIn = () => {

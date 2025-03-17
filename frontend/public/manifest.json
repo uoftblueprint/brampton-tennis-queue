@@ -4,7 +4,7 @@
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#008000",
+    "theme_color": "#3C45EE",
     "icons": [
       {
         "src": "/TennisBall-192x192.png",

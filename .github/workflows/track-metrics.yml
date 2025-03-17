@@ -4,6 +4,7 @@ on:
     - cron: "0,20,40 12-23 * * *" # 8:00 AM - 7:40 PM EDT (12:00-23:40 UTC)
     - cron: "0,20,40 0-2 * * *" # 8:00 PM - 10:40 PM EDT (00:00-02:40 UTC next day)
     - cron: "0 3 * * *" # 11:00 PM EDT (03:00 UTC next day)
+  workflow_dispatch: # Allows manual triggering of the workflow for testing
 jobs:
   call-endpoint:
     runs-on: ubuntu-latest

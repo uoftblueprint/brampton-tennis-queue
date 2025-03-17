@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import {
-    signInWithRedirect,
-    getRedirectResult,
+    //signInWithRedirect,
+    //getRedirectResult,
+    signInWithPopup,
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -42,6 +43,7 @@ const Login: React.FC = () => {
         }
     }, [authContext, navigate]);
 
+    /*
     // Handle Google sign-in redirect
     useEffect(() => {
         console.log("In useEffect for Google sign-in redirect");
@@ -73,6 +75,24 @@ const Login: React.FC = () => {
         signInWithRedirect(auth, googleProvider).catch(() => {
             setErrorMessage("Google sign-in failed. Please try again.");
         });
+    };
+    */
+
+    // Handle google-based authentication
+    const handleGoogleSignIn = () => {
+        context.setAddedToGame(false); // Reset added to game status
+        signInWithPopup(auth, googleProvider)
+            .then((result) => {
+                const user = result.user
+                console.log("user", user)
+
+                context.setFirebaseUID(user.uid); // Store user UID in local storage
+                setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
+                navigate("/messaging-permission"); // Navigate to active view on success
+            })
+            .catch(() => {
+                setErrorMessage("Google sign-in failed. Please try again.");
+            });
     };
 
     // Register a new user or sign in an existing user with email and password

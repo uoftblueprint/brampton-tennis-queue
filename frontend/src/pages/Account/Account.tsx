@@ -37,7 +37,7 @@ const Account: React.FC = () => {
             const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
             if (!cacheAge || cacheAge >= CACHE_EXPIRY_THRESHOLD) {
                 // Cache is missing or outdated, so fetch current state
-                const fetchedData = await fetchCurrentState(selectedLocation);
+                const fetchedData = await fetchCurrentState(selectedLocation ? selectedLocation : "Cassie Campbell");
                 if (fetchedData.activeFirebaseUIDs.includes(context?.firebaseUID)) {
                     context?.setAddedToGame(true);
                 } else {

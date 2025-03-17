@@ -1,7 +1,7 @@
 import { db } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
-const BACKEND_API = 'https://us-central1-brampton-tennis-queue.cloudfunctions.net/'; // <-- Update if needed
+const BACKEND_API = 'https://us-central1-brampton-tennis-queue.cloudfunctions.net'; // <-- Update if needed
 
 // ** UTILITY FUNCTIONS TO CALL BACKEND ENDPOINTS **
 

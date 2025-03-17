@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { auth } from '../src/firebase';
-import { sendPasswordResetEmail, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 // Interface for return values from the hook
 interface UsePasswordResetReturn {

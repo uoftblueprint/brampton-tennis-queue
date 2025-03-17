@@ -33,7 +33,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   firebaseUID,
   inQueue,
 }) => {
-  const context = useContext(LocalStorageContext);
+  const context = useContext(LocalStorageContext)!;
 
   const userFirebaseUID = context.firebaseUID;
   const userInQueue = context.inQueue;
@@ -151,7 +151,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
           navigate("/");  // After closing the modal, navigate to the home page
         }, 300); // Optional: small delay to ensure smooth transition
       }
-    } catch (error) {
+    } catch (error : any) {
       console.log("Error: " + error.message);
     }
   };

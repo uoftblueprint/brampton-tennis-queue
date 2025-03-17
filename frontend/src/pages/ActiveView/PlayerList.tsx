@@ -1,7 +1,5 @@
-import React, { useContext } from "react";
 import RectangleWithOptions from "./RectangleWithOptions";
 import "./PlayerList.css";
-import { LocalStorageContext } from "../../context/LocalStorageContext";
 
 interface PlayerListProps {
   activePlayers: string[];

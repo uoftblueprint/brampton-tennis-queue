@@ -8,7 +8,7 @@ interface ValidTimeCheckProps {
 const ValidTimeCheck: React.FC<ValidTimeCheckProps> = ({ children }) => {
     // Check if the current time is between the hours of operation
     const now = new Date();
-    const options = { timeZone: "America/New_York", hour12: false, hour: "numeric" };
+    const options: Intl.DateTimeFormatOptions = { timeZone: "America/New_York", hour12: false, hour: "numeric" };
     const hour = Number(new Intl.DateTimeFormat("en-US", options).format(now));
     const startHour = 8; // 8 AM
     const endHour = 23; // 11 PM
@@ -23,7 +23,6 @@ const ValidTimeCheck: React.FC<ValidTimeCheckProps> = ({ children }) => {
             </p>
         </div>
     );
-
 };
 
 export default ValidTimeCheck;

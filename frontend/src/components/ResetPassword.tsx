@@ -24,8 +24,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({
     resetInProgress,
     openResetModal,
     closeResetModal,
-    checkUserAndSendReset,
-    clearResetStatus
+    checkUserAndSendReset
   } = usePasswordReset();
 
   const [email, setEmail] = useState(initialEmail);

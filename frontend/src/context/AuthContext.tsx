@@ -25,8 +25,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Get LocalStorageContext
   const localStorage = useContext(LocalStorageContext);
   const navigate = useNavigate();
-  //const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
-  const CACHE_EXPIRY_THRESHOLD = 10 * 1000;  // For testing!
+  const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
   
   if (!localStorage) {
     throw new Error('AuthProvider must be used within a LocalStorageProvider');

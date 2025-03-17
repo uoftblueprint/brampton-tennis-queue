@@ -109,7 +109,7 @@ const UserInfo: React.FC = () => {
   const handleConfirm = () => {
     setShowModal(false); // Close the modal
     const nicknameWithGroup = `${nickname} +${Number(groupSize) - 1}`;
-    context.setNickname(nicknameWithGroup);
+    context?.setNickname(nicknameWithGroup);
     // we are explicitly choosing NOT to save groupSize to local storage
     navigate('/sign-in'); // Navigate to the next page
   };

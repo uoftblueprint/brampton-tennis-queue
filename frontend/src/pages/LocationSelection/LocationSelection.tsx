@@ -4,7 +4,7 @@ import './LocationSelection.css';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
 
 const LocationSelection: React.FC = () => {
-  const context = useContext(LocalStorageContext);
+  const context = useContext(LocalStorageContext)!;
 
   // Sample locations list
   const locations = ["Cassie Campbell"];

@@ -1,4 +1,3 @@
-import React from 'react';
 import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 

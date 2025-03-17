@@ -5,24 +5,21 @@ import {
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    TwitterAuthProvider,
     User,
     sendEmailVerification,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./SignIn.css";
 import googleIcon from "../../assets/google-icon.svg";
-import xIcon from "../../assets/x-icon.png";
 import Header from '../../components/Header'; 
 
 import { LocalStorageContext } from "../../context/LocalStorageContext";
-import { AuthProvider, AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import ResetPassword from "../../components/ResetPassword";
 
 const Login: React.FC = () => {
-    const context = useContext(LocalStorageContext);
+    const context = useContext(LocalStorageContext)!;
     const authContext = useContext(AuthContext);
-    const twitterProvider = new TwitterAuthProvider(); // Twitter(X) authentication provider
     const googleProvider = new GoogleAuthProvider(); // Google authentication provider
 
     // State management for inputs and toggles
@@ -58,22 +55,6 @@ const Login: React.FC = () => {
             })
             .catch(() => {
                 setErrorMessage("Google sign-in failed. Please try again.");
-            });
-    };
-
-    // Handle X-based authentication
-    const handleTwitterSignIn = () => {
-        context.setAddedToGame(false); // Reset added to game status
-        signInWithPopup(auth, twitterProvider)
-            .then((result) => {
-                const user = result.user;
-                console.log("User (X): ", user);
-          
-                context.setFirebaseUID(user.uid); // Store user UID in local storage
-                setTimeout(() => {}, 1000);
-                navigate("/messaging-permission");
-            }).catch((error) => {
-                setErrorMessage("X sign-in failed. Please try again.");
             });
     };
 

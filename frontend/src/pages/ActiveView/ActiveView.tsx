@@ -12,8 +12,6 @@ import AlertModal from './AlertModal';
 
 const ActiveView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [updateRequired, setUpdateRequired] = useState<boolean>(false);
-  const [courtNumbers, setCourtNumbers] = useState<number[]>([]);
   const [numberOfCourts, setNumberOfCourts] = useState<number>(0);
   const [selectedCourts, setSelectedCourts] = useState<number[]>([]);
   const [showSelection, setShowSelection] = useState<boolean>(false);
@@ -38,8 +36,6 @@ const ActiveView: React.FC = () => {
     token,
     firebaseUID,
     addedToGame,
-    setAddedToGame,
-    setInQueue 
   } = localContext;
 
   useEffect(() => {
@@ -67,8 +63,6 @@ const ActiveView: React.FC = () => {
   const handleGetTaken = async () => {
     try {
       const { updateRequired, takenCourts, numberOfCourts } = await getTaken(location);
-      setUpdateRequired(updateRequired);
-      setCourtNumbers(takenCourts);
       setNumberOfCourts(numberOfCourts);
       setSelectedCourts(takenCourts);
 

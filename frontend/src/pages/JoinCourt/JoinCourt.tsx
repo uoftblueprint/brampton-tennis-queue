@@ -7,7 +7,7 @@ import clockIcon from "../../assets/clock-icon.svg";
 
 
 const JoinCourt: React.FC = () => {
-  const context = useContext(LocalStorageContext);
+  const context = useContext(LocalStorageContext)!;
 
   // Selected location
   const selectedLocation = context.selectedLocation;

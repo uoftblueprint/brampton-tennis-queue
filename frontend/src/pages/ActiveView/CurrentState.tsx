@@ -1,30 +1,24 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';  // Debounce method
 import { fetchCurrentState, subscribeToLocation } from '../../utils/api';
 import PlayerList from './PlayerList';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
 
-//const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
-const CACHE_EXPIRY_THRESHOLD = 10 * 1000;  // For testing!
+const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
 
 const CurrentState: React.FC = () => {
-  const context = useContext(LocalStorageContext);
+  const context = useContext(LocalStorageContext)!;
 
   const location = context.selectedLocation;
-  const nickname = context.nickname;
   const firebaseUID = context.firebaseUID;
   
   const [activePlayers, setActivePlayers] = useState<string[]>([]);
   const [queuePlayers, setQueuePlayers] = useState<string[]>([]);
   const [activeFirebaseUIDs, setActiveFirebaseUIDs] = useState<string[]>([]);
   const [queueFirebaseUIDs, setQueueFirebaseUIDs] = useState<string[]>([]);
-  const [inQueue, setInQueue] = useState<boolean>(context.inQueue);
 
   const unsubscribeRef = useRef<(() => void) | null>(null);  // Firestore listener cleanup
   const scheduledUpdateRef = useRef<(() => void) | null>(null);  // Cache expiry timer
-
-  const navigate = useNavigate();
 
   // Function to check cache and load data
   const checkAndLoadCachedData = () => {
@@ -34,7 +28,6 @@ const CurrentState: React.FC = () => {
     const cachedTimestamp = context.playerDataLastUpdateTime;
     const cacheAge = cachedTimestamp ? Date.now() - new Date(cachedTimestamp).getTime() : null;
     const isInQueue = context.inQueue;  // Just use the boolean directly
-    setInQueue(isInQueue);
 
     // Use cached data if available
     if (cachedPlayers && cachedPlayers.activeNicknames && cachedPlayers.queueNicknames) {
@@ -79,7 +72,6 @@ const CurrentState: React.FC = () => {
   // Check if the user is still in queue or active
   const updateInQueueStatus = (locationData: any) => {
     const isInQueue = locationData.queueFirebaseUIDs.includes(firebaseUID);
-    setInQueue(isInQueue);
     context.setInQueue(isInQueue);  // Remove JSON.stringify
     
     if (!isInQueue) {

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { getAuth, deleteUser, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, deleteUser } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { fetchCurrentState } from '../../utils/api';
 import Header from '../../components/Header'; 
@@ -16,8 +16,7 @@ const Account: React.FC = () => {
     const user = auth.currentUser;
 
     const navigate = useNavigate(); // Navigation hook for redirecting
-    //const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
-    const CACHE_EXPIRY_THRESHOLD = 10 * 1000;  // For testing!
+    const CACHE_EXPIRY_THRESHOLD = 60 * 1000;  // 60 seconds
 
     // Redirect if user is not authenticated
     useEffect(() => {
@@ -71,22 +70,6 @@ const Account: React.FC = () => {
             setErrorMessage("Account cannot be deleted while in game");
         }
     };
-    
-    const resetPassword = async () => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user && user.email) {
-            try {
-                sendPasswordResetEmail(auth, user.email)
-                alert("Password reset email sent!");
-            } catch (error) {
-                setErrorMessage("Error sending password reset email");
-                console.error("Error sending password reset email: ", error);
-            }
-        } else {
-            setErrorMessage("No email found");
-        }
-    }
 
     return (
         <div className="account-main-container">

@@ -1,0 +1,16 @@
+{
+    "name": "Brampton Tennis Queue",
+    "short_name": "Tennis Queue",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#008000",
+    "icons": [
+      {
+        "src": "/TennisBall-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ]
+}
+  

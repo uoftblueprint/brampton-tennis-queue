@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import {
-    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -40,22 +41,41 @@ const Login: React.FC = () => {
             navigate("/messaging-permission");
         }
     }, [authContext, navigate]);
-
-    // Handle google-based authentication
-    const handleGoogleSignIn = () => {
-        context.setAddedToGame(false); // Reset added to game status
-        signInWithPopup(auth, googleProvider)
-            .then((result) => {
-                const user = result.user
-                console.log("user", user)
-
-                context.setFirebaseUID(user.uid); // Store user UID in local storage
-                setTimeout(() => {}, 1000); // Delay to ensure UID is stored before redirect
-                navigate("/messaging-permission"); // Navigate to active view on success
-            })
-            .catch(() => {
+    
+    // Capture redirect result after redirect
+    useEffect(() => {
+        // This should run when the component mounts to check for redirect results
+        const handleRedirectResult = async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (result?.user) {
+                    // User successfully signed in
+                    context.setFirebaseUID(result.user.uid);
+                    context.setAddedToGame(false);
+                    navigate("/messaging-permission");
+                }
+            } catch (error : any) {
+                // Handle specific errors
+                console.error("Google sign-in redirect error:", error);
+                if (error.code === 'auth/cancelled-popup-request') {
+                setErrorMessage("Sign-in was cancelled.");
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                setErrorMessage("Sign-in window was closed before completion.");
+                } else {
                 setErrorMessage("Google sign-in failed. Please try again.");
-            });
+                }
+             }
+        };
+        
+        handleRedirectResult();
+    }, [navigate, context]); // Add navigate and context as dependencies
+
+    // Sign in with Google using redirect
+    const handleGoogleSignIn = () => {
+        context.setAddedToGame(false); // Reset game status
+        signInWithRedirect(auth, googleProvider).catch(() => {
+            setErrorMessage("Google sign-in failed. Please try again.");
+        });
     };
 
     // Register a new user or sign in an existing user with email and password

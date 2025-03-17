@@ -3,14 +3,13 @@ import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_CONFIG_API_KEY,
+  apiKey: "AIzaSyDJd2dKovgdgS29dqUKG3a0RKZwL_M7C1g",
   authDomain: "brampton-tennis-queue.firebaseapp.com",
   projectId: "brampton-tennis-queue",
   storageBucket: "brampton-tennis-queue.appspot.com",
-  messagingSenderId: process.env.NEXT_PUBLIC_CONFIG_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_CONFIG_APP_ID,
+  messagingSenderId: "578763495949",
+  appId: "1:578763495949:web:5c83ba102bcf0e719a9344",
 };
-console.log('Firebase config:', firebaseConfig);
 const app = initializeApp(firebaseConfig);
 
 const auth: Auth = getAuth(app);

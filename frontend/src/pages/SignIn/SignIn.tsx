@@ -44,10 +44,12 @@ const Login: React.FC = () => {
     
     // Capture redirect result after redirect
     useEffect(() => {
+        console.log("Redirect effect");
         // This should run when the component mounts to check for redirect results
         const handleRedirectResult = async () => {
             try {
                 const result = await getRedirectResult(auth);
+                console.log("Redirect result:", result);
                 if (result?.user) {
                     // User successfully signed in
                     context.setFirebaseUID(result.user.uid);

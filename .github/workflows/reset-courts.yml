@@ -1,8 +1,8 @@
-name: Reset Courts Every Day at 5 AM
+name: Reset Courts Every Day at 5 AM EDT
 
 on:
   schedule:
-    - cron: "0 5 * * *" # Runs once daily at 5 AM
+    - cron: "0 9 * * *" # Runs once daily at 5 AM EDT (9 AM UTC)
 
 jobs:
   call-endpoint:

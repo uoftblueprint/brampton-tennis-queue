@@ -68,7 +68,7 @@ const Login: React.FC = () => {
         };
         
         handleRedirectResult();
-    }, [navigate, context]); // Add navigate and context as dependencies
+    }, []);
 
     // Sign in with Google using redirect
     const handleGoogleSignIn = () => {

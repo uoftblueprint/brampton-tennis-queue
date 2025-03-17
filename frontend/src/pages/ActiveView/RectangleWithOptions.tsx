@@ -44,8 +44,8 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
   const [actionToConfirm, setActionToConfirm] = useState("");  // Track the action to confirm
   const [userOutOftime, setUserOutOfTime] = useState(false);
 
-  const buttonRef = useRef(null);
-  const rectangleRef = useRef(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const rectangleRef = useRef<HTMLDivElement | null>(null);  
   const navigate = useNavigate();  // Hook to navigate to other routes
 
   // Determines if the button text should change based on user comparison
@@ -68,11 +68,12 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
 
   // Handles clicks outside of the rectangle and button to close the button if clicked outside
   const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node; // Safely cast event.target to Node
     if (
       rectangleRef.current &&
-      !rectangleRef.current.contains(event.target) &&
+      !rectangleRef.current.contains(target) &&
       buttonRef.current &&
-      !buttonRef.current.contains(event.target)
+      !buttonRef.current.contains(target)
     ) {
       setShowButton(false);
     }
@@ -203,7 +204,7 @@ const RectangleWithOptions: React.FC<RectangleWithOptionsProps> = ({
                 className="action-button-container"
                 style={{
                   position: "absolute",
-                  top: rectangleRef.current?.getBoundingClientRect().bottom + window.scrollY - 16 || 0,
+                  top: rectangleRef.current ? rectangleRef.current.getBoundingClientRect().bottom + window.scrollY - 16 : 0,
                   left: rectangleRef.current?.getBoundingClientRect().left || 0,
                 }}
               >

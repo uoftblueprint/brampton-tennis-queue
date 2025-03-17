@@ -47,14 +47,14 @@ const CurrentState: React.FC = () => {
     } else if (isInQueue) {
       // Cache is valid, but we set a timer to update
       const timeTillCacheExpiry = CACHE_EXPIRY_THRESHOLD - cacheAge + 10;
-      scheduledUpdateRef.current = setTimeout(checkAndLoadCachedData, timeTillCacheExpiry);
+      scheduledUpdateRef.current = setTimeout(checkAndLoadCachedData, timeTillCacheExpiry) as any;
     }
   };
 
   // Function to handle subscription for queue players
   const startQueueListener = () => {
     if (unsubscribeRef.current) return;
-    unsubscribeRef.current = subscribeToLocation(location, updateState);
+    unsubscribeRef.current = subscribeToLocation(location, updateState) as any;
   };
 
   // Fetch current state data from endpoint
@@ -126,7 +126,7 @@ const CurrentState: React.FC = () => {
     }
 
     if (scheduledUpdateRef.current) {
-      clearTimeout(scheduledUpdateRef.current);
+      clearTimeout(scheduledUpdateRef.current as any);
       scheduledUpdateRef.current = null;
     }
   };

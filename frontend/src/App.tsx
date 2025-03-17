@@ -26,7 +26,7 @@ function App() {
     // 1) Register the SW if not done elsewhere
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
-        .register('/firebase-messaging-sw.js') 
+        .register('/public/firebase-messaging-sw.js')
         .then((registration) => {
           console.log('Service Worker registered:', registration.scope);
         })

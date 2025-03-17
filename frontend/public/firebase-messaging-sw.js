@@ -9,7 +9,7 @@ importScripts('https://www.gstatic.com/firebasejs/9.17.1/firebase-messaging-comp
 
 // 1) Your same Firebase config here:
 firebase.initializeApp({
-  apiKey: "AIzaSyDJd2dK...",
+  apiKey: "AIzaSyDJd2dKovgdgS29dqUKG3a0RKZwL_M7C1g",
   authDomain: "brampton-tennis-queue.firebaseapp.com",
   projectId: "brampton-tennis-queue",
   storageBucket: "brampton-tennis-queue.appspot.com",

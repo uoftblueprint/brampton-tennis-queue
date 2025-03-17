@@ -44,6 +44,7 @@ const Login: React.FC = () => {
 
     // Handle Google sign-in redirect
     useEffect(() => {
+        console.log("In useEffect for Google sign-in redirect");
         getRedirectResult(auth)
             .then((result) => {
                 console.log("Redirect result:", result);
@@ -67,6 +68,7 @@ const Login: React.FC = () => {
 
     // Sign in with Google using redirect
     const handleGoogleSignIn = () => {
+        console.log("Google sign-in clicked");
         context.setAddedToGame(false); // Reset game status
         signInWithRedirect(auth, googleProvider).catch(() => {
             setErrorMessage("Google sign-in failed. Please try again.");

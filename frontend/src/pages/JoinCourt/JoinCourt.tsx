@@ -16,6 +16,9 @@ const JoinCourt: React.FC = () => {
   const [queueNicknames, setQueueNicknames] = useState([]);
   // const [activeNicknames, setActiveNicknames] = useState([]); Can be implemented later when there's enough information about each court
 
+  // Define max queue size. NOTE: Update functions/backend/utils/joinGame.js & redeploy backend if this is changed
+  const MAX_QUEUE_SIZE = 10;
+
   // Hook for navigating to the next page
   const navigate = useNavigate();
   
@@ -94,7 +97,7 @@ const JoinCourt: React.FC = () => {
           )}
         </div>
 
-        {queueNicknames.length >= 5 ?
+        {queueNicknames.length >= MAX_QUEUE_SIZE ?
           <button
             disabled
             className="joiner-button"

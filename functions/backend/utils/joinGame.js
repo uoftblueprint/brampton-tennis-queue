@@ -15,6 +15,7 @@ async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
     } = locationData;
 
     // Define max queue size. NOTE: Update frontend/src/pages/JoinCourt/JoinCourt.tsx if this is changed
+    // Backend Redeployment: "firebase deploy --only functions" from the project root directory
     const MAX_QUEUE_SIZE = 10;
 
     // Ensure all arrays match the number of courts

@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import {
-    //signInWithRedirect,
-    //getRedirectResult,
-    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
+    //signInWithPopup,
     GoogleAuthProvider,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -43,7 +43,6 @@ const Login: React.FC = () => {
         }
     }, [authContext, navigate]);
 
-    /*
     // Handle Google sign-in redirect
     useEffect(() => {
         console.log("In useEffect for Google sign-in redirect");
@@ -66,7 +65,7 @@ const Login: React.FC = () => {
                     setErrorMessage("Google sign-in failed. Please try again.");
                 }
             });
-    });
+    }, []);
 
     // Sign in with Google using redirect
     const handleGoogleSignIn = () => {
@@ -76,8 +75,8 @@ const Login: React.FC = () => {
             setErrorMessage("Google sign-in failed. Please try again.");
         });
     };
-    */
 
+    /*
     // Handle google-based authentication
     const handleGoogleSignIn = () => {
         context.setAddedToGame(false); // Reset added to game status
@@ -94,6 +93,7 @@ const Login: React.FC = () => {
                 setErrorMessage("Google sign-in failed. Please try again.");
             });
     };
+    */
 
     // Register a new user or sign in an existing user with email and password
     const isValidEmail = (email: string) => {

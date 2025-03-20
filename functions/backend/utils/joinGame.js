@@ -14,6 +14,9 @@ async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
         numberOfCourts,
     } = locationData;
 
+    // Define max queue size. NOTE: Update frontend/src/pages/JoinCourt/JoinCourt.tsx if this is changed
+    const MAX_QUEUE_SIZE = 10;
+
     // Ensure all arrays match the number of courts
     if (
         activeFirebaseUIDs.length !== numberOfCourts ||
@@ -59,7 +62,7 @@ async function joinGame(locationData, firebaseUID, nickname, fcmToken) {
         };
     } else {
         // Check if the queue is full
-        if (queueFirebaseUIDs.length >= 5) {
+        if (queueFirebaseUIDs.length >= MAX_QUEUE_SIZE) {
             return {
                 success: false,
                 message: 'Queue is full. Cannot join.',

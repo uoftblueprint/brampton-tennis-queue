@@ -1,5 +1,16 @@
 {
     "rewrites": [
-        { "source": "/(.*)", "destination": "/index.html" }
+      { "source": "/(.*)", "destination": "/index.html" }
+    ],
+    "routes": [
+      {
+        "src": "/__/auth/(.*)",
+        "dest": "https://brampton-tennis-queue.firebaseapp.com/__/auth/$1",
+        "headers": {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        }
+      }
     ]
-}
+  }

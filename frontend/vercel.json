@@ -1,17 +1,22 @@
 {
-    "routes": [
-      {
-        "src": "/__/auth/(.*)",
-        "dest": "https://brampton-tennis-queue.firebaseapp.com/__/auth/$1",
-        "headers": {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization"
-        }
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
-    ]
-  }
+  "rewrites": [
+    {
+      "source": "/__/auth/(.*)",
+      "destination": "https://brampton-tennis-queue.firebaseapp.com/__/auth/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/__/auth/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@ const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const endSession = require('../utils/endSession');  // Import the end session utility
 const advanceQueue = require('../utils/advanceQueue');  // Import the advance queue utility
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 // End Session Endpoint
 const endSessionRoute = onRequest(async (req, res) => {

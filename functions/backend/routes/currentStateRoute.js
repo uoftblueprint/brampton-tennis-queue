@@ -1,6 +1,6 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 // Current State Endpoint
 const currentStateRoute = onRequest(async (req, res) => {

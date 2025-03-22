@@ -1,7 +1,7 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const leaveQueue = require('../utils/leaveQueue');  // Import the leave queue utility
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 // Leave Queue Endpoint
 const leaveQueueRoute = onRequest(async (req, res) => {

@@ -1,7 +1,7 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const advanceQueue = require('../utils/advanceQueue');  // Import the advance queue utility
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 const advanceQueueRoute = onRequest(async (req, res) => {
     cors(req, res, async () => {

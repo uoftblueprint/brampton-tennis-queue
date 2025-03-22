@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter as BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import './styles/normalize.css';
 import './styles/variables.css';
 import App from './App.tsx'

@@ -2,7 +2,7 @@ const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const joinGame = require('../utils/joinGame');  // Import the joinGame utility
 const dynamicBuffer = require('../utils/dynamicBuffer');  // Import dynamicBuffer utility
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 const joinGameRoute = onRequest(async (req, res) => {
     cors(req, res, async () => {

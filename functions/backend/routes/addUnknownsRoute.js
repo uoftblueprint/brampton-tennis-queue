@@ -1,7 +1,7 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const addUnknowns = require('../utils/addUnknowns');  // Import the add unknowns utility
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 // Add Unknowns Endpoint
 const addUnknownsRoute = onRequest(async (req, res) => {

@@ -1,6 +1,6 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const sendWebNotification = require('../utils/sendNotification');
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 const sendWebNotificationRoute = onRequest(async (req, res) => {
   cors(req, res, async () => {

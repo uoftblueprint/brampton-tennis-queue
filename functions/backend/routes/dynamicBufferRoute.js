@@ -1,7 +1,7 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const admin = require('firebase-admin');
 const dynamicBuffer = require('../utils/dynamicBuffer');  // Import the dynamic buffer utility
-const cors = require("cors")({ origin: ['https://brampton-tennis-queue.vercel.app'] });
+const cors = require("cors")({ origin: ['https://brampton-tennis-queue.web.app'] });
 
 // Dynamic Buffer Endpoint
 const dynamicBufferRoute = onRequest(async (req, res) => {

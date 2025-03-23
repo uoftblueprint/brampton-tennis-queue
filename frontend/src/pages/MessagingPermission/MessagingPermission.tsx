@@ -35,7 +35,7 @@ const MessagingPermission: React.FC = () => {
                 setErrorMessage('Failed enabling notification permissions.');
             }
         } catch (error) {
-            setErrorMessage('Error allowing notification permissions.');
+            setErrorMessage('Error... Mobile Users: Share > Add to Home Screen');
         }
     };
 

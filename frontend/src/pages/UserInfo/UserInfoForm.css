@@ -4,6 +4,11 @@
   height: 100vh;
 }
 
+.user-info-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* --- Styling for the header --- */
 .header {
   position: sticky;

@@ -106,3 +106,29 @@
     transition: 0.35s;
     transform: translateY(-2px); /* Slight lift effect on hover */
 }
+
+/*loading animation*/
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full screen height */
+    width: 100vw;
+    background-color: #fafafa;
+    text-align: center;
+    gap: 16px; /* space between gif and text */
+  }
+  
+  .loading-gif {
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  .loading-text {
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+  }

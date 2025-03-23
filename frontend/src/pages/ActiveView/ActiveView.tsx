@@ -25,7 +25,19 @@ const ActiveView: React.FC = () => {
   const localContext = useContext(LocalStorageContext);
   
   if (!localContext || !authContext) {
-    return <div>Loading...</div>;
+    return (
+      // Full-screen loading container with centered content
+      <div className="loading-container">
+      
+      {/* Tennis racket GIF used as a loading animation */}
+      <img
+          src="https://i.imgur.com/kQxmOQI.gif" // Source of the animated GIF
+          alt="Loading Racket Spin"             // Accessible alt text
+          className="loading-gif"               // CSS class for sizing and styling
+      />
+
+      </div>
+    );
   }
 
   const { currentUser } = authContext;
@@ -153,7 +165,22 @@ return (
       )}
 
     {/* Show Loading Spinner */}
-    {loading && <p>Loading...</p>}
+    {loading && (
+      // Full-screen loading container with centered content
+      <div className="loading-container">
+        
+        {/* Tennis racket GIF used as a loading animation */}
+        <img
+          src="https://i.imgur.com/kQxmOQI.gif" // Source of the animated GIF
+          alt="Loading Racket Spin"             // Accessible alt text
+          className="loading-gif"               // CSS class for sizing and styling
+        />
+
+        {/* Optional loading text (you can uncomment this if you want text below the gif) */}
+        {/* <div className="loading-text">Loading...</div> */}
+        
+      </div>
+    )}
 
     {/* Show Confirmation Modal (if applicable) */}
     {!loading && showConfirmation && (

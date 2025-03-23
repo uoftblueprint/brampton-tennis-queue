@@ -161,7 +161,16 @@ const UserInfo: React.FC = () => {
           {errors.groupSize && <p className="user-info-error">{errors.groupSize}</p>}
 
           {/* Submit button triggers validation and opens the confirmation modal */}
-          <button type="submit" className="user-info-button" disabled={!!errors.nickname && !errors.groupSize}>
+          <button
+            type="submit"
+            className="user-info-button"
+            disabled={
+              !nickname ||
+              !groupSize ||
+              errors.nickname !== '' ||
+              errors.groupSize !== ''
+            }
+          >
             Next
           </button>
         </form>

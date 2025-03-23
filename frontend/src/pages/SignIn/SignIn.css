@@ -4,6 +4,13 @@
   height: 100vh;
 }
 
+.form-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
 /* --- Styling for the header --- */
 .header {
   position: sticky;

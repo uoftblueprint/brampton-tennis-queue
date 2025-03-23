@@ -6,6 +6,12 @@
     align-items: center;
 }
 
+/* --- Next button should be disabled if the user have not selected the location --- */
+.next-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* --- Styling for the header --- */
 .big-header {
   position: sticky;

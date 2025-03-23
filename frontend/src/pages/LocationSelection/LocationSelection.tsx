@@ -4,52 +4,52 @@ import './LocationSelection.css';
 import { LocalStorageContext } from '../../context/LocalStorageContext';
 
 const LocationSelection: React.FC = () => {
+  // Get context to save selected location globally
   const context = useContext(LocalStorageContext)!;
 
-  // Sample locations list
-  const locations = ["Cassie Campbell"];
-
-  // State to store the selected location
-  // Use this state to access the user selected location for queue purposes
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-
-  // Hook for navigating to the next page
+  // React Router hook for navigation
   const navigate = useNavigate();
 
-  // Handle location change
-  const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLocation(event.target.value);
-    context.setSelectedLocation(event.target.value);
+  // List of available locations (can be expanded later)
+  const locations = ["Cassie Campbell"];
+
+  // State to store user's selected location
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+
+  // Handle dropdown change: update local state and context
+  const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedLocation(value);
+    context.setSelectedLocation(value); // Store in global context
   };
 
-  // Handle the navigation button click
+  // Navigate to the next page only if location is selected
   const handleNextPage = () => {
-    if (selectedLocation) {
-      navigate('/join-court'); // Navigate to the next page
-    } else {
-      alert('Please select a location before proceeding.');
-    }
+    navigate('/join-court');
   };
 
   return (
     <div className="location-selection">
-
+      {/* Page header */}
       <div className="big-header">
-        {/* Page heading */}
-        <h2 className="big-header-title"><span>Brampton</span><br/>Tennis Queue</h2>
+        <h2 className="big-header-title">
+          <span>Brampton</span><br />Tennis Queue
+        </h2>
       </div>
 
       <div className='content'>
-        {/* Label for Selecting location */}
+        {/* Dropdown label */}
         <label htmlFor="locationDropdown" className="label">
           Select a community centre to play
         </label>
 
-        {/* Select dropdown menu */}
+        {/* Dropdown for selecting a location */}
         <select
+          id="locationDropdown"
           className="dropdown"
           value={selectedLocation}
-          onChange={handleLocationChange}        >
+          onChange={handleLocationChange}
+        >
           <option value="">Select from...</option>
           {locations.map((location, index) => (
             <option key={index} value={location}>
@@ -58,11 +58,11 @@ const LocationSelection: React.FC = () => {
           ))}
         </select>
 
-        {/* Simple Next Page Button */}
-        <button 
-          className="next-button" 
+        {/* "Next" button: disabled until a location is selected */}
+        <button
+          className="next-button"
           onClick={handleNextPage}
-          disabled={!selectedLocation}
+          disabled={!selectedLocation} // disables button if no selection
         >
           Next
         </button>

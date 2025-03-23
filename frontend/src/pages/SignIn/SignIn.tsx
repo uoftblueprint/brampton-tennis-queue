@@ -19,6 +19,7 @@ import { LocalStorageContext } from "../../context/LocalStorageContext";
 import { AuthContext } from "../../context/AuthContext";
 import ResetPassword from "../../components/ResetPassword";
 
+
 const Login: React.FC = () => {
     const context = useContext(LocalStorageContext)!;
     const authContext = useContext(AuthContext);
@@ -33,7 +34,7 @@ const Login: React.FC = () => {
     const [passwordError, setPasswordError] = useState(""); // Password-specific error state
     
     const navigate = useNavigate(); // Navigation hook for redirecting
-
+    
     // Redirect if user is already authenticated
     useEffect(() => {
         if (authContext?.currentUser && !context.recentLoginRequired && authContext?.currentUser.emailVerified) {
@@ -210,8 +211,12 @@ const Login: React.FC = () => {
                         required
                     />
                     {passwordError && <p className="error-message">{passwordError}</p>}
-                    <button type="submit" className="form-button">
-                        {isSigningUp ? "Sign up with Email" : "Log in with Email"}
+                    <button
+                    type="submit"
+                    className="form-button"
+                    disabled={email.trim() === "" || password.trim() === ""}
+                    >
+                    {isSigningUp ? "Sign up with Email" : "Log in with Email"}
                     </button>
 
                     {/* Google sign-in button */}

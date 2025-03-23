@@ -39,8 +39,10 @@
   .modal-buttons {
     display: flex;
     justify-content: space-around;
+    gap: 12px; /* space between buttons */
+    margin-top: 16px;
   }
-  
+
   .modal-confirm-button {
     padding: 10px 20px;
     background-color: var(--main-color);
@@ -72,6 +74,11 @@
   }
   
   .modal-cancel-button:hover {
-    background-color: #999;
+    background-color: #eee;
+    border: 2px solid #aaa;
+    color: #222;
+    transform: translateY(-2px);
+    transition: 0.35s;
   }
+  
   

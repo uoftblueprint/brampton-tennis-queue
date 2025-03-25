@@ -191,26 +191,29 @@ const Login: React.FC = () => {
 
                 {/* Form for email and password */}
                 <form className="login-form" onSubmit={handleEmailAuth}>
-                    <label htmlFor="email" className="form-label">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        className={`form-input ${emailError ? "input-error" : ""}`}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    {emailError && <p className="error-message">{emailError}</p>}
-                    <label htmlFor="password" className="form-label">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        className={`form-input ${passwordError ? "input-error" : ""}`}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    {passwordError && <p className="error-message">{passwordError}</p>}
+                <label htmlFor="email" className="form-label">Email:</label>
+                <input
+                type="email"
+                id="email"
+                className={`form-input ${emailError ? "input-error" : ""}`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email here"
+                required
+                />
+                {emailError && <p className="error-message">{emailError}</p>}
+
+                <label htmlFor="password" className="form-label">Password:</label>
+                <input
+                type="password"
+                id="password"
+                className={`form-input ${passwordError ? "input-error" : ""}`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password here"
+                required
+                />
+                {passwordError && <p className="error-message">{passwordError}</p>}
                     <button
                     type="submit"
                     className="form-button"
@@ -221,10 +224,10 @@ const Login: React.FC = () => {
 
                     {/* Google sign-in button */}
                     <div className="google-signin-container">
-                        <button id="google-button" className="form-button" onClick={handleGoogleSignIn}>
-                            <img src={googleIcon} alt="Google Icon" className="button-icon" />
-                            Log in with Google
-                        </button>
+                    <button id="google-button" className="form-button" onClick={handleGoogleSignIn}>
+                        <img src={googleIcon} alt="Google Icon" className="button-icon" />
+                        Log in with Google
+                    </button>
                     </div>
                 </form>
                 

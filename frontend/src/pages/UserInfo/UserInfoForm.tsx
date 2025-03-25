@@ -148,7 +148,6 @@ const UserInfo: React.FC = () => {
               <option>8</option>
           </datalist>
 
-          {/* Group Size input field */}
           {/* Group Size dropdown field */}
           <label id="group-size-label" className="user-info-label">Group size:</label>
           <select

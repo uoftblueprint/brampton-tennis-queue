@@ -28,9 +28,9 @@ const UserInfo: React.FC = () => {
   };
 
   // Updates the group size state and validates it on each change
-  const handleGroupSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGroupSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGroupSize(e.target.value);
-    validateGroupSize(e.target.value); // Validate nickname as user types
+    validateGroupSize(e.target.value);
   };
 
   // Validation function to check nickname requirements
@@ -131,6 +131,7 @@ const UserInfo: React.FC = () => {
           <input
             type="text"
             value={nickname}
+            placeholder="Enter your nickname here"
             onChange={handleNicknameChange}
             className="user-info-input"
           />
@@ -148,15 +149,24 @@ const UserInfo: React.FC = () => {
           </datalist>
 
           {/* Group Size input field */}
+          {/* Group Size dropdown field */}
           <label id="group-size-label" className="user-info-label">Group size:</label>
-          <input
+          <select
             value={groupSize}
-            list="groupSizes"
-            autoComplete="on"
             onChange={handleGroupSizeChange}
-            id='group-size-input'
-            className="user-info-input"
-          />
+            id="group-size-input"
+            className="user-info-select"
+          >
+            <option value="">Select a group size</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+
           {/* Display error message for nickname if validation fails */}
           {errors.groupSize && <p className="user-info-error">{errors.groupSize}</p>}
 
